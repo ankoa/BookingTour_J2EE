@@ -1,12 +1,10 @@
 package com.tourbooking.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "discount")
@@ -37,6 +35,10 @@ public class Discount {
 
     @Column(name = "note")
     private String note;
+
+	@ManyToMany(mappedBy = "discounts")
+	@JsonBackReference
+	private Set<TourTime> tourTimes;
 
 	public int getDiscountId() {
 		return discountId;

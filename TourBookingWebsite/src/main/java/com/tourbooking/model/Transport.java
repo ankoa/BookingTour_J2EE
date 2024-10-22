@@ -1,14 +1,19 @@
 package com.tourbooking.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "transport")
 public class Transport {
 
@@ -20,11 +25,8 @@ public class Transport {
     @Column(name = "transport_name", nullable = false)
     private String transportName;
 
-    @Column(name = "transport_detail", nullable = false)
-    private String transportDetail;
-
-    @Column(name = "departure_time", nullable = false)
-    private int departureTime;
+    @Column(name = "transport_code", nullable = false)
+    private String transportCode;
 
     @Column(name = "departure_location", nullable = false)
     private String departureLocation;
@@ -35,5 +37,8 @@ public class Transport {
     @Column(name = "status", nullable = false)
     private int status;
 
-    // Getters and Setters
+    @JsonManagedReference
+    @OneToMany(mappedBy = "transport", cascade = CascadeType.ALL)
+    private Set<TransportDetail> transportDetails;
+
 }

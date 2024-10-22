@@ -9,6 +9,7 @@ img {
   max-height: 100%;
 }
 #gallery {
+    height: 500px;
 }
 
 .swiper {
@@ -54,6 +55,9 @@ img {
 .swiper-button-next, .swiper-button-prev{
     top:72px !important;
 }
+.swiper-button-next:after, .swiper-button-prev:after{
+    font-size: 30px !important;
+}
 #tour-time-detail{
     /* border:1px  solid #000; */
     padding :5px; 
@@ -65,4 +69,36 @@ input, select{
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.scrollbar {
+    overflow-y: auto;
+}
+.scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 5px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: #ff7e56;
+}
+.img-tour.active {
+    border: 2px solid red;
+}
+
+@media (max-width: 768px) {
+    .img-tours{
+        height: 100px !important;
+    }
+    .img-tour{
+        margin-left: 2px;
+    }
+    #gallery{
+        height:400px;
+    }
+    .title-day {
+        font-size: 10px;
+    }
+    .day{
+        font-size: 12px;
+    }
 }

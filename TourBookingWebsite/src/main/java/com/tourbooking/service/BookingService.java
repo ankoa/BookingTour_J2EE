@@ -1,22 +1,21 @@
 package com.tourbooking.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.tourbooking.model.Account;
 import com.tourbooking.repository.AccountRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class AccountService {
+public class BookingService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    public BookingService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
     // Lấy tất cả các tài khoản
     public List<Account> getAllAccounts() {

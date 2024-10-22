@@ -25,12 +25,8 @@ import java.util.List;
 @Controller
 public class AccountController {
 
-    private final AccountService accountService;
-
     @Autowired
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
-    }
+    private  AccountService accountService;
 
     // Lấy danh sách tài khoản và render vào trang HTML
     @GetMapping("/accounts")
