@@ -1,95 +1,69 @@
 package com.tourbooking.model;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "transport_detail")
+@IdClass(TransportDetailId.class)
 public class TransportDetail {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tour_time_id")
-    private int tourTimeId;
-
     @Column(name = "transport_id", nullable = false)
     private int transportId;
+
+    @Id
+    @Column(name = "tour_time_id", nullable = false)
+    private int tourTimeId;
+
+    @OneToOne
+    @JoinColumn(name = "transport_id", insertable = false, updatable = false)
+    private Transport transport;
+
+    @OneToOne
+    @JoinColumn(name = "tour_time_id", insertable = false, updatable = false)
+    private TourTime tourTime;
 
     @Column(name = "direction", nullable = false)
     private String direction;
 
-    @Column(name = "license_plate")
-    private String licensePlate;
+    // Getters và Setters
+    public int getTransportId() {
+        return transportId;
+    }
 
-    @Column(name = "flight_number")
-    private String flightNumber;
+    public void setTransportId(int transportId) {
+        this.transportId = transportId;
+    }
 
-    @Column(name = "price", nullable = false)
-    private int price;
+    public int getTourTimeId() {
+        return tourTimeId;
+    }
 
-    @Column(name = "status", nullable = false)
-    private int status;
+    public void setTourTimeId(int tourTimeId) {
+        this.tourTimeId = tourTimeId;
+    }
 
-	public int getTourTimeId() {
-		return tourTimeId;
-	}
+    public Transport getTransport() {
+        return transport;
+    }
 
-	public void setTourTimeId(int tourTimeId) {
-		this.tourTimeId = tourTimeId;
-	}
+    public void setTransport(Transport transport) {
+        this.transport = transport;
+    }
 
-	public int getTransportId() {
-		return transportId;
-	}
+    public TourTime getTourTime() {
+        return tourTime;
+    }
 
-	public void setTransportId(int transportId) {
-		this.transportId = transportId;
-	}
+    public void setTourTime(TourTime tourTime) {
+        this.tourTime = tourTime;
+    }
 
-	public String getDirection() {
-		return direction;
-	}
+    public String getDirection() {
+        return direction;
+    }
 
-	public void setDirection(String direction) {
-		this.direction = direction;
-	}
-
-	public String getLicensePlate() {
-		return licensePlate;
-	}
-
-	public void setLicensePlate(String licensePlate) {
-		this.licensePlate = licensePlate;
-	}
-
-	public String getFlightNumber() {
-		return flightNumber;
-	}
-
-	public void setFlightNumber(String flightNumber) {
-		this.flightNumber = flightNumber;
-	}
-
-	public int getPrice() {
-		return price;
-	}
-
-	public void setPrice(int price) {
-		this.price = price;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
-	}
-
-    // Getters and Setters
-    
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
 }
-

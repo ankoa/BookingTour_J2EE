@@ -1,26 +1,19 @@
 package com.tourbooking.model;
 
 import java.util.Date;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "account")
 public class Account {
-    
+
     @Id
     @Column(name = "account_id")
     private String accountId;
 
-    @Column(name = "customer_id")
-    private int customerId;
+    @OneToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @Column(name = "account_name")
     private String accountName;
@@ -44,7 +37,7 @@ public class Account {
     @Column(name = "status")
     private int status;
 
-    // Getters and Setters
+    // Getters và Setters
 
     public String getAccountId() {
         return accountId;
@@ -54,12 +47,12 @@ public class Account {
         this.accountId = accountId;
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public String getAccountName() {

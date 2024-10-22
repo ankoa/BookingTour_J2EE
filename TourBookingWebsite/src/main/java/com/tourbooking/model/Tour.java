@@ -1,11 +1,6 @@
 package com.tourbooking.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tour")
@@ -15,8 +10,11 @@ public class Tour {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int tourId;
 
-    @Column(name = "category_id")
-    private int categoryId;
+
+    @OneToOne
+    @JoinColumn(name = "category_id")
+    private Category category; 
+
 
     @Column(name = "tour_name")
     private String tourName;
@@ -25,13 +23,15 @@ public class Tour {
     private String tourDetail;
 
     @Column(name = "url")
-    private String url; 
+
+    private String url;
 
     @Column(name = "status")
-    private int status; 
+    private int status;
 
     @Column(name = "tour_code")
-    private String tourCode; 
+    private String tourCode;
+
 
     public Tour() {}
 
@@ -44,12 +44,14 @@ public class Tour {
         this.tourId = tourId;
     }
 
-    public int getCategoryId() { 
-        return categoryId;
+
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategoryId(int categoryId) { 
-        this.categoryId = categoryId;
+    public void setCategory(Category category) {
+        this.category = category;
+
     }
 
     public String getTourName() {
@@ -61,34 +63,35 @@ public class Tour {
     }
 
     public String getTourDetail() {
-        return tourDetail; 
+        return tourDetail;
     }
 
     public void setTourDetail(String tourDetail) {
-        this.tourDetail = tourDetail; 
+        this.tourDetail = tourDetail;
     }
 
     public String getUrl() {
-        return url; 
+        return url;
     }
 
     public void setUrl(String url) {
-        this.url = url; 
+        this.url = url;
     }
 
     public int getStatus() {
-        return status; 
+        return status;
     }
 
     public void setStatus(int status) {
-        this.status = status; 
+        this.status = status;
     }
 
     public String getTourCode() {
-        return tourCode; 
+        return tourCode;
     }
 
     public void setTourCode(String tourCode) {
-        this.tourCode = tourCode; 
+        this.tourCode = tourCode;
+
     }
 }

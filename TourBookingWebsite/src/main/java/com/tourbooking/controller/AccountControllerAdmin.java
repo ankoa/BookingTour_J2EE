@@ -2,8 +2,6 @@ package com.tourbooking.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.tourbooking.model.Account;
 import com.tourbooking.repository.AccountRepository;
@@ -18,26 +16,27 @@ import com.tourbooking.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
 @Controller
-public class AccountController {
+@RequestMapping("/admin")
+public class AccountControllerAdmin {
 
     private final AccountService accountService;
 
     @Autowired
-    public AccountController(AccountService accountService) {
+    public AccountControllerAdmin(AccountService accountService) {
         this.accountService = accountService;
     }
 
-    // Lấy danh sách tài khoản và render vào trang HTML
     @GetMapping("/accounts")
     public String getAllAccounts(Model model) {
         List<Account> accounts = accountService.getAllAccounts();
+        System.out.println("Total accounts: " + accounts.size()); // In ra số lượng tài khoản
         model.addAttribute("accounts", accounts);
-        return "account-list"; // Tên trang HTML (account-list.html)
+        return "account-all"; 
     }
+
 }
 

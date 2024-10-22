@@ -14,13 +14,9 @@ import java.util.List;
 
 @Service
 public class AccountService {
-
-    private final AccountRepository accountRepository;
-
     @Autowired
-    public AccountService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
+    private AccountRepository accountRepository;
+
 
     // Lấy tất cả các tài khoản
     public List<Account> getAllAccounts() {
