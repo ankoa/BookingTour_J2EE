@@ -1,21 +1,27 @@
 package com.tourbooking.model;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-@Entity
-@Table(name = "booking_detail")
-public class BookingDetail {
+
+import jakarta.persistence.*;
+
+	@Entity
+	@Table(name = "booking_detail")
+	@IdClass(BookingDetailId.class)
+	public class BookingDetail {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "booking_id")
-    private int bookingId;
+    @Column(name = "booking_id", nullable = false)
+    private int bookingId; 
 
+    @Id
     @Column(name = "customer_id", nullable = false)
-    private int customerId;
+    private int customerId; 
+
+    @OneToOne
+    @JoinColumn(name = "booking_id", insertable = false, updatable = false)
+    private Booking booking;
+
+    @OneToOne
+    @JoinColumn(name = "customer_id", insertable = false, updatable = false)
+    private Customer customer;
 
     @Column(name = "price", nullable = false)
     private int price;
@@ -23,37 +29,52 @@ public class BookingDetail {
     @Column(name = "status", nullable = false)
     private int status;
 
-	public int getBookingId() {
-		return bookingId;
-	}
+    // Getters và Setters
+    public int getBookingId() {
+        return bookingId;
+    }
 
-	public void setBookingId(int bookingId) {
-		this.bookingId = bookingId;
-	}
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
+    }
 
-	public int getCustomerId() {
-		return customerId;
-	}
+    public int getCustomerId() {
+        return customerId;
+    }
 
-	public void setCustomerId(int customerId) {
-		this.customerId = customerId;
-	}
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
 
-	public int getPrice() {
-		return price;
-	}
+    public Booking getBooking() {
+        return booking;
+    }
 
-	public void setPrice(int price) {
-		this.price = price;
-	}
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public Customer getCustomer() {
+        return customer;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
-    
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

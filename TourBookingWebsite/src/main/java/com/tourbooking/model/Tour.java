@@ -1,11 +1,6 @@
 package com.tourbooking.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tour")
@@ -15,19 +10,25 @@ public class Tour {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int tourId;
 
+    @OneToOne
+    @JoinColumn(name = "category_id")
+    private Category category; 
+
     @Column(name = "tour_name")
     private String tourName;
 
-    @Column(name = "duration")
-    private int duration;
+    @Column(name = "tour_detail")
+    private String tourDetail;
 
-    @Column(name = "price")
-    private double price;
+    @Column(name = "url")
+    private String url;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "status")
+    private int status;
 
-    // Constructor không tham số
+    @Column(name = "tour_code")
+    private String tourCode;
+
     public Tour() {}
 
     // Getter và Setter
@@ -39,6 +40,14 @@ public class Tour {
         this.tourId = tourId;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public String getTourName() {
         return tourName;
     }
@@ -47,27 +56,35 @@ public class Tour {
         this.tourName = tourName;
     }
 
-    public int getDuration() {
-        return duration;
+    public String getTourDetail() {
+        return tourDetail;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setTourDetail(String tourDetail) {
+        this.tourDetail = tourDetail;
     }
 
-    public double getPrice() {
-        return price;
+    public String getUrl() {
+        return url;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public String getDescription() {
-        return description;
+    public int getStatus() {
+        return status;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getTourCode() {
+        return tourCode;
+    }
+
+    public void setTourCode(String tourCode) {
+        this.tourCode = tourCode;
     }
 }

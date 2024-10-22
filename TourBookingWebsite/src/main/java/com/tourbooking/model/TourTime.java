@@ -1,12 +1,8 @@
 package com.tourbooking.model;
 
 import java.util.Date;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 @Entity
 @Table(name = "tour_time")
 public class TourTime {
@@ -16,8 +12,9 @@ public class TourTime {
     @Column(name = "tour_time_id")
     private int tourTimeId;
 
-    @Column(name = "tour_id", nullable = false)
-    private int tourId;
+    @ManyToOne
+    @JoinColumn(name = "tour_id", nullable = false) 
+    private Tour tour;  
 
     @Column(name = "tour_time_code", nullable = false)
     private String tourTimeCode;
@@ -43,5 +40,84 @@ public class TourTime {
     @Column(name = "status", nullable = false)
     private int status;
 
-    // Getters and Setters
+    // Getters và Setters
+    public int getTourTimeId() {
+        return tourTimeId;
+    }
+
+    public void setTourTimeId(int tourTimeId) {
+        this.tourTimeId = tourTimeId;
+    }
+
+    public Tour getTour() {
+        return tour;
+    }
+
+    public void setTour(Tour tour) {
+        this.tour = tour;
+    }
+
+    public String getTourTimeCode() {
+        return tourTimeCode;
+    }
+
+    public void setTourTimeCode(String tourTimeCode) {
+        this.tourTimeCode = tourTimeCode;
+    }
+
+    public String getTimeName() {
+        return timeName;
+    }
+
+    public void setTimeName(String timeName) {
+        this.timeName = timeName;
+    }
+
+    public Date getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(Date departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public Date getReturnTime() {
+        return returnTime;
+    }
+
+    public void setReturnTime(Date returnTime) {
+        this.returnTime = returnTime;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getPriceAdult() {
+        return priceAdult;
+    }
+
+    public void setPriceAdult(int priceAdult) {
+        this.priceAdult = priceAdult;
+    }
+
+    public int getPriceChild() {
+        return priceChild;
+    }
+
+    public void setPriceChild(int priceChild) {
+        this.priceChild = priceChild;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

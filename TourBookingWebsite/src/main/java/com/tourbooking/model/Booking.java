@@ -1,13 +1,7 @@
 package com.tourbooking.model;
 
 import java.util.Date;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "booking")
@@ -18,11 +12,13 @@ public class Booking {
     @Column(name = "booking_id")
     private int bookingId;
 
-    @Column(name = "customer_id", nullable = false)
-    private int customerId;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
-    @Column(name = "tour_time_id", nullable = false)
-    private int tourTimeId;
+    @ManyToOne
+    @JoinColumn(name = "tour_time_id", nullable = false)
+    private TourTime tourTime;
 
     @Column(name = "booking_date", nullable = false)
     private Date bookingDate;
@@ -42,79 +38,76 @@ public class Booking {
     @Column(name = "time", nullable = false)
     private Date time;
 
-	public int getBookingId() {
-		return bookingId;
-	}
+    // Getters và Setters
+    public int getBookingId() {
+        return bookingId;
+    }
 
-	public void setBookingId(int bookingId) {
-		this.bookingId = bookingId;
-	}
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
+    }
 
-	public int getCustomerId() {
-		return customerId;
-	}
+    public Customer getCustomer() {
+        return customer;
+    }
 
-	public void setCustomerId(int customerId) {
-		this.customerId = customerId;
-	}
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
-	public int getTourTimeId() {
-		return tourTimeId;
-	}
+    public TourTime getTourTime() {
+        return tourTime;
+    }
 
-	public void setTourTimeId(int tourTimeId) {
-		this.tourTimeId = tourTimeId;
-	}
+    public void setTourTime(TourTime tourTime) {
+        this.tourTime = tourTime;
+    }
 
-	public Date getBookingDate() {
-		return bookingDate;
-	}
+    public Date getBookingDate() {
+        return bookingDate;
+    }
 
-	public void setBookingDate(Date bookingDate) {
-		this.bookingDate = bookingDate;
-	}
+    public void setBookingDate(Date bookingDate) {
+        this.bookingDate = bookingDate;
+    }
 
-	public int getTotalPrice() {
-		return totalPrice;
-	}
+    public int getTotalPrice() {
+        return totalPrice;
+    }
 
-	public void setTotalPrice(int totalPrice) {
-		this.totalPrice = totalPrice;
-	}
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
-	public int getAdultCount() {
-		return adultCount;
-	}
+    public int getAdultCount() {
+        return adultCount;
+    }
 
-	public void setAdultCount(int adultCount) {
-		this.adultCount = adultCount;
-	}
+    public void setAdultCount(int adultCount) {
+        this.adultCount = adultCount;
+    }
 
-	public int getChildCount() {
-		return childCount;
-	}
+    public int getChildCount() {
+        return childCount;
+    }
 
-	public void setChildCount(int childCount) {
-		this.childCount = childCount;
-	}
+    public void setChildCount(int childCount) {
+        this.childCount = childCount;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public int getStatus() {
+        return status;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public Date getTime() {
-		return time;
-	}
+    public Date getTime() {
+        return time;
+    }
 
-	public void setTime(Date time) {
-		this.time = time;
-	}
-
-    // Getters and Setters
-    
+    public void setTime(Date time) {
+        this.time = time;
+    }
 }
-
