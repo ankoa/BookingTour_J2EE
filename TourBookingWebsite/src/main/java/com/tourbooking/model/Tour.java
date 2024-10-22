@@ -10,9 +10,11 @@ public class Tour {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int tourId;
 
+
     @OneToOne
     @JoinColumn(name = "category_id")
     private Category category; 
+
 
     @Column(name = "tour_name")
     private String tourName;
@@ -21,6 +23,7 @@ public class Tour {
     private String tourDetail;
 
     @Column(name = "url")
+
     private String url;
 
     @Column(name = "status")
@@ -28,6 +31,7 @@ public class Tour {
 
     @Column(name = "tour_code")
     private String tourCode;
+
 
     public Tour() {}
 
@@ -40,12 +44,14 @@ public class Tour {
         this.tourId = tourId;
     }
 
+
     public Category getCategory() {
         return category;
     }
 
     public void setCategory(Category category) {
         this.category = category;
+
     }
 
     public String getTourName() {
@@ -86,5 +92,6 @@ public class Tour {
 
     public void setTourCode(String tourCode) {
         this.tourCode = tourCode;
+
     }
 }
