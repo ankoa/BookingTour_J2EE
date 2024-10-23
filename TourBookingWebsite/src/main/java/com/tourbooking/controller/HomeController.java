@@ -17,6 +17,11 @@ public class HomeController {
         return "client/sample";
     }
 
+    @GetMapping("/find-tour")
+    public String getFindTour(Model model) {
+        return "client/find-tour";
+    }
+
     @GetMapping("/tour-detail")
     public String getTourDetail(Model model) {
         return "client/tour-detail";

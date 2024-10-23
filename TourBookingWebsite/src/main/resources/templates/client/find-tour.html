@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<th:block th:replace="client/header :: header"></th:block>
+<link rel="stylesheet" href="./assets/css/findTour.css">
+<body>
+<div id="wrapper" class="container">
+  <div th:replace="client/navbar :: navbar"></div>
+
+  <main id="main">
+    <div class="container find-tour-header">
+      <div class="breadcrumb-container">
+        <div>
+          <a title="Điểm đến" class="normal-link">Điểm đến</a>
+        </div>
+        /
+        <div>
+          <a title="Du lịch abc" class="active-link">Du lịch abc</a>
+        </div>
+      </div>
+      <div class="find-tour-header-title">
+        <h1>Du lịch ABC</h1>
+      </div>
+    </div>
+    <div class="container find-tour-container">
+      <div class="overlay"></div>
+      <div class="filter">
+        <p class="filter-header">BỘ LỌC TÌM KIẾM</p>
+        <div class="filter-main">
+          <div class="close-btn">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </div>
+          <div class="range">
+            <div class="find-tour-label">Ngân sách</div>
+            <div class="filter-budget-list">
+              <div class="budget-item">Dưới 5 triệu</div>
+              <div class="budget-item">Từ 5 - 10 triệu</div>
+              <div class="budget-item active">Từ 10 - 20 triệu</div>
+              <div class="budget-item">Trên 20 triệu</div>
+            </div>
+          </div>
+
+          <div class="option">
+            <div class="option-title">
+              <label class="find-tour-label" for=""
+              >Điểm khởi hành</label
+              >
+            </div>
+
+            <div class="select-container">
+              <select name="" id="">
+                <option value="">Tất cả</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="option">
+            <div class="option-title">
+              <label class="find-tour-label" for="">Điểm đến</label>
+            </div>
+
+            <div class="select-container">
+              <select name="" >
+                <option value="">Tất cả</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="calendar">
+            <div class="find-tour-label">Ngày đi:</div>
+            <div class="input-container">
+              <input type="date" min="2024-10-21" />
+            </div>
+          </div>
+
+          <div class="option">
+            <div class="option-title">
+              <label class="find-tour-label" for="">Dòng tour</label>
+            </div>
+
+            <div class="tag-container tour-categories">
+              <button class="tag-container-item">Cao cấp</button>
+              <button class="tag-container-item">Tiêu chuẩn</button>
+              <button class="tag-container-item">Tiết kiệm</button>
+              <button class="tag-container-item">Giá tốt</button>
+            </div>
+          </div>
+
+          <div class="option">
+            <div class="option-title">
+              <label class="find-tour-label" for=""
+              >Phương tiện</label
+              >
+            </div>
+
+            <div class="tag-container tour-transports">
+              <button class="tag-container-item">Xe</button>
+              <button class="tag-container-item">Máy bay</button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary">Áp dụng</button>
+        </div>
+      </div>
+
+      <div class="content-list">
+        <div class="header-result">
+          <div class="left-filter">
+            <p>
+              Chúng tôi tìm thấy <span>100</span> chương trình tour cho quý
+              khách
+            </p>
+          </div>
+
+          <div class="right-sort">
+            <button class="filter-btn-mobile btn btn-primary">
+              <i class="fa-solid fa-filter"></i>
+              Lọc
+            </button>
+            <div class="d-flex align-items-center wrap-sort">
+              <span class="right-sort-label"> Sắp xếp theo: </span>
+              <div class="right-sort-select">
+                <select name="" >
+                  <option value="">Tất cả</option>
+                  <option value="">Giá từ cao đến thấp</option>
+                  <option value="">Giá từ thấp đến cao</option>
+                  <option value="">Ngày khởi hành gần nhất</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-list-main">
+          <div class="card-filter">
+            <div class="card-thumbnail">
+              <img
+                      alt="Đông Nam Bộ"
+                      loading="lazy"
+                      width="0"
+                      height="0"
+                      decoding="async"
+                      data-nimg="1"
+                      src="https://media.travel.com.vn/Destination/tf_241016012526_414446_SUN WORLD BA DEN-CAP TREO VAN SON (1).jpg"
+                      style="color: transparent"
+              />
+              <div class="card-tag">
+                <i></i>
+                <span>Tiết kiệm</span>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-content-info">
+                <div class="content-header">
+                  <a href="" title="" class=""
+                  >Hà Nội - Sapa - Fansipan - Ninh Bình - Hạ Long - Yên Tử -
+                    Đà Nẵng - Huế - La Vang Động Thiên Đường& Phong Nha - Bà
+                    Nà - Hội An
+                  </a>
+                </div>
+                <div class="content-info-tour">
+                  <div class="info-tour-row">
+                    <div class="tour-code">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-ticket"></i>
+                        <label for="">Mã tour:</label>
+                      </div>
+                      <p>NDSGN199</p>
+                    </div>
+                    <div class="tour-departure">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <label for="">Khởi hành:</label>
+                      </div>
+                      <p>TP. Hồ Chí Minh</p>
+                    </div>
+                  </div>
+                  <div class="info-tour-row">
+                    <div class="tour-time">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-clock"></i>
+                        <label for="">Thời gian:</label>
+                      </div>
+                      <p>12N11Đ</p>
+                    </div>
+                    <div class="tour-transport">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-plane"></i>
+                        <label for="">Phương tiện:</label>
+                      </div>
+                      <p>Máy bay</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-content-price">
+                <div class="content-price-wrapper">
+                  <div class="content-price-old">
+                    <label for="">Giá từ: </label>
+                    <span>19.990.000 ₫</span>
+                  </div>
+                  <div class="content-price-new">
+                    <p>18.990.000 ₫</p>
+                  </div>
+                </div>
+                <div class="content-price-btn">
+                  <a class="btn btn-primary btn-md">Xem chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-filter">
+            <div class="card-thumbnail">
+              <img
+                      alt="Đông Nam Bộ"
+                      loading="lazy"
+                      width="0"
+                      height="0"
+                      decoding="async"
+                      data-nimg="1"
+                      src="https://media.travel.com.vn/Destination/tf_241016012526_414446_SUN WORLD BA DEN-CAP TREO VAN SON (1).jpg"
+                      style="color: transparent"
+              />
+              <div class="card-tag">
+                <i></i>
+                <span>Tiết kiệm</span>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-content-info">
+                <div class="content-header">
+                  <a href="" title="" class=""
+                  >Hà Nội - Sapa - Fansipan - Ninh Bình - Hạ Long - Yên Tử -
+                    Đà Nẵng - Huế - La Vang Động Thiên Đường& Phong Nha - Bà
+                    Nà - Hội An
+                  </a>
+                </div>
+                <div class="content-info-tour">
+                  <div class="info-tour-row">
+                    <div class="tour-code">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-ticket"></i>
+                        <label for="">Mã tour:</label>
+                      </div>
+                      <p>NDSGN199</p>
+                    </div>
+                    <div class="tour-departure">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <label for="">Khởi hành:</label>
+                      </div>
+                      <p>TP. Hồ Chí Minh</p>
+                    </div>
+                  </div>
+                  <div class="info-tour-row">
+                    <div class="tour-time">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-clock"></i>
+                        <label for="">Thời gian:</label>
+                      </div>
+                      <p>12N11Đ</p>
+                    </div>
+                    <div class="tour-transport">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-plane"></i>
+                        <label for="">Phương tiện:</label>
+                      </div>
+                      <p>Máy bay</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-content-price">
+                <div class="content-price-wrapper">
+                  <div class="content-price-old">
+                    <label for="">Giá từ: </label>
+                    <span>19.990.000 ₫</span>
+                  </div>
+                  <div class="content-price-new">
+                    <p>18.990.000 ₫</p>
+                  </div>
+                </div>
+                <div class="content-price-btn">
+                  <a class="btn btn-primary btn-md">Xem chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-filter">
+            <div class="card-thumbnail">
+              <img
+                      alt="Đông Nam Bộ"
+                      loading="lazy"
+                      width="0"
+                      height="0"
+                      decoding="async"
+                      data-nimg="1"
+                      src="https://media.travel.com.vn/Destination/tf_241016012526_414446_SUN WORLD BA DEN-CAP TREO VAN SON (1).jpg"
+                      style="color: transparent"
+              />
+              <div class="card-tag">
+                <i></i>
+                <span>Tiết kiệm</span>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-content-info">
+                <div class="content-header">
+                  <a href="" title="" class=""
+                  >Hà Nội - Sapa - Fansipan - Ninh Bình - Hạ Long - Yên Tử -
+                    Đà Nẵng - Huế - La Vang Động Thiên Đường& Phong Nha - Bà
+                    Nà - Hội An
+                  </a>
+                </div>
+                <div class="content-info-tour">
+                  <div class="info-tour-row">
+                    <div class="tour-code">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-ticket"></i>
+                        <label for="">Mã tour:</label>
+                      </div>
+                      <p>NDSGN199</p>
+                    </div>
+                    <div class="tour-departure">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <label for="">Khởi hành:</label>
+                      </div>
+                      <p>TP. Hồ Chí Minh</p>
+                    </div>
+                  </div>
+                  <div class="info-tour-row">
+                    <div class="tour-time">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-clock"></i>
+                        <label for="">Thời gian:</label>
+                      </div>
+                      <p>12N11Đ</p>
+                    </div>
+                    <div class="tour-transport">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-plane"></i>
+                        <label for="">Phương tiện:</label>
+                      </div>
+                      <p>Máy bay</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-content-price">
+                <div class="content-price-wrapper">
+                  <div class="content-price-old">
+                    <label for="">Giá từ: </label>
+                    <span>19.990.000 ₫</span>
+                  </div>
+                  <div class="content-price-new">
+                    <p>18.990.000 ₫</p>
+                  </div>
+                </div>
+                <div class="content-price-btn">
+                  <a class="btn btn-primary btn-md">Xem chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-filter">
+            <div class="card-thumbnail">
+              <img
+                      alt="Đông Nam Bộ"
+                      loading="lazy"
+                      width="0"
+                      height="0"
+                      decoding="async"
+                      data-nimg="1"
+                      src="https://media.travel.com.vn/Destination/tf_241016012526_414446_SUN WORLD BA DEN-CAP TREO VAN SON (1).jpg"
+                      style="color: transparent"
+              />
+              <div class="card-tag">
+                <i></i>
+                <span>Tiết kiệm</span>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-content-info">
+                <div class="content-header">
+                  <a href="" title="" class=""
+                  >Hà Nội - Sapa - Fansipan - Ninh Bình - Hạ Long - Yên Tử -
+                    Đà Nẵng - Huế - La Vang Động Thiên Đường& Phong Nha - Bà
+                    Nà - Hội An
+                  </a>
+                </div>
+                <div class="content-info-tour">
+                  <div class="info-tour-row">
+                    <div class="tour-code">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-ticket"></i>
+                        <label for="">Mã tour:</label>
+                      </div>
+                      <p>NDSGN199</p>
+                    </div>
+                    <div class="tour-departure">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <label for="">Khởi hành:</label>
+                      </div>
+                      <p>TP. Hồ Chí Minh</p>
+                    </div>
+                  </div>
+                  <div class="info-tour-row">
+                    <div class="tour-time">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-clock"></i>
+                        <label for="">Thời gian:</label>
+                      </div>
+                      <p>12N11Đ</p>
+                    </div>
+                    <div class="tour-transport">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-plane"></i>
+                        <label for="">Phương tiện:</label>
+                      </div>
+                      <p>Máy bay</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-content-price">
+                <div class="content-price-wrapper">
+                  <div class="content-price-old">
+                    <label for="">Giá từ: </label>
+                    <span>19.990.000 ₫</span>
+                  </div>
+                  <div class="content-price-new">
+                    <p>18.990.000 ₫</p>
+                  </div>
+                </div>
+                <div class="content-price-btn">
+                  <a class="btn btn-primary btn-md">Xem chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-filter">
+            <div class="card-thumbnail">
+              <img
+                      alt="Đông Nam Bộ"
+                      loading="lazy"
+                      width="0"
+                      height="0"
+                      decoding="async"
+                      data-nimg="1"
+                      src="https://media.travel.com.vn/Destination/tf_241016012526_414446_SUN WORLD BA DEN-CAP TREO VAN SON (1).jpg"
+                      style="color: transparent"
+              />
+              <div class="card-tag">
+                <i></i>
+                <span>Tiết kiệm</span>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-content-info">
+                <div class="content-header">
+                  <a href="" title="" class=""
+                  >Hà Nội - Sapa - Fansipan - Ninh Bình - Hạ Long - Yên Tử -
+                    Đà Nẵng - Huế - La Vang Động Thiên Đường& Phong Nha - Bà
+                    Nà - Hội An
+                  </a>
+                </div>
+                <div class="content-info-tour">
+                  <div class="info-tour-row">
+                    <div class="tour-code">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-ticket"></i>
+                        <label for="">Mã tour:</label>
+                      </div>
+                      <p>NDSGN199</p>
+                    </div>
+                    <div class="tour-departure">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <label for="">Khởi hành:</label>
+                      </div>
+                      <p>TP. Hồ Chí Minh</p>
+                    </div>
+                  </div>
+                  <div class="info-tour-row">
+                    <div class="tour-time">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-clock"></i>
+                        <label for="">Thời gian:</label>
+                      </div>
+                      <p>12N11Đ</p>
+                    </div>
+                    <div class="tour-transport">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-plane"></i>
+                        <label for="">Phương tiện:</label>
+                      </div>
+                      <p>Máy bay</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-content-price">
+                <div class="content-price-wrapper">
+                  <div class="content-price-old">
+                    <label for="">Giá từ: </label>
+                    <span>19.990.000 ₫</span>
+                  </div>
+                  <div class="content-price-new">
+                    <p>18.990.000 ₫</p>
+                  </div>
+                </div>
+                <div class="content-price-btn">
+                  <a class="btn btn-primary btn-md">Xem chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-filter">
+            <div class="card-thumbnail">
+              <img
+                      alt="Đông Nam Bộ"
+                      loading="lazy"
+                      width="0"
+                      height="0"
+                      decoding="async"
+                      data-nimg="1"
+                      src="https://media.travel.com.vn/Destination/tf_241016012526_414446_SUN WORLD BA DEN-CAP TREO VAN SON (1).jpg"
+                      style="color: transparent"
+              />
+              <div class="card-tag">
+                <i></i>
+                <span>Tiết kiệm</span>
+              </div>
+            </div>
+
+            <div class="card-content">
+              <div class="card-content-info">
+                <div class="content-header">
+                  <a href="" title="" class=""
+                  >Hà Nội - Sapa - Fansipan - Ninh Bình - Hạ Long - Yên Tử -
+                    Đà Nẵng - Huế - La Vang Động Thiên Đường& Phong Nha - Bà
+                    Nà - Hội An
+                  </a>
+                </div>
+                <div class="content-info-tour">
+                  <div class="info-tour-row">
+                    <div class="tour-code">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-ticket"></i>
+                        <label for="">Mã tour:</label>
+                      </div>
+                      <p>NDSGN199</p>
+                    </div>
+                    <div class="tour-departure">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <label for="">Khởi hành:</label>
+                      </div>
+                      <p>TP. Hồ Chí Minh</p>
+                    </div>
+                  </div>
+                  <div class="info-tour-row">
+                    <div class="tour-time">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-clock"></i>
+                        <label for="">Thời gian:</label>
+                      </div>
+                      <p>12N11Đ</p>
+                    </div>
+                    <div class="tour-transport">
+                      <div class="label-wrap">
+                        <i class="fa-solid fa-plane"></i>
+                        <label for="">Phương tiện:</label>
+                      </div>
+                      <p>Máy bay</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-content-price">
+                <div class="content-price-wrapper">
+                  <div class="content-price-old">
+                    <label for="">Giá từ: </label>
+                    <span>19.990.000 ₫</span>
+                  </div>
+                  <div class="content-price-new">
+                    <p>18.990.000 ₫</p>
+                  </div>
+                </div>
+                <div class="content-price-btn">
+                  <a class="btn btn-primary btn-md">Xem chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="./assets/js/scriptFindTour.js"></script>
+
+  <div th:replace="client/footer::footer"></div>
+
+</div>
+</body>
+</html>
