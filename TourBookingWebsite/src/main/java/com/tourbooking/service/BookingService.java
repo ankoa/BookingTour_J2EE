@@ -38,8 +38,6 @@ public class BookingService {
         if (account != null) {
             account.setAccountName(accountDetails.getAccountName());
             account.setEmail(accountDetails.getEmail());
-            account.setPhoneNumber(accountDetails.getPhoneNumber());
-            account.setRole(accountDetails.getRole());
             account.setStatus(accountDetails.getStatus());
             account.setTime(accountDetails.getTime());
             return accountRepository.save(account);

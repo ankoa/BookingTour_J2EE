@@ -3,7 +3,6 @@ package com.tourbooking.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.tourbooking.model.Account;
 import com.tourbooking.repository.AccountRepository;
@@ -11,22 +10,13 @@ import com.tourbooking.service.AccountService;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
-
-import com.tourbooking.model.Account;
-import com.tourbooking.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
 
 @Controller
 public class AccountController {
 
     @Autowired
-    private  AccountService accountService;
+    private AccountService accountService;
 
     // Lấy danh sách tài khoản và render vào trang HTML
     @GetMapping("/accounts")
@@ -36,4 +26,3 @@ public class AccountController {
         return "account-list"; // Tên trang HTML (account-list.html)
     }
 }
-

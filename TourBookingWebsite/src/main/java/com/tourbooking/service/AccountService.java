@@ -2,14 +2,8 @@ package com.tourbooking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.tourbooking.model.Account;
 import com.tourbooking.repository.AccountRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
 import java.util.List;
 
 @Service
@@ -17,6 +11,7 @@ public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
 
     // Lấy tất cả các tài khoản
     public List<Account> getAllAccounts() {
@@ -39,8 +34,6 @@ public class AccountService {
         if (account != null) {
             account.setAccountName(accountDetails.getAccountName());
             account.setEmail(accountDetails.getEmail());
-            account.setPhoneNumber(accountDetails.getPhoneNumber());
-            account.setRole(accountDetails.getRole());
             account.setStatus(accountDetails.getStatus());
             account.setTime(accountDetails.getTime());
             return accountRepository.save(account);

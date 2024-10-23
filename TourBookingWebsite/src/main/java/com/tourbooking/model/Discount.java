@@ -2,10 +2,18 @@ package com.tourbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.Set;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "discount")
 public class Discount {
@@ -39,71 +47,5 @@ public class Discount {
 	@ManyToMany(mappedBy = "discounts")
 	@JsonBackReference
 	private Set<TourTime> tourTimes;
-
-	public int getDiscountId() {
-		return discountId;
-	}
-
-	public void setDiscountId(int discountId) {
-		this.discountId = discountId;
-	}
-
-	public String getDiscountCode() {
-		return discountCode;
-	}
-
-	public void setDiscountCode(String discountCode) {
-		this.discountCode = discountCode;
-	}
-
-	public int getDiscountValue() {
-		return discountValue;
-	}
-
-	public void setDiscountValue(int discountValue) {
-		this.discountValue = discountValue;
-	}
-
-	public boolean isPercentage() {
-		return isPercentage;
-	}
-
-	public void setPercentage(boolean isPercentage) {
-		this.isPercentage = isPercentage;
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
-	}
-
-	public String getNote() {
-		return note;
-	}
-
-	public void setNote(String note) {
-		this.note = note;
-	}
-
-
 }
 

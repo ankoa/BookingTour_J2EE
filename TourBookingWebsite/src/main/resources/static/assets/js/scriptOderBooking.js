@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         vehicleStart: null,
         vehicleEnd: null,
         flightStart: {
-            fightCode: "VN402",
+            flightCode: "VN402",
             startDate: "2024-10-22T08:20:00",
             endDate: "2024-10-22T6:25:00",
             airportCodeFrom: "SGN",
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "https://media.travel.com.vn/ImageAirlines/logo_VietNamAir.jpg",
         },
         flightEnd: {
-            fightCode: "VN403",
+            flightCode: "VN403",
             startDate: "2024-10-25T17:55:00",
             endDate: "2024-10-25T21:15:00",
             airportCodeFrom: "ICN",

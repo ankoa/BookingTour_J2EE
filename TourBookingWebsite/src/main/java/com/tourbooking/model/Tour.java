@@ -1,15 +1,16 @@
 package com.tourbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Set;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -20,9 +21,6 @@ public class Tour {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tour_id")
     private int tourId;
-
-    @Column(name = "category_id")
-    private int categoryId;
 
     @Column(name = "tour_name")
     private String tourName;
@@ -40,12 +38,19 @@ public class Tour {
     private String dayStay;
 
 
-
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<TourTime> tourTimes;
 
-    public Tour() {
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @JsonBackReference
+    private Category category;
+
+    public Object map(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'map'");
     }
+
 
 }
