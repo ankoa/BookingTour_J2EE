@@ -36,6 +36,12 @@ public class HomeController {
         return "client/sample";
     }
 
+
+    @GetMapping("/find-tour")
+    public String getFindTour(Model model) {
+        return "client/find-tour";
+    }
+
     @GetMapping("/tour-detail/{id}")
     public String getTourDetail(@PathVariable("id") String id, Model model) {
         Tour tour = tourService.getTourById(id);
