@@ -61,5 +61,9 @@ public class TourService {
             return null; // Hoặc xử lý ngoại lệ phù hợp
         }
     }
+    public List<Tour> searchTours(String searchValue) {
+        return tourRepository.searchTours(searchValue);
+    }
+
 
 }

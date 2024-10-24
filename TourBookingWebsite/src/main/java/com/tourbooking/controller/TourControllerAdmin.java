@@ -78,6 +78,12 @@ public class TourControllerAdmin {
 
         return "tour-add"; 
     }
+    @GetMapping("/admin/tours/search")
+    public List<Tour> searchTours(@RequestParam("searchValue") String searchValue) {
+        return tourService.searchTours(searchValue);
+    }
+
+
     @PostMapping("/tour-save")
     public ResponseEntity<String> addTourWithImages(@RequestParam("tourName") String tourName,
                                                      @RequestParam("loaiTour") int maloai,
