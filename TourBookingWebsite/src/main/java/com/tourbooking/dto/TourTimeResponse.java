@@ -28,7 +28,6 @@ public class TourTimeResponse {
     Integer tourTimeId;
     Integer discountPrice;
     Boolean isDiscount;
-    Boolean isPercentage;
     Integer remainPax;
     String note;
     String dayStay;
@@ -46,26 +45,32 @@ public class TourTimeResponse {
         this.tourTimeId = tourTime.getTourTimeId();
         Set<Discount> discounts = tourTime.getDiscounts();
         Date currentDate = new Date();
+
+        this.isDiscount = false;
+        this.discountPrice = 0;
         if (!discounts.isEmpty())
             for (Discount discount : discounts) {
-                if (currentDate.after(discount.getStartDate()) && currentDate.before(discount.getEndDate())) {
-                    this.isDiscount = true;
-                    this.discountPrice = discount.getDiscountValue();
-                    this.isPercentage = discount.isPercentage();
-                    break;
-                }
+                if (discount.getStartDate() != null)
+                    if (!currentDate.after(discount.getStartDate())) continue;
+                if (discount.getEndDate() != null)
+                    if (!currentDate.before(discount.getEndDate())) continue;
+                this.isDiscount = true;
+                this.discountPrice = discount.getDiscountValue();
+                break;
             }
-        else this.isDiscount = false;
+
         this.remainPax = tourTime.getQuantity() - tourReservedCount;
 
         ArrayList<TransportResponse> transportResponseList = new ArrayList<TransportResponse>();
 
         Set<TransportDetail> transportDetailsSet = tourTime.getTransportDetails();
-        transportDetailsSet.forEach(transportDetail -> {
+        transportDetailsSet.forEach(transportDetail ->
+
+        {
             transportResponseList.add(new TransportResponse(transportDetail.getTransport(), transportDetail));
         });
         this.transportResponses = transportResponseList;
         this.note = tourTime.getNote();
-        this.dayStay=tourTime.getTour().getDayStay();
+        this.dayStay = tourTime.getTour().getDayStay();
     }
 }

@@ -7,129 +7,6 @@
 <div id="wrapper" class="container">
     <div th:replace="client/navbar :: navbar"></div>
     <script th:inline="javascript">
-
-        const tourTimes1 = [
-                {
-                    "month": 1,
-                    "data": [
-                        {
-                            "priceAdult": 20000000,
-                            "priceChild": 15000000,
-                            "quantity": 14,
-                            "departureTime": "2024-01-02T21:49:32",
-                            "returnTime": "2024-10-21T21:49:32",
-                            "timeName": "Tour Đi Thành Cổ tháng 1",
-                            "tourId": 1,
-                            "tourTimeCode": "S999G09_1",
-                            "tourTimeId": 1,
-                            "discountPrice": null,
-                            "isDiscount": false,
-                            "isPercentage": null,
-                            "remainPax": 0,
-                            "transportResponses": [
-                                {
-                                    "transportName": "VJ306",
-                                    "departureTime": "2024-10-15T00:14:18",
-                                    "arrivalTime": "2024-10-18T00:14:18",
-                                    "departureLocation": "Sân bay Phú Bài, Huế",
-                                    "destinationLocation": "Sân bay Tân Sơn Nhất, TPHCM",
-                                    "transportCode": "",
-                                    "transportType": "Bus",
-                                    "isOutbound": false
-                                },
-                                {
-                                    "transportName": "VN407",
-                                    "departureTime": "2024-10-18T17:49:15",
-                                    "arrivalTime": "2024-10-19T17:49:15",
-                                    "departureLocation": "Sân bay Nội Bài, Hà Nội",
-                                    "destinationLocation": "Sân bay Tân Sơn Nhất, TPHCM",
-                                    "transportCode": "",
-                                    "transportType": "Bus",
-                                    "isOutbound": true
-                                },
-                                {
-                                    "transportName": "Xe Quỳnh Thi",
-                                    "departureTime": "2024-10-22T17:54:03",
-                                    "arrivalTime": "2024-10-22T08:54:03",
-                                    "departureLocation": "Bến xe Mỹ Đình, Hà Nội",
-                                    "destinationLocation": "Bến xe Bãi Cháy, Quảng Ninh",
-                                    "transportCode": "",
-                                    "transportType": "Bus",
-                                    "isOutbound": false
-                                },
-                                {
-                                    "transportName": "Xe Quỳnh Thi",
-                                    "departureTime": "2024-10-16T17:47:58",
-                                    "arrivalTime": "2024-10-17T17:47:58",
-                                    "departureLocation": "Bến xe Mỹ Đình, Hà Nội",
-                                    "destinationLocation": "Bến xe Bãi Cháy, Quảng Ninh",
-                                    "transportCode": "",
-                                    "transportType": "Bus",
-                                    "isOutbound": true
-                                }
-                            ]
-                        },
-                        {
-                            "priceAdult": 20000000,
-                            "priceChild": 15000000,
-                            "quantity": 14,
-                            "departureTime": "2024-01-02T21:49:32",
-                            "returnTime": "2024-10-09T03:09:14",
-                            "timeName": "Tour Đi Thành Cổ tháng 2",
-                            "tourId": 1,
-                            "tourTimeCode": "S999G09_2",
-                            "tourTimeId": 2,
-                            "discountPrice": null,
-                            "isDiscount": false,
-                            "isPercentage": null,
-                            "remainPax": 0,
-                            "transportResponses": [
-                                {
-                                    "transportName": "Xe Quang Dũng",
-                                    "departureTime": "2024-10-17T17:48:54",
-                                    "arrivalTime": "2024-10-19T17:48:54",
-                                    "departureLocation": "Bến Xe Đà Nẵng, Đà Nẵng",
-                                    "destinationLocation": "Bến xe Bãi Cháy, Quảng Ninh",
-                                    "transportCode": "",
-                                    "transportType": "Bus",
-                                    "isOutbound": true
-                                },
-                                {
-                                    "transportName": "Xe Trần biện",
-                                    "departureTime": "2024-10-17T00:14:38",
-                                    "arrivalTime": "2024-10-19T00:14:38",
-                                    "departureLocation": "Bến xe Miền Tây, TPHCM",
-                                    "destinationLocation": "Bến xe Biên Hòa, Đồng Nai",
-                                    "transportCode": "",
-                                    "transportType": "Bus",
-                                    "isOutbound": false
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "month": 10,
-                    "data": [
-                        {
-                            "priceAdult": 21000000,
-                            "priceChild": 16000000,
-                            "quantity": 14,
-                            "departureTime": "2024-10-27T21:49:32",
-                            "returnTime": "2024-10-07T03:09:18",
-                            "timeName": "Tour Đi Thành Cổ tháng 3",
-                            "tourId": 1,
-                            "tourTimeCode": "S999G09_3",
-                            "tourTimeId": 3,
-                            "discountPrice": null,
-                            "isDiscount": false,
-                            "isPercentage": null,
-                            "remainPax": 0,
-                            "transportResponses": []
-                        }
-                    ]
-                }
-            ];
         const tourTimes = /*[[${locations}]]*/ {};
         const tour = /*[[${tour}]]*/ {};
         console.log(tourTimes);
@@ -142,10 +19,10 @@
                     <h1 class="title" th:text="${tour.tourName}"></h1>
                     <div id="gallery" class="row flex-row-reverse">
                         <div class="col col-12 col-md-10">
-                            <img id="mainImage" class="img-avatar" th:src="${listImage[0]}" alt="">
+                            <img id="mainImage" class="img-avatar" th:src="${listImage.isEmpty()?'https://media.travel.com.vn/Tour/tfd_230914105438_245930_Shanghai%20skyline.jpg':listImage[0]}" alt="">
                         </div>
                         <div class="col col-12 col-md-2 d-flex flex-md-wrap flex-nowrap img-tours scrollbar h-100">
-                            <img th:each="item : ${listImage}" th:src="@{${item}}"
+                            <img th:each="item : ${listImage}" th:src="@{${item?item:'https://media.travel.com.vn/Tour/tfd_230914105438_245930_Shanghai%20skyline.jpg'}}"
                                  class="img-tour mt-2 object-fit-contain mb-1" alt="">
                         </div>
 

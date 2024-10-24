@@ -37,7 +37,6 @@ public class Tour {
     @Column(name = "tour_stay")
     private String dayStay;
 
-
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<TourTime> tourTimes;
@@ -47,10 +46,11 @@ public class Tour {
     @JsonBackReference
     private Category category;
 
-    public Object map(Object object) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'map'");
-    }
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<TourImage> tourImages;
+
+
 
 
 }

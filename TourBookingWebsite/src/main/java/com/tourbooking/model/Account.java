@@ -21,11 +21,7 @@ public class Account {
     @Id
     @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String accountId;
-
-     @OneToOne(mappedBy = "account")
-    @JsonBackReference
-    private Customer customer;
+    private int accountId;
 
     @Column(name = "account_name")
     private String accountName;
@@ -41,4 +37,8 @@ public class Account {
 
     @Column(name = "status")
     private int status;
+
+    @OneToOne(mappedBy = "account")
+    @JsonBackReference
+    private Customer customer;
 }

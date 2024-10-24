@@ -20,7 +20,7 @@ public class AccountService {
 
     // Tìm tài khoản theo ID
     public Account getAccountById(String accountId) {
-        return accountRepository.findById(accountId).orElse(null);
+        return accountRepository.findById(Integer.parseInt(accountId)).orElse(null);
     }
 
     // Thêm tài khoản mới
@@ -30,7 +30,7 @@ public class AccountService {
 
     // Cập nhật tài khoản
     public Account updateAccount(String accountId, Account accountDetails) {
-        Account account = accountRepository.findById(accountId).orElse(null);
+        Account account = accountRepository.findById((Integer.parseInt(accountId))).orElse(null);
         if (account != null) {
             account.setAccountName(accountDetails.getAccountName());
             account.setEmail(accountDetails.getEmail());
@@ -43,6 +43,6 @@ public class AccountService {
 
     // Xóa tài khoản
     public void deleteAccount(String accountId) {
-        accountRepository.deleteById(accountId);
+        accountRepository.deleteById((Integer.parseInt(accountId)));
     }
 }

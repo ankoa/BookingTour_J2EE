@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const swiperWrapper = document.querySelector(".swiper-wrapper");
+    const tourTimeDetail = document.querySelector("#tour-time-detail");
+    const tourTimeInfo = document.querySelector("#tour-info-content");
+
 
 
     function getDayFromDate(value) {
@@ -7,9 +11,78 @@ document.addEventListener("DOMContentLoaded", function () {
         return dateObj.getDate();
     }
 
-    const swiperWrapper = document.querySelector(".swiper-wrapper");
-    const tourTimeDetail = document.querySelector("#tour-time-detail");
-    const tourTimeInfo = document.querySelector("#tour-info-content");
+    function renderTourTimeDetail(tourTime) {
+        const details = `
+        <p>Mã Tour: ${tourTime.tourTimeCode}</p>
+        <p>Giá bán: <del>${tourTime.priceAdult}</del> <span class="text-danger fw-bold">${tourTime.isDiscount ? tourTime.priceAdult - tourTime.discountPrice : tourTime.priceAdult}</span> VND</p>
+        <p>Khởi hành tại: ${tourTime.transportResponses[0] ? tourTime.transportResponses[0].departureLocation : "Đang cập nhật"}</p>
+        <p>Ngày Khởi hành: ${tourTime.departureTime}</p>
+        <p>Thời gian: ${tourTime.dayStay}</p>
+        <p>Số chỗ còn lại: ${tourTime.remainPax} chỗ</p>
+        <div class="book">
+          <a class="btn btn-danger w-100" href="/order-booking?tour-id=${tourTime.tourTimeId}">Đặt tour</a></div>`;
+        return details;
+    }
+
+    function renderTourTimeInfo(tourTime) {
+        const info = `
+            <h4>Phương tiện di chuyển</h4>
+            <div class="row w-100">
+                <div class="col col-md-6 col col-12">
+                    ${tourTime.transportResponses.map(transport =>
+            transport.isOutbound ? `
+                        <div class="d-flex justify-content-between gap-2">
+                            <p>Ngày đi - ${dayjs(transport.departureTime).format("DD/MM/YYYY")}</p>
+                            <p>${transport.transportCode}</p>
+                        </div>
+                        <div class="d-flex justify-content-between gap-2 border-bottom border-4 border-black">
+                            <p>${dayjs(transport.departureTime).format("HH:mm")}</p>
+                            <p>${dayjs(transport.arrivalTime).format("HH:mm")}</p>
+                        </div>
+                        <div class="d-flex justify-content-between gap-2">
+                            <p>${transport.departureLocation}</p>
+                            <h5>${transport.transportName}</h5>
+                            <p>${transport.destinationLocation}</p>
+                        </div>` : `
+                    `).join('')}
+                </div>
+                <div class="col col-md-6 col col-12">
+                    ${tourTime.transportResponses.map(transport =>
+            !transport.isOutbound ? `
+                        <div class="d-flex justify-content-between gap-2">
+                            <p>Ngày Về - ${dayjs(transport.departureTime).format("DD/MM/YYYY")}</p>
+                            <p>${transport.transportCode}</p>
+                        </div>
+                        <div class="d-flex justify-content-between gap-2 border-bottom border-4 border-black">
+                            <p>${dayjs(transport.departureTime).format("HH:mm")}</p>
+                            <p>${dayjs(transport.arrivalTime).format("HH:mm")}</p>
+                        </div>
+                        <div class="d-flex justify-content-between gap-2">
+                            <p>${transport.departureLocation}</p>
+                            <h5>${transport.transportName}</h5>
+                            <p>${transport.destinationLocation}</p>
+                        </div>` : `
+                    `).join('')}
+                </div>
+            </div>
+            <h4>Giá Tour</h4>
+            <div class="row w-100">
+                <div class="col col-6">
+                    <div class="d-flex justify-content-between gap-2">
+                        <p>Người lớn</p>
+                        <p>${tourTime.priceAdult} đ</p>
+                    </div>
+                </div>
+                <div class="col col-6">
+                    <div class="d-flex justify-content-between gap-2">
+                        <p>Trẻ em</p>
+                        <p>${tourTime.priceChild} đ</p>
+                    </div>
+                </div>
+            </div>
+            <div class="note border-3 border border-warning p-2 rounded-2 color-white">${tourTime.note}</div>`;
+        return info;
+    }
 
     // Hàm tính thứ của ngày đầu tháng bằng Day.js
     function getFirstDayOfMonth(monthIndex, year = 2024) {
@@ -19,15 +92,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // Hàm kiểm tra sự kiện đặc biệt
     function getSpecialEvent(month, day) {
         const specialMonth = tourTimes.find((m) => m.month === month);
-
         if (!specialMonth) return null;
-
         const specialDay = specialMonth.data.find((d) => getDayFromDate(d.departureTime) === day);
         return specialDay ? specialDay : null;
     }
 
     // Hàm tạo các ngày trong một tháng
-    function generateDays(monthIndex, month, year) {
+    function renderDaysInMonth(monthIndex, month, year) {
         const daysInMonth = dayjs(`${year}-${monthIndex + 1}`).daysInMonth();
         const firstDay = getFirstDayOfMonth(monthIndex, year);
         let daysHTML =
@@ -66,26 +137,20 @@ document.addEventListener("DOMContentLoaded", function () {
     tourTimes.forEach((monthData) => {
         // Kiểm tra nếu tháng có dữ liệu
         if (monthData.data.length > 0) {
+        console.log(monthData)
             const monthSlide = document.createElement("div");
             monthSlide.classList.add("swiper-slide");
 
-            // Thêm tên tháng và các ngày trong tháng (giả sử bạn có hàm generateDays)
+            // Thêm tên tháng và các ngày trong tháng
             monthSlide.innerHTML =
-                `<h2>Tháng ${monthData.month}</h2>` + generateDays(monthData.month - 1, monthData.month, 2024);
+                `<h2>Tháng ${monthData.month}</h2>` + renderDaysInMonth(monthData.month - 1, monthData.month, 2024);
 
             // Thêm slide vào Swiper
             swiperWrapper.appendChild(monthSlide);
         }
     });
     // Khởi tạo Swiper
-    const swiper = new Swiper(".mySwiper", {
-        spaceBetween: 30,
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
-        allowTouchMove: false,
-    });
+
 
     // Hàm xử lý khi nhấp vào ngày đặc biệt
     function handleSpecialDayClick(event) {
@@ -95,79 +160,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const specialEvent = getSpecialEvent(Number(month), Number(day));
 
         if (specialEvent) {
-            // Hiển thị chi tiết sự kiện trong một modal hoặc div
-            const details = `
-        <p>Mã Tour: ${specialEvent.tourTimeCode}</p>
-        <p>Giá bán: ${specialEvent.priceAdult}</p>
-        <p>Khởi hành tại: ${specialEvent.transportResponses[0].departureLocation}</p>
-        <p>Ngày Khởi hành: ${specialEvent.departureTime}</p>
-            <p>Thời gian: ${specialEvent.dayStay}</p>
-        <p>Số chỗ còn lại: ${specialEvent.remainPax} chỗ</p>
-        <div class="book"><a class="btn btn-danger w-100" href="/order-booking?tour-id=${specialEvent.tourId}">Đặt tour</a></div>
-        </div>
-      `;
-            // Giả sử bạn đã lấy dữ liệu từ server và có sẵn trong biến `specialEvent`
-            const info = `
-    <h4>Phương tiện di chuyển</h4>
-    <div class="row w-100">
-        <div class="col col-md-6 col col-12">
-            ${specialEvent.transportResponses.map(transport =>
-                transport.isOutbound ?  `
-                <div class="d-flex justify-content-between gap-2">
-                    <p>Ngày đi - ${dayjs(transport.departureTime).format("DD/MM/YYYY")}</p>
-                    <p>${transport.transportCode}</p>
-                </div>
-                <div class="d-flex justify-content-between gap-2 border-bottom border-4 border-black">
-                    <p>${dayjs(transport.departureTime).format("HH:mm")}</p>
-                    <p>${dayjs(transport.arrivalTime).format("HH:mm")}</p>
-                </div>
-                <div class="d-flex justify-content-between gap-2">
-                    <p>${transport.departureLocation}</p>
-                    <h5>${transport.transportName}</h5>
-                    <p>${transport.destinationLocation}</p>
-                </div>`:`
-            `).join('')}
-        </div>
-        <div class="col col-md-6 col col-12">
-            ${specialEvent.transportResponses.map(transport =>
-                !transport.isOutbound ?  `
-                <div class="d-flex justify-content-between gap-2">
-                    <p>Ngày Về - ${dayjs(transport.departureTime).format("DD/MM/YYYY")}</p>
-                    <p>${transport.transportCode}</p>
-                </div>
-                <div class="d-flex justify-content-between gap-2 border-bottom border-4 border-black">
-                    <p>${dayjs(transport.departureTime).format("HH:mm")}</p>
-                    <p>${dayjs(transport.arrivalTime).format("HH:mm")}</p>
-                </div>
-                <div class="d-flex justify-content-between gap-2">
-                    <p>${transport.departureLocation}</p>
-                    <h5>${transport.transportName}</h5>
-                    <p>${transport.destinationLocation}</p>
-                </div>`:`
-            `).join('')}
-        </div>
-    </div>
-    <h4>Giá Tour</h4>
-    <div class="row w-100">
-        <div class="col col-6">
-            <div class="d-flex justify-content-between gap-2">
-                <p>Người lớn</p>
-                <p>${specialEvent.priceAdult} đ</p>
-            </div>
-        </div>
-        <div class="col col-6">
-            <div class="d-flex justify-content-between gap-2">
-                <p>Trẻ em</p>
-                <p>${specialEvent.priceChild} đ</p>
-            </div>
-        </div>
-    </div>
-    <div class="note border-3 border border-warning p-2 rounded-2 color-white">${specialEvent.note}</div>
-`;
-
-            tourTimeDetail.innerHTML = details; // Giả sử biến details đã được định nghĩa
-            tourTimeInfo.innerHTML = info;
-
+            tourTimeInfo.innerHTML = renderTourTimeInfo(specialEvent);
+            tourTimeDetail.innerHTML = renderTourTimeDetail(specialEvent);
         }
     }
 
@@ -194,6 +188,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    const swiper = new Swiper(".mySwiper", {
+        spaceBetween: 30,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        allowTouchMove: false,
+    });
 });
 
 

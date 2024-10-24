@@ -29,9 +29,6 @@ public class Discount {
     @Column(name = "discount_value", nullable = false)
     private int discountValue;
 
-    @Column(name = "is_percentage")
-    private boolean isPercentage;
-
     @Column(name = "start_date")
     private Date startDate;
 

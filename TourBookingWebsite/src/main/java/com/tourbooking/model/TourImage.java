@@ -19,8 +19,8 @@ public class TourImage {
     @Column(name = "image_id")
     private int imageId;
 
-    @ManyToOne 
-    @JoinColumn(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "tour_id")
     private Tour tour;
 
     @Column(name = "image_url")

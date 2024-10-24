@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +41,9 @@ public class Customer {
     @Column(name = "sex")
     private int sex;
 
+    @Column(name = "phone_number")
+    private int phoneNumber;
+
     @Column(name = "address")
     private String address;
 
@@ -51,7 +55,13 @@ public class Customer {
 
     @Column(name = "status")
     private int status;
-    
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
+    @JsonManagedReference
+    private Account account;
+
+
     @ManyToOne
     @JoinColumn(name ="customer_rel_id" , nullable = true, referencedColumnName = "customer_id")
     @JsonBackReference
