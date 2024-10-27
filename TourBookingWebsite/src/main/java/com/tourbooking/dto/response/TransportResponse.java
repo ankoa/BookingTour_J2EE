@@ -1,4 +1,4 @@
-package com.tourbooking.dto;
+package com.tourbooking.dto.response;
 
 import com.tourbooking.model.Transport;
 import com.tourbooking.model.TransportDetail;

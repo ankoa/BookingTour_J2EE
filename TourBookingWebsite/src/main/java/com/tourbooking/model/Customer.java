@@ -42,7 +42,7 @@ public class Customer {
     private int sex;
 
     @Column(name = "phone_number")
-    private int phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "address")
     private String address;
@@ -71,4 +71,12 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonManagedReference
     Set<Customer> customers;
+
+    @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    Set<Booking> bookings;
+
+    @Column(name="customer_type")
+    private int customerType;
+
 }

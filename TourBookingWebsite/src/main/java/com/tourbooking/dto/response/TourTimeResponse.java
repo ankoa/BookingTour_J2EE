@@ -1,4 +1,4 @@
-package com.tourbooking.dto;
+package com.tourbooking.dto.response;
 
 import com.tourbooking.model.*;
 import lombok.AllArgsConstructor;
