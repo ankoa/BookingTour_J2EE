@@ -1,80 +1,42 @@
 package com.tourbooking.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-	@Entity
-	@Table(name = "booking_detail")
-	@IdClass(BookingDetailId.class)
-	public class BookingDetail {
+
+@Getter
+@Setter
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "booking_detail")
+public class BookingDetail {
 
     @Id
-    @Column(name = "booking_id", nullable = false)
-    private int bookingId; 
+    @Column(name = "booking_detail_id", nullable = false)
+    private int bookingDetailId;
 
-    @Id
-    @Column(name = "customer_id", nullable = false)
-    private int customerId; 
-
-    @OneToOne
-    @JoinColumn(name = "booking_id", insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
+    @JsonBackReference
     private Booking booking;
 
-    @OneToOne
-    @JoinColumn(name = "customer_id", insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    @JsonBackReference
     private Customer customer;
 
     @Column(name = "price", nullable = false)
     private int price;
 
+    @Column(name = "detail", nullable = false)
+    private String detail;
+
     @Column(name = "status", nullable = false)
     private int status;
-
-    // Getters và Setters
-    public int getBookingId() {
-        return bookingId;
-    }
-
-    public void setBookingId(int bookingId) {
-        this.bookingId = bookingId;
-    }
-
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    public Booking getBooking() {
-        return booking;
-    }
-
-    public void setBooking(Booking booking) {
-        this.booking = booking;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 }

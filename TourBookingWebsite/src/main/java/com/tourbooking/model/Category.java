@@ -1,17 +1,27 @@
 package com.tourbooking.model;
 
-import java.util.Date;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "category")
 public class Category {
 
@@ -22,53 +32,15 @@ public class Category {
 
     @Column(name = "category_name", nullable = false)
     private String categoryName; 
+
     @Column(name = "category_detail")
     private String categoryDetail; 
-
-    @Column(name = "url")
-    private String url; 
 
     @Column(name = "status", nullable = false)
     private int status; 
 
-    
-    public int getCategoryId() {
-        return categoryId;
-    }
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<Tour> tours;
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public String getCategoryDetail() {
-        return categoryDetail;
-    }
-
-    public void setCategoryDetail(String categoryDetail) {
-        this.categoryDetail = categoryDetail;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 }

@@ -1,69 +1,45 @@
 package com.tourbooking.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "transport_detail")
-@IdClass(TransportDetailId.class)
 public class TransportDetail {
 
     @Id
-    @Column(name = "transport_id", nullable = false)
-    private int transportId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transport_detail_id", nullable = false)
+    private int transportDetailId;
 
-    @Id
-    @Column(name = "tour_time_id", nullable = false)
-    private int tourTimeId;
 
-    @OneToOne
-    @JoinColumn(name = "transport_id", insertable = false, updatable = false)
-    private Transport transport;
+    @Column(name = "arrival_time")
+    private LocalDateTime arrivalTime;
 
-    @OneToOne
-    @JoinColumn(name = "tour_time_id", insertable = false, updatable = false)
+    @Column(name = "departure_time")
+    private LocalDateTime departureTime;
+
+
+    @Column(name = "status", nullable = false)
+    private int status;
+
+    @ManyToOne
+    @JoinColumn(name = "tour_time_id", nullable = false, referencedColumnName = "tour_time_id")
+    @JsonBackReference
     private TourTime tourTime;
 
-    @Column(name = "direction", nullable = false)
-    private String direction;
-
-    // Getters và Setters
-    public int getTransportId() {
-        return transportId;
-    }
-
-    public void setTransportId(int transportId) {
-        this.transportId = transportId;
-    }
-
-    public int getTourTimeId() {
-        return tourTimeId;
-    }
-
-    public void setTourTimeId(int tourTimeId) {
-        this.tourTimeId = tourTimeId;
-    }
-
-    public Transport getTransport() {
-        return transport;
-    }
-
-    public void setTransport(Transport transport) {
-        this.transport = transport;
-    }
-
-    public TourTime getTourTime() {
-        return tourTime;
-    }
-
-    public void setTourTime(TourTime tourTime) {
-        this.tourTime = tourTime;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
-
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
+    @ManyToOne
+    @JoinColumn(name = "transport_id", nullable = false, referencedColumnName = "transport_id")
+    private Transport transport;
 }
+

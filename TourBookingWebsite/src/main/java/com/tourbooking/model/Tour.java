@@ -1,20 +1,26 @@
 package com.tourbooking.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.Set;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "tour")
 public class Tour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tour_id")
     private int tourId;
-
-
-    @OneToOne
-    @JoinColumn(name = "category_id")
-    private Category category; 
-
 
     @Column(name = "tour_name")
     private String tourName;
@@ -22,76 +28,26 @@ public class Tour {
     @Column(name = "tour_detail")
     private String tourDetail;
 
-    @Column(name = "url")
-
-    private String url;
-
     @Column(name = "status")
     private int status;
 
     @Column(name = "tour_code")
     private String tourCode;
 
+    @Column(name = "tour_stay")
+    private String dayStay;
 
-    public Tour() {}
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<TourTime> tourTimes;
 
-    // Getter và Setter
-    public int getTourId() {
-        return tourId;
-    }
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    public void setTourId(int tourId) {
-        this.tourId = tourId;
-    }
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<TourImage> tourImages;
 
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-
-    }
-
-    public String getTourName() {
-        return tourName;
-    }
-
-    public void setTourName(String tourName) {
-        this.tourName = tourName;
-    }
-
-    public String getTourDetail() {
-        return tourDetail;
-    }
-
-    public void setTourDetail(String tourDetail) {
-        this.tourDetail = tourDetail;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getTourCode() {
-        return tourCode;
-    }
-
-    public void setTourCode(String tourCode) {
-        this.tourCode = tourCode;
-
-    }
 }
