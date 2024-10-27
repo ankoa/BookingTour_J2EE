@@ -1,7 +1,15 @@
 package com.tourbooking.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "tour_image")
 public class TourImage {
@@ -11,36 +19,10 @@ public class TourImage {
     @Column(name = "image_id")
     private int imageId;
 
-    @ManyToOne 
-    @JoinColumn(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "tour_id")
     private Tour tour;
 
     @Column(name = "image_url")
     private String imageUrl;
-
-    // Getters and Setters
-
-    public int getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
-    }
-
-    public Tour getTour() {
-        return tour;
-    }
-
-    public void setTour(Tour tour) {
-        this.tour = tour;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 }

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh Sách Tour</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link type="text/css" href="/css/navBar.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: #343a40;
+            font-family: 'Roboto', sans-serif;
+        }
+        .container {
+            margin-top: 25px;
+        }
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        .filter-section input,
+        .filter-section select {
+            width: 100%;
+        }
+        .add-tour-btn {
+            margin-bottom: 10px;
+        }
+        .table-container {
+		    max-height: 400px; /* Thiết lập chiều cao tối đa cho bảng */
+		    overflow-y: auto;  /* Cho phép cuộn theo chiều dọc */
+		    border: 1px solid #dee2e6; /* Thêm viền cho bảng */
+		}
+		
+		table {
+		    width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng */
+		    border-collapse: collapse; /* Gộp các viền của các ô */
+		}
+		
+		th {
+		    background-color: #e9ecef;
+		    color: #495057;
+		    font-weight: bold;
+		    position: sticky; /* Giữ vị trí khi cuộn */
+		    top: 0; /* Ghi nhớ vị trí đầu của bảng */
+		    z-index: 10; /* Đảm bảo header nằm trên các ô khác */
+		}
+        td {
+            background-color: #ffffff;
+            color: #343a40;
+        }
+        td a {
+            margin: 0 5px;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #0d6efd;
+            color: #ffffff;
+        }
+        .tab-content {
+            margin-top: 20px;
+        }
+        .selected-row {
+            background-color: #d1e7dd;
+        }
+        .action-buttons {
+    display: flex;
+    gap: 5px; /* Khoảng cách giữa các nút */
+}
+        
+    </style>
+</head>
+<body>
+    <div th:replace="MenuAdmin :: navbar"></div>
+
+    <div class="container">
+        <div class="text-center">
+            <h1>Danh Sách Tour</h1>
+        </div>
+
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="quan-ly-tour-tab" data-bs-toggle="tab" data-bs-target="#quan-ly-tour"
+                        type="button" role="tab" aria-controls="quan-ly-tour" aria-selected="true">Danh sách Tour</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="loai-tour-tab" data-bs-toggle="tab" data-bs-target="#loai-tour"
+                        type="button" role="tab" aria-controls="loai-tour" aria-selected="false">Loại Tour</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- Quản lý Tour Tab -->
+            <div class="tab-pane fade show active" id="quan-ly-tour" role="tabpanel" aria-labelledby="quan-ly-tour-tab">
+                <!-- Thanh Tìm Kiếm -->
+                <div class="filter-section mb-3">
+                    <form class="row g-2" id="searchForm" onsubmit="return false;">
+                        <div class="col-md-4">
+                            <input 
+                                type="text"
+                                id="searchInput"
+                                class="form-control border border-secondary"
+                                placeholder="Tìm kiếm theo ID, Tên, Mã Tour"
+                                aria-label="Search"
+                                aria-describedby="button-addon2"
+                                oninput="filterTours()"
+                            />
+                        </div>
+                        <div class="col-md-4">
+                            <select id="categorySelect" class="form-select" onchange="filterTours()">
+                                <option value="">Chọn Loại Tour</option>
+                                <!-- Dữ liệu sẽ được tải động từ API -->
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select id="statusSelect" class="form-select" onchange="filterTours()">
+                                <option value="">Chọn Trạng Thái</option>
+                                <option value="1">Kích hoạt</option>
+                                <option value="0">Ngưng hoạt động</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Nút Thêm Tour Mới -->
+                <div class="add-tour-btn text-end">
+				    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTourModal">Thêm Tour Mới</button>
+				</div>
+				<div class="modal fade" id="addTourModal" tabindex="-1" aria-labelledby="addTourModalLabel" aria-hidden="true">
+				    <div class="modal-dialog">
+				        <div class="modal-content">
+				            <div class="modal-header">
+				                <h5 class="modal-title" id="addTourModalLabel">Thêm Tour Mới</h5>
+				                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				            </div>
+				            <div class="modal-body">
+				                <form id="addTourForm">
+				                    <div class="mb-3">
+				                        <label for="tourName" class="form-label">Tên Tour</label>
+				                        <input type="text" class="form-control" id="tourName" required>
+				                    </div>
+				                    <div class="mb-3">
+				                        <label for="tourDetail" class="form-label">Chi Tiết Tour</label>
+				                        <textarea class="form-control" id="tourDetail" required></textarea>
+				                    </div>
+				                    <div class="mb-3">
+				                        <label for="tourCategory" class="form-label">Loại Tour</label>
+				                        <select class="form-select" id="tourCategory" required>
+				                            <!-- Dữ liệu sẽ được tải động -->
+				                        </select>
+				                    </div>
+				                    <div class="mb-3">
+				                        <label for="tourStatus" class="form-label">Trạng Thái</label>
+				                        <select class="form-select" id="tourStatus" required>
+				                            <option value="1">Kích hoạt</option>
+				                            <option value="0">Ngưng hoạt động</option>
+				                        </select>
+				                    </div>
+				                    <div class="mb-3">
+				                        <label for="tourCode" class="form-label">Mã Tour</label>
+				                        <input type="text" class="form-control" id="tourCode" required>
+				                    </div>
+				                    <div class="mb-3">
+				                        <label for="dayStay" class="form-label">Số Ngày Ở</label>
+				                        <input type="number" class="form-control" id="dayStay" required>
+				                    </div>
+				                    <button type="submit" class="btn btn-primary">Thêm Tour</button>
+				                    <button type="button" class="btn btn-secondary" id="clearTourForm">Clear</button>
+				                </form>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+
+                <!-- Bảng hiển thị danh sách Tour -->
+                <div class="d-flex justify-content-center px-1">
+				    <div class="table-container">
+				        <table class="table table-bordered table-striped text-center">
+				            <thead>
+				                <tr>
+				                    <th>ID Tour</th>
+				                    <th>Tên Tour</th>
+				                    <th>Chi Tiết Tour</th>
+				                    <th>Trạng Thái</th>
+				                    <th>Mã Tour</th>
+				                    <th>Thời Gian Lưu Trú</th>
+				                    <th>Loại Tour</th>
+				                    <th>Thao Tác</th>
+				                </tr>
+				            </thead>
+				            <tbody id="tourTableBody">
+				                <!-- Nội dung sẽ được tải động bởi Ajax -->
+				            </tbody>
+				        </table>
+				    </div>
+				</div>
+
+            </div>
+
+            <!-- Loại Tour Tab -->
+            <div class="tab-pane fade" id="loai-tour" role="tabpanel" aria-labelledby="loai-tour-tab">
+                <h3>Loại Tour</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID Loại Tour</th>
+                            <th>Tên Loại Tour</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoryTableBody">
+                        <!-- Nội dung sẽ được tải động bởi Ajax -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Thêm jQuery từ CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let tourList = [];
+    let categoryList = [];
+
+    function fetchData() {
+        return Promise.all([fetchCategories(), fetchTours()]);
+    }
+
+    function fetchCategories() {
+        return fetch('/admin/tours/categories')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(categories => {
+                categoryList = categories; // Lưu danh sách categories
+                populateCategorySelect(categories); // Gọi hàm để điền danh mục vào select
+            })
+            .catch(error => {
+                console.error('Error fetching categories:', error);
+                showErrorMessage();
+            });
+    }
+
+    function populateCategorySelect(categories) {
+        const categorySelect = document.getElementById("tourCategory");
+        categorySelect.innerHTML = '';
+        
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Chọn Loại Tour";
+        categorySelect.appendChild(defaultOption);
+
+        categories.forEach(category => {
+            const option = document.createElement("option");
+            option.value = category.categoryId;
+            option.textContent = category.categoryName;
+            categorySelect.appendChild(option);
+        });
+    }
+
+    function fetchTours() {
+        return fetch('/admin/tours/list-tour')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(tours => {
+                tourList = tours;
+                renderTours();
+            })
+            .catch(error => {
+                console.error('Error fetching tours:', error);
+                showErrorMessage();
+            });
+    }
+
+    function renderTours() {
+        const tourTableBody = document.getElementById("tourTableBody");
+        tourTableBody.innerHTML = '';
+
+        if (tourList.length === 0) {
+            tourTableBody.innerHTML = '<tr><td colspan="8">Không có tour nào được tìm thấy.</td></tr>';
+            return;
+        }
+
+        tourList.forEach(tour => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${tour.tourId}</td>
+                <td>${tour.tourName}</td>
+                <td>${tour.tourDetail ? tour.tourDetail : 'Không có chi tiết'}</td>
+                <td>${tour.status === 1 ? 'Kích hoạt' : 'Ngưng hoạt động'}</td>
+                <td>${tour.tourCode}</td>
+                <td>${tour.dayStay}</td>
+                <td>${tour.category ? tour.category.categoryName : 'N/A'}</td>
+                <td>
+                    <div class="text-center">
+                        <a href="/admin/tour-schedule/${tour.tourId}" class="btn btn-info btn-sm mb-2">Lịch Tour</a>
+                        <div class="d-flex justify-content-center">
+                            <a href="#" onclick="editTour(${tour.tourId})" class="btn btn-warning btn-sm mx-1">Sửa</a>
+                            <a href="#" onclick="deleteTour(${tour.tourId})" class="btn btn-danger btn-sm mx-1">Xóa</a>
+                        </div>
+                    </div>
+                </td>
+            `;
+            tourTableBody.appendChild(row);
+        });
+    }
+
+    document.querySelector('.add-tour-btn .btn-success').addEventListener('click', function () {
+        $('#addTourModal').modal('show');
+        document.getElementById("addTourForm").reset();
+    });
+
+    document.getElementById("addTourForm").onsubmit = function (e) {
+        e.preventDefault();
+
+        const tourName = document.getElementById("tourName").value;
+        const tourDetail = document.getElementById("tourDetail").value;
+        const tourCategoryId = parseInt(document.getElementById("tourCategory").value, 10); // Đảm bảo là số
+        const tourStatus = parseInt(document.getElementById("tourStatus").value, 10); // Đảm bảo là số
+        const tourCode = document.getElementById("tourCode").value;
+        const dayStay = document.getElementById("dayStay").value;
+
+        const tourData = {
+            tourName: tourName,
+            tourDetail: tourDetail,
+            category: tourCategoryId, // Chắc chắn là số
+            status: tourStatus, // Chắc chắn là số
+            tourCode: tourCode,
+            dayStay: dayStay
+        };
+
+        fetch('/admin/tours/add-tour', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tourData) // Đảm bảo rằng bạn gửi dữ liệu ở dạng JSON
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            alert(data.message); // Duyệt thông điệp phản hồi từ máy chủ
+            $('#addTourModal').modal('hide'); // Đóng modal
+            fetchTours(); // Tải lại danh sách tour
+        })
+        .catch(error => {
+            console.error('Error adding tour:', error);
+            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        });
+    };
+    document.getElementById("clearTourForm").addEventListener("click", function() {
+        document.getElementById("addTourForm").reset();
+    });
+
+    fetchData(); // Gọi hàm để tải dữ liệu ban đầu
+});
+</script>
+
+</body>
+</html>

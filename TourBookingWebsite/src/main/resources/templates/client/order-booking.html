@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<th:block th:replace="client/header :: header"></th:block>
+
+<body>
+<div id="wrapper" class="container">
+    <div th:replace="client/navbar :: navbar"></div>
+
+    <main id="main">
+        <div class="tour-booking tour-detail_12">
+            <h1 class="text-align-center">Đặt Tour</h1>
+            <div class="row">
+                <div class="col col-md-6 col-12">
+                    <h2>Thông tin liên lạc</h2>
+                    <div class="row">
+                        <div class="col col-md-6 col-12">
+                            <label for="" class="p-2 w-100">
+                                Họ Tên:
+                                <input type="text" name="name" placeholder="Nhập họ tên" required
+                                       class="border-1 rounded p-2 w-100">
+                            </label>
+                            <label for="" class="p-2 w-100">
+                                Email:
+                                <input type="email" name="email" placeholder="Nhập Email" required
+                                       class="border-1 rounded p-2 w-100">
+                            </label>
+                        </div>
+                        <div class="col col-md-6 col-12">
+                            <label for="" class="p-2 w-100">
+                                Điện thoại:
+                                <input type="tel" name="phone" placeholder="Nhập họ tên" required
+                                       class="border-1 rounded p-2 w-100">
+                            </label>
+                            <label for="" class="p-2 w-100">
+                                Địa chỉ:
+                                <input type="text" name="address" placeholder="Nhập Địa chỉ"
+                                       class="border-1 rounded p-2 w-100">
+                            </label>
+                        </div>
+                    </div>
+                    <h2>Hành khách</h2>
+                    <div class="row">
+                        <div class="col col-xl-6 col-md-12 col-12">
+                            <div class="border border-2 rounded-2 border-black p-2 m-2">
+                                <div class="row">
+                                    <div class="col-5 col">Người lớn<br>Từ 12</div>
+                                    <div class="col-7 col">
+                                        <div class="counter-container h-100 w-100">
+                                            <button id="minus-btn-adult"
+                                                    class="btn bg-body-secondary h-100 ">-
+                                            </button>
+                                            <span id="value-adult" class="p-3 border rounded">0</span>
+                                            <button id="plus-btn-adult"
+                                                    class="bg-body-secondary  btn h-100 ">+
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col col-xl-6 col-12">
+                            <div class="border border-2 rounded-2 border-black p-2 m-2">
+                                <div class="row">
+                                    <div class="col-5 col">Trẻ em<br>Dưới 12</div>
+                                    <div class="col-7 col">
+
+                                        <div class="counter-container h-100 w-100">
+                                            <button id="minus-btn-child"
+                                                    class="btn bg-body-secondary h-100 ">-
+                                            </button>
+                                            <span id="value-child" class="p-3 border rounded">0</span>
+                                            <button id="plus-btn-child"
+                                                    class="bg-body-secondary  btn h-100 ">+
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <h2>Thông tin hành khách</h2>
+                    <div class="items" id="info-customers">
+                        <div id="items-adult">
+
+                        </div>
+                        <div id="items-child">
+
+                        </div>
+
+                    </div>
+                    <div class="note">
+                                <textarea name="note" id="" placeholder="Nhập lời nhắn bằng tiếng anh hoặc tiếng việt"
+                                          class="p-2 w-100 mt-2"></textarea>
+                    </div>
+                    <h3>Điều khoản bắt buộc</h3>
+                    <label>
+                        <input type="checkbox" name="policy" selected required>
+                        Tôi đồng ý với Chính sách bảo vệ dữ liệu cá nhân và các điều khoản trên.
+                    </label>
+
+                </div>
+                <div class="col col-md-6 col-12">
+                    <div class="position-sticky ">
+                        <h4 class="mt-2">Tóm tắt chuyến đi</h4>
+                        <div class="summary p-4 bg-body-secondary rounded-2 ">
+
+                            <div class="row border-1 border-black border-bottom pb-3 ">
+                                <div class="col col-5">
+                                    <img src="./img/55.jpg" alt="">
+                                </div>
+                                <div class="col col-7">
+                                    <h5 class="tour-name">Thái Lan: Phuket - Đảo Krabi - Vịnh Phang Nga | Chương
+                                        trình mới</h5>
+                                    <div class="tour-code">Mã tour: NNSGN1372-009-231024VJ-V-6</div>
+                                </div>
+                            </div>
+                            <div class="price-list mt-4 ">
+                                <div class="header-list d-flex justify-content-between">
+                                    <h5 class="title">Tổng Khách hàng</h5>
+                                    <h5 class="price text-danger" id="total-customer"><b>37.970.000 ₫</b></h5>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="title">Người lớn</p>
+                                    <span class="price text-danger ">1 x <b>13.990.000 ₫</b></span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="title">Trẻ em</p>
+                                    <span class="price text-danger ">2 x <b>11.990.000 ₫</b></span>
+                                </div>
+
+
+                                <div class="d-flex justify-content-between border-top border-2 pt-2">
+                                    <p class="title">Mã giảm giá </p>
+                                    <input type="text" name="btn-add-voucher" class="btn-add-voucher w-50 rounded-2"
+                                           value="DJBRYD375">
+                                    <button type="button" class="btn btn-outline-secondary">
+                                        Áp dụng
+                                    </button>
+
+                                </div>
+                                <div class="box-mess border-2 border rounded-2 border-success p-2 mt-2">
+                                    Áp dụng mã giảm giá thành công
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <p class="title">GIẢM GIÁ VOUCHER</p>
+                                    <span class="price text-danger">- <b>2.000.000 ₫</b></span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <div class="left">Tổng tiền</div>
+                                    <h3 class="text-danger">35.970.000 ₫</h3>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-danger">
+                                        Xác nhận đặt hàng
+                                    </button>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+    <script src="./assets/js/scriptOderBooking.js"></script>
+
+    <div th:replace="client/footer::footer"></div>
+
+</div>
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<th:block th:replace="client/header :: header"></th:block>
+
+<body>
+<div id="wrapper" class="container">
+    <div th:replace="client/navbar :: navbar"></div>
+    <script th:inline="javascript">
+        const tourTimes = /*[[${locations}]]*/ {};
+        const tour = /*[[${tour}]]*/ {};
+        console.log(tourTimes);
+    </script>
+
+    <main id="main">
+        <div class="tour-detail tour-detail_12">
+            <div class="row h-100">
+                <div class="col col-lg-9 col-12">
+                    <h1 class="title" th:text="${tour.tourName}"></h1>
+                    <div id="gallery" class="row flex-row-reverse">
+                        <div class="col col-12 col-md-10">
+                            <img id="mainImage" class="img-avatar" th:src="${listImage.isEmpty()?'https://media.travel.com.vn/Tour/tfd_230914105438_245930_Shanghai%20skyline.jpg':listImage[0]}" alt="">
+                        </div>
+                        <div class="col col-12 col-md-2 d-flex flex-md-wrap flex-nowrap img-tours scrollbar h-100">
+                            <img th:each="item : ${listImage}" th:src="@{${item?item:'https://media.travel.com.vn/Tour/tfd_230914105438_245930_Shanghai%20skyline.jpg'}}"
+                                 class="img-tour mt-2 object-fit-contain mb-1" alt="">
+                        </div>
+
+                    </div>
+
+                    <div id="tour-schedule" class="tour-schedule">
+                        <div class="swiper mySwiper">
+                            <div class="swiper-wrapper">
+
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                        </div>
+
+                    </div>
+
+                    <div id="tour-info-content"
+                         class="w-100 d-flex justify-content-center flex-column align-items-center">
+
+                    </div>
+
+                    <div class="tour-overview">
+
+                        <!--                        <h3 class="title">Thông tin thêm về chuyến đi</h3>-->
+                        <!--                        <div class="tour-overview_content d-flex row w-100">-->
+                        <!--                            <div class="tour-oveview_content_sub item-sm col col-md-4 col-6">-->
+                        <!--                                <div class="tour-title_sub-overview">Điểm tham quan-->
+                        <!--                                </div>-->
+                        <!--                                <p title="Nhật Bản, Osaka, Kyoto, Nagoya, Núi Phú Sĩ, Tokyo"-->
+                        <!--                                   class="line-clamp line-clamp-2">Nhật Bản, Osaka, Kyoto, Nagoya, Núi Phú Sĩ,-->
+                        <!--                                    Tokyo</p>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="tour-oveview_content_sub item-sm col col-md-4 col-6">-->
+                        <!--                                <div class="tour-title_sub-overview">Ẩm thực</div>-->
+                        <!--                                <p title="Buffet sáng, Theo thực đơn" class="line-clamp line-clamp-2">Buffet-->
+                        <!--                                    sáng, Theo thực đơn</p>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="tour-oveview_content_sub item-sm col col-md-4 col-6">-->
+                        <!--                                <div class="tour-title_sub-overview">Đối tượng-->
+                        <!--                                    thích hợp-->
+                        <!--                                </div>-->
+                        <!--                                <p title="Cặp đôi, Gia đình nhiều thế hệ, Thanh niên"-->
+                        <!--                                   class="line-clamp line-clamp-2">Cặp đôi, Gia đình nhiều thế hệ, Thanh niên-->
+                        <!--                                </p>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="tour-oveview_content_sub item-sm col col-md-4 col-6">-->
+                        <!--                                <div class="tour-title_sub-overview">Thời gian lý-->
+                        <!--                                    tưởng-->
+                        <!--                                </div>-->
+                        <!--                                <p title="Quanh năm" class="line-clamp line-clamp-2">Quanh năm</p>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="tour-oveview_content_sub item-sm col col-md-4 col-6">-->
+                        <!--                                <div class="tour-title_sub-overview">Phương tiện-->
+                        <!--                                </div>-->
+                        <!--                                <p title="Máy bay, Xe du lịch" class="line-clamp line-clamp-2">Máy bay, Xe du-->
+                        <!--                                    lịch</p>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="tour-oveview_content_sub item-sm col col-md-4 col-6">-->
+                        <!--                                <div class="tour-title_sub-overview">Khuyến mãi-->
+                        <!--                                </div>-->
+                        <!--                                <p title="Đã bao gồm trong giá tour" class="line-clamp line-clamp-2">Đã bao gồm-->
+                        <!--                                    trong giá tour</p>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                    </div>
+
+                    <h2>Chi tiết tour</h2>
+                    <div th:text="${tour.tourDetail}" class="tour-description">
+                        <!--                        <p><strong>Đêm trước ngày 1: </strong>Trưởng đoàn Vietravel đón Quý khách tại Ga đi quốc tế-->
+                        <!--                            sân bay Tân Sơn Nhất, đón chuyến bay đến Tokyo, <strong>Quý khách nghỉ đêm trên máy-->
+                        <!--                                bay.</strong><br>-->
+                        <!--                            <br>-->
+                        <!--                            Đến sân bay <strong>Narita - Tokyo</strong>, Trưởng đoàn Vietravel hỗ trợ làm thủ tục-->
+                        <!--                            nhập cảnh. Sau đó, Quý khách tham quan các địa điểm tại Tokyo:-->
+                        <!--                        </p>-->
+
+                        <!--                        <p><strong>- Vịnh Odaiba</strong> - hòn đảo nhân tạo rộng lớn, phát triển, sầm uất và là-->
+                        <!--                            niềm tự hào của người dân Tokyo, đến vịnh Odaiba ngắm nhìn cầu Cầu Vòng, tượng Nữ thần-->
+                        <!--                            tự do và những tòa nhà rực rỡ sắc màu. Quý khách dạo <strong>Công viên ven biển-->
+                        <!--                                Odaiba</strong> ngắm vịnh Tokyo, thư giãn tại những bãi cỏ xanh tươi và khám phá khu-->
+                        <!--                            tổ hợp giải trí, khu mua sắm sầm uất tại đây</p>-->
+
+                        <!--                        <p><strong>- Chùa Asakusa Kannon (hay còn gọi là chùa Sensoji)&nbsp;</strong>- ngôi đền cổ-->
+                        <!--                            kính ở Trung Tâm Tokyo. Đền có hai cổng chính là cổng Sấm và cổng Hozomon được nối với-->
+                        <!--                            nhau bởi con đường mua sắm Nakamise. Từ đền Asakusa, Quý khách Chụp ảnh cùng-->
+                        <!--                            <strong>Tháp Tokyo Skytree </strong>(tham quan bên ngoài từ xa) – biểu tượng đại diện-->
+                        <!--                            của một Nhật Bản "mới mẻ và hiện đại, với chiều cao 634 mét, tháp cao gấp 2 lần tháp-->
+                        <!--                            Tokyo được trang bị hệ thống ánh sáng với màu sắc thay đổi tùy theo các sự kiện đặc biệt-->
+                        <!--                            ở Nhật hoặc tùy theo mùa, lễ hội trong năm.&nbsp;<br>-->
+                        <!--                            <br>-->
+                        <!--                            - Thỏa thích tham quan và mua sắm tại <strong>thiên đường mua sắm Ginza</strong> sầm uất-->
+                        <!--                            với các cửa hàng thời trang đến từ các thương hiệu nổi tiếng thế giới, nơi đây được xem-->
+                        <!--                            là một trong những khu mua sắm sang trọng đẳng cấp thế giới.<br>-->
+                        <!--                            <br>-->
+                        <!--                            Đoàn dùng bữa tối tại nhà hàng địa phương và nhận phòng, nghỉ ngơi tại khách sạn ở-->
+                        <!--                            Tokyo.-->
+                        <!--                        </p>-->
+                        <!--                        <p>.....</p>-->
+                        <!--                        <p>.....</p>-->
+                        <!--                        <p>.....</p>-->
+
+
+                    </div>
+
+                    <div class="tour-note"></div>
+
+                </div>
+                <div class="col col-12 col-lg-3 ">
+                    <div class="form_booktour position-sticky top-0 pt-3">
+                        <div class="price">Giá chỉ: <span class="text-danger fw-bold">1200000</span>/khách</div>
+                        <div class="code-tour">Mã chương trình: <span th:text="${tour.tourCode}">NNSGN6127</span></div>
+                        <a href="#tour-schedule" class="btn-primary btn w-100">Chọn ngày khởi hành</a>
+                        <div class="row mt-2">
+                            <div class="col col-7">
+                                <a href="#tour-form_contact" class="btn-primary btn w-100">Yêu cầu tư vấn</a>
+                            </div>
+                            <div class="col col-5">
+                                <a href="tel:0985543681" class="btn w-100 btn-outline-secondary">Gọi ngay</a>
+                            </div>
+                        </div>
+                        <div id="tour-time-detail"></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script src="/assets/js/scriptTourDetail.js"></script>
+    <div th:replace="client/footer::footer"></div>
+
+</div>
+
+</body>
+
+</html>
+
