@@ -35,5 +35,61 @@ public class Transport {
     @Column(name = "status", nullable = false)
     private int status;
 
+	public int getTransportId() {
+		return transportId;
+	}
+
+	public void setTransportId(int transportId) {
+		this.transportId = transportId;
+	}
+
+	public String getTransportName() {
+		return transportName;
+	}
+
+	public void setTransportName(String transportName) {
+		this.transportName = transportName;
+	}
+
+	public String getTransportDetail() {
+		return transportDetail;
+	}
+
+	public void setTransportDetail(String transportDetail) {
+		this.transportDetail = transportDetail;
+	}
+
+	public int getDepartureTime() {
+		return departureTime;
+	}
+
+	public void setDepartureTime(int departureTime) {
+		this.departureTime = departureTime;
+	}
+
+	public String getDepartureLocation() {
+		return departureLocation;
+	}
+
+	public void setDepartureLocation(String departureLocation) {
+		this.departureLocation = departureLocation;
+	}
+
+	public String getDestinationLocation() {
+		return destinationLocation;
+	}
+
+	public void setDestinationLocation(String destinationLocation) {
+		this.destinationLocation = destinationLocation;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
     // Getters and Setters
 }

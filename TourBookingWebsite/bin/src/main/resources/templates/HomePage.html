@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TourBooking - Homepage</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">TourBooking</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tours">Tours</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="/login">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center bg-light p-5" style="background-image: url('tour-bg.jpg'); background-size: cover;">
+        <div class="container">
+            <h1 class="display-4 text-white">Discover Your Next Adventure</h1>
+            <p class="lead text-white">Explore the best travel destinations and book your dream tour with us.</p>
+            <a href="/tours" class="btn btn-primary btn-lg">Explore Tours</a>
+        </div>
+    </section>
+
+    <!-- Featured Tours -->
+    <section class="featured-tours py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Featured Tours</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="tour1.jpg" class="card-img-top" alt="Tour 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Tour A</h5>
+                            <p class="card-text">Enjoy the beautiful landscapes.</p>
+                            <p class="text-primary"><strong>500,000 VND</strong></p>
+                            <a href="/tour-details/1" class="btn btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="tour2.jpg" class="card-img-top" alt="Tour 2">
+                        <div class="card-body">
+                            <h5 class="card-title">Tour B</h5>
+                            <p class="card-text">Relax and enjoy the trip.</p>
+                            <p class="text-primary"><strong>300,000 VND</strong></p>
+                            <a href="/tour-details/2" class="btn btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="tour3.jpg" class="card-img-top" alt="Tour 3">
+                        <div class="card-body">
+                            <h5 class="card-title">Tour C</h5>
+                            <p class="card-text">Experience adventure and thrill.</p>
+                            <p class="text-primary"><strong>700,000 VND</strong></p>
+                            <a href="/tour-details/3" class="btn btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">What Our Customers Say</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <blockquote class="blockquote">
+                        <p class="mb-0">"Amazing experience, highly recommend!"</p>
+                        <footer class="blockquote-footer">John Doe</footer>
+                    </blockquote>
+                </div>
+                <div class="col-md-4">
+                    <blockquote class="blockquote">
+                        <p class="mb-0">"Best vacation ever!"</p>
+                        <footer class="blockquote-footer">Jane Smith</footer>
+                    </blockquote>
+                </div>
+                <div class="col-md-4">
+                    <blockquote class="blockquote">
+                        <p class="mb-0">"Will definitely book again!"</p>
+                        <footer class="blockquote-footer">Emily Johnson</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscription Form -->
+    <section class="subscription text-center py-5">
+        <div class="container">
+            <h2>Stay Updated with Our Latest Offers</h2>
+            <form action="/subscribe" method="POST" class="form-inline justify-content-center">
+                <input type="email" class="form-control mr-2" placeholder="Enter your email" required>
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>TourBooking</h5>
+                    <p>Your trusted partner for amazing travel experiences.</p>
+                </div>
+                <div class="col-md-6 text-right">
+                    <p>Follow us on</p>
+                    <a href="#" class="text-white">Facebook</a> |
+                    <a href="#" class="text-white">Instagram</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS, jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

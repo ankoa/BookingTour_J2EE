@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh Sách Phương Tiện</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link type="text/css" href="/css/navBar.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #343a40;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .filter-section input {
+            width: 100%;
+        }
+
+        .table {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        td {
+            background-color: #ffffff;
+            color: #343a40;
+        }
+        .add-transport-btn {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="MenuAdmin :: navbar"></div>
+    
+    <div class="container">
+        <div class="text-center">
+            <h1>Danh Sách Phương Tiện</h1>
+        </div>
+
+        <div class="filter-section mb-3">
+            <form class="row g-2" id="searchForm" onsubmit="return false;">
+                <div class="col-md-8">
+                    <input class="form-control" type="text" id="searchInput" placeholder="Nhập từ khóa..." aria-label="Search">
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-primary" onclick="searchTransports()">Tìm Kiếm</button>
+                </div>
+            </form>
+        </div>
+	`	<div class="add-transport-btn text-end">
+                    <a th:href="@{/admin/transport-add}" class="btn btn-success">Thêm Phương Tiện Mới</a>
+                </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead>
+                    <tr>
+                        <th>ID Phương Tiện</th>
+                        <th>Tên Phương Tiện</th>
+                        <th>Chi Tiết</th>
+                        <th>Thời Gian Khởi Hành</th>
+                        <th>Điểm Khởi Hành</th>
+                        <th>Điểm Đến</th>
+                        <th>Trạng Thái</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody id="table-content">
+                    <tr th:each="transport : ${transports}">
+                        <td th:text="${transport.transportId}"></td>
+                        <td th:text="${transport.transportName}"></td>
+                        <td th:text="${transport.transportDetail}"></td>
+                        <td th:text="${transport.departureTime}"></td>
+                        <td th:text="${transport.departureLocation}"></td>
+                        <td th:text="${transport.destinationLocation}"></td>
+                        <td><span th:if="${transport.status == 1}">Hoạt động</span> <span th:if="${transport.status == 0}">Ngưng hoạt động</span></td>
+                        <td class="d-flex justify-content-evenly">
+                            <button type="button" class="btn btn-warning btn-sm" th:attr="data-id=${transport.transportId}" onclick="editTransport(this)">Sửa</button>
+                            <button type="button" class="btn btn-danger btn-sm" th:attr="data-id=${transport.transportId}" onclick="deleteTransport(this)">Xóa</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Tìm kiếm phương tiện
+        window.searchTransports = function() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#table-content tr');
+
+            rows.forEach(row => {
+                if (searchValue === "") {
+                    row.style.display = '';
+                    return;
+                }
+                const transportId = row.querySelector('td:nth-child(1)').innerText.toLowerCase();
+                const transportName = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
+                const departureLocation = row.querySelector('td:nth-child(5)').innerText.toLowerCase();
+                const destinationLocation = row.querySelector('td:nth-child(6)').innerText.toLowerCase();
+
+                const isExactMatch = transportId === searchValue || 
+                                     transportName.includes(searchValue) || 
+                                     departureLocation.includes(searchValue) || 
+                                     destinationLocation.includes(searchValue);
+
+                row.style.display = isExactMatch ? '' : 'none';
+            });
+        };
+
+        function editTransport(button) {
+            const transportId = button.getAttribute('data-id');
+            window.location.href = `/admin/transport-edit/${transportId}`;
+        }
+
+        function deleteTransport(button) {
+            const transportId = button.getAttribute('data-id');
+            if (confirm('Bạn có chắc chắn muốn xóa phương tiện này?')) {
+                // Gửi yêu cầu xóa
+                $.ajax({
+                    url: `/admin/transport-delete/${transportId}`,
+                    type: 'POST',
+                    success: function() {
+                        button.closest('tr').remove();
+                        alert('Xóa phương tiện thành công!');
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Lỗi: ' + error);
+                    }
+                });
+            }
+        }
+    </script>
+    
+</body>
+</html>

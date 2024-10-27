@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh sửa Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;  
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 500px; 
+            margin: auto; 
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .btn-custom {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+    
+        <h2 class="mb-4">Chỉnh sửa Account</h2>
+        <form id="accountForm" th:action="@{/admin/account-edit/{id}(id=${account.accountId})}" th:object="${account}" method="post" onsubmit="return showSuccessAlert()">
+            <div class="mb-3">
+                <label for="accountName" class="form-label">Tên Account:</label>
+                <input type="text" class="form-control" id="accountName" name="accountName" th:value="${account.accountName}" required>
+            </div>
+            <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Số Điện Thoại:</label>
+                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" th:value="${account.phoneNumber}" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Mật Khẩu:</label>
+                <input type="text" class="form-control" id="password" name="password" th:value="${account.password}" required> 
+            </div>
+            <div class="mb-3">
+                <label for="status" class="form-label">Trạng Thái:</label>
+                <select id="status" name="status" class="form-select" required>
+                    <option value="1" th:selected="${account.status == 1}">Hoạt động</option>
+                    <option value="0" th:selected="${account.status == 0}">Ngưng hoạt động</option>
+                </select>
+            </div>
+            <div class="button-group">
+                <a th:href="@{/admin/accounts}" class="btn btn-custom btn-secondary">Trở Về</a>
+                <button type="submit" class="btn btn-custom btn-primary">Lưu Thay Đổi</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showSuccessAlert() {
+            alert("Chỉnh sửa thành công!");
+
+            setTimeout(() => {
+                window.location.href = '/admin/accounts';
+            }, 100); 
+            return true; 
+        }
+    </script>
+</body>
+</html>

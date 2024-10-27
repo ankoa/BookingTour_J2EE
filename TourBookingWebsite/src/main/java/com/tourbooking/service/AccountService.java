@@ -38,11 +38,10 @@ public class AccountService {
         Account account = accountRepository.findById(accountId).orElse(null);
         if (account != null) {
             account.setAccountName(accountDetails.getAccountName());
-            account.setEmail(accountDetails.getEmail());
             account.setPhoneNumber(accountDetails.getPhoneNumber());
-            account.setRole(accountDetails.getRole());
+            account.setPassword(accountDetails.getPassword());
             account.setStatus(accountDetails.getStatus());
-            account.setTime(accountDetails.getTime());
+            //account.setTime(accountDetails.getTime());
             return accountRepository.save(account);
         }
         return null;
@@ -51,5 +50,12 @@ public class AccountService {
     // Xóa tài khoản
     public void deleteAccount(String accountId) {
         accountRepository.deleteById(accountId);
+//        Account account = accountService.findById(id);
+//        if (account != null) {
+//            account.setStatus(0); // Đổi trạng thái sang inactive
+//            accountService.updateAccount(account);
+//            return "redirect:/admin/accounts"; 
+//        }
     }
+
 }
