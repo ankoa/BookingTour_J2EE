@@ -1,6 +1,8 @@
 package com.tourbooking.service;
+import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.model.Tour;
 import com.tourbooking.model.TourImage;
+import com.tourbooking.model.TourTime;
 import com.tourbooking.repository.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,10 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +18,9 @@ public class TourService {
 
     @Autowired
     private TourRepository tourRepository;
+
+    @Autowired
+    private TourTimeService tourTimeService;
 
     // Lấy tất cả các tour
     public List<Tour> getAllTours() {
@@ -85,5 +87,25 @@ public class TourService {
                         .collect(Collectors.toList())
                 : new ArrayList<>();
     }
+    public List<TourTimeResponse> getTourTimeResponseById(String tourId) {
+        // Lấy tour times từ repository
+        Tour tour = tourRepository.findById(Integer.parseInt(tourId)).orElse(null);
+
+        //Xuat list tourTimes roi map sang tourTimeResponse
+        Set<TourTime> tourTimes=tour.getTourTimes();
+
+        List<TourTimeResponse> monthMap = new ArrayList<>();
+        for (TourTime tourTime : tourTimes) {
+
+            int reservedCount=tourTimeService.getReservedCount(tourTime);
+
+            TourTimeResponse tourTimeResponse = new TourTimeResponse(tourTime,(tourTime.getQuantity()-reservedCount));
+            monthMap.add(tourTimeResponse);
+        }
+        Collections.sort(monthMap, (t1, t2) -> t1.getDepartureTime().compareTo(t2.getDepartureTime()));
+
+        return monthMap;
+    }
+
 
 }

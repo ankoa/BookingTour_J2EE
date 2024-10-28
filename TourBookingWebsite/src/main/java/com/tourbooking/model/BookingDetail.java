@@ -19,6 +19,7 @@ public class BookingDetail {
 
     @Id
     @Column(name = "booking_detail_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookingDetailId;
 
     @ManyToOne
@@ -34,7 +35,7 @@ public class BookingDetail {
     @Column(name = "price", nullable = false)
     private int price;
 
-    @Column(name = "detail", nullable = false)
+    @Column(name = "detail")
     private String detail;
 
     @Column(name = "status", nullable = false)

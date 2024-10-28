@@ -23,7 +23,7 @@ public class Booking {
     private int bookingId;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "customer_rel_id")
+    @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "customer_id")
     @JsonBackReference
     private Customer customer;
 

@@ -32,7 +32,7 @@ public class Customer {
     private int sex;
 
     @Column(name = "phone_number")
-    private int phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "address")
     private String address;
@@ -60,5 +60,14 @@ public class Customer {
     // Một khách hàng có thể liên kết tới nhiều khách hàng
     @OneToMany(mappedBy = "relatedCustomer", cascade = CascadeType.ALL)
     @JsonManagedReference
+
     private Set<Customer> customers;
+
+    @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    Set<Booking> bookings;
+
+    @Column(name="customer_type")
+    private int customerType;
+
 }
