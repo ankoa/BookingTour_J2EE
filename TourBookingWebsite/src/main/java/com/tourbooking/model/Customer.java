@@ -51,14 +51,14 @@ public class Customer {
     @JsonManagedReference
     private Account account;
 
-
+    // Quan hệ nhiều khách hàng có thể liên kết tới một khách hàng liên quan
     @ManyToOne
-    @JoinColumn(name ="customer_rel_id" , nullable = true, referencedColumnName = "customer_id")
+    @JoinColumn(name ="customer_rel_id", referencedColumnName = "customer_id")
     @JsonBackReference
-    Customer customer;
+    private Customer relatedCustomer;
 
-    //    Người liên quan
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    // Một khách hàng có thể liên kết tới nhiều khách hàng
+    @OneToMany(mappedBy = "relatedCustomer", cascade = CascadeType.ALL)
     @JsonManagedReference
-    Set<Customer> customers;
+    private Set<Customer> customers;
 }

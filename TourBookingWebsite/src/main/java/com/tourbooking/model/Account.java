@@ -1,8 +1,8 @@
 package com.tourbooking.model;
 
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,13 +32,14 @@ public class Account {
     @Column(name = "email")
     private String email;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSSSSS") // Thêm định dạng ở đây
     @Column(name = "time")
     private LocalDateTime time;
 
     @Column(name = "status")
     private int status;
 
-    @OneToOne(mappedBy = "account")
-    @JsonBackReference
+    @OneToOne
+    @JoinColumn(name = "customerID", referencedColumnName = "customer_id")
     private Customer customer;
 }
