@@ -129,7 +129,7 @@
 		            <div class="input-group">
 		                <input class="form-control" type="text" id="searchInput" placeholder="Tìm kiếm theo tên tài khoản..." aria-label="Search" oninput="filterAccounts()">
 		                <button type="button" class="btn btn-primary" onclick="filterAccounts()">Tìm kiếm</button>
-		                <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#addModal">Thêm</button> <!-- Nút Thêm -->
+						<button type="button" class="btn btn-success ms-2" onclick="showAddModal()">Thêm</button> <!-- Nút Thêm -->
 		            </div>
 		        </div>
 		    </form>
@@ -150,8 +150,11 @@
                     <tr>
                         <th>Mã Tài Khoản</th>
                         <th>Tên Tài Khoản</th>
+                        <th>Mật khẩu</th>
                         <th>Email</th>
+                        <th>Mã khách hàng</th>
                         <th>Trạng Thái</th>
+                        <th>Time</th>
                         <th>Hành Động</th>
                     </tr>
                 </thead>
@@ -159,11 +162,14 @@
                     <tr th:each="account, index : ${accounts}">
                         <td th:text="${account.accountId}">1</td>
                         <td th:text="${account.accountName}">Tên Tài Khoản</td>
+                        <td th:text="${account.password}">password</td>
                         <td th:text="${account.email}">Email</td>
+                        <td th:text="${account.customer.customerId}">1</td>
                         <td>
                             <span th:if="${account.status == 1}">Hoạt động</span>
                             <span th:if="${account.status == 0}">Ngưng hoạt động</span>
                         </td>
+                        <td th:text="${account.time}">1</td>
                         <td class="d-flex justify-content-evenly">
                             <button type="button" class="btn btn-warning btn-sm" th:attr="data-id=${account.accountId}" onclick="editAccount(this)">Chỉnh sửa</button>
                             <button type="button" class="btn btn-danger btn-sm" 
@@ -176,42 +182,58 @@
         </div>
     </div>
 
-    <!-- Modal for Edit Account -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" id="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chỉnh Sửa Tài Khoản</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editForm" onsubmit="return false;">
-                        <div class="mb-3">
-                            <label for="accountName" class="form-label">Tên Tài Khoản</label>
-                            <input type="text" class="form-control" id="accountName" required>
+<!-- Modal for Edit Account -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh Sửa Tài Khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" onsubmit="return false;">
+                    <div class="mb-3">
+                        <label for="accountName" class="form-label">Tên Tài Khoản</label>
+                        <input type="text" class="form-control" id="accountName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input type="text" class="form-control" id="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Trạng Thái</label>
+                        <select class="form-select" id="status" required>
+                            <option value="1">Hoạt động</option>
+                            <option value="0">Ngưng hoạt động</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col">
+                            <label for="customerID" class="form-label">Mã Khách Hàng</label>
+                            <input type="number" class="form-control" id="customerID" oninput="fetchCustomerName(this.value, true)" readonly>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" required>
+                        <div class="col">
+                            <label for="customerName" class="form-label">Tên Khách Hàng</label>
+                            <input type="text" class="form-control" id="customerName" readonly>
                         </div>
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Trạng Thái</label>
-                            <select class="form-select" id="status" required>
-                                <option value="1">Hoạt động</option>
-                                <option value="0">Ngưng hoạt động</option>
-                            </select>
-                        </div>
-                        <input type="hidden" id="accountId">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Lưu thay đổi</button>
-                </div>
+                    </div>
+                    <input type="hidden" id="accountId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="saveChanges()">Lưu thay đổi</button>
             </div>
         </div>
     </div>
-	<!-- Modal for Add Account -->
+</div>
+
+
+<!-- Modal for Add Account -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -230,21 +252,38 @@
                         <input type="email" class="form-control" id="newEmail" required>
                     </div>
                     <div class="mb-3">
+                        <label for="newPassword" class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="newPassword" required> <!-- Thêm trường mật khẩu -->
+                    </div>
+                    <div class="mb-3">
                         <label for="newStatus" class="form-label">Trạng Thái</label>
                         <select class="form-select" id="newStatus" required>
                             <option value="1">Hoạt động</option>
                             <option value="0">Ngưng hoạt động</option>
                         </select>
                     </div>
+                    <div class="mb-3 row">
+                        <div class="col">
+                            <label for="newCustomerID" class="form-label">Mã Khách Hàng</label>
+                            <input type="number" class="form-control" id="newCustomerID" oninput="fetchCustomerName(this.value)" required>
+                        </div>
+                        <div class="col">
+                            <label for="newCustomerName" class="form-label">Tên Khách Hàng</label>
+                            <input type="text" class="form-control" id="newCustomerName" readonly>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" onclick="addAccount()">Thêm tài khoản</button> <!-- Nút Lưu -->
+                <button type="button" class="btn btn-primary" onclick="addAccount()">Thêm tài khoản</button>
             </div>
         </div>
     </div>
 </div>
+
+
+
 	
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Thêm jQuery từ CDN -->
@@ -278,10 +317,13 @@
                     row.innerHTML = `
                         <td>${account.accountId}</td>
                         <td>${account.accountName}</td>
+                        <td>${account.password}</td>
                         <td>${account.email}</td>
+                        <td>${account.customer.customerId}</td>                
                         <td>
                             <span>${account.status == 1 ? 'Hoạt động' : 'Ngưng hoạt động'}</span>
                         </td>
+                        <td>${account.time}</td>
                         <td class="d-flex justify-content-evenly">
                             <button type="button" class="btn btn-warning btn-sm" data-id="${account.accountId}" onclick="editAccount(this)">Chỉnh sửa</button>
                             <button type="button" class="btn btn-danger btn-sm" data-id="${account.accountId}" ${account.status == 0 ? 'disabled' : ''} onclick="deleteAccount(this)">Xóa</button>
@@ -295,17 +337,27 @@
                 console.error('Lỗi khi tải dữ liệu:', error);
             });
     }
-
+/*
     function filterAccounts() {
         const searchInput = document.getElementById('searchInput').value.toLowerCase();
         const statusFilter = document.getElementById('statusFilter').value;
         const tableRows = document.querySelectorAll('#table-content tr');
 
         tableRows.forEach(row => {
-            const accountName = row.cells[1].innerText.toLowerCase();
-            const status = row.cells[3].innerText.toLowerCase();
-            const matchesSearch = accountName.includes(searchInput);
-            const matchesStatus = statusFilter === '' || (statusFilter === '1' && status === 'hoạt động') || (statusFilter === '0' && status === 'ngưng hoạt động');
+            const accountID = row.cells[0].innerText.toLowerCase();  // Cột Mã Tài Khoản
+            const accountName = row.cells[1].innerText.toLowerCase(); // Cột Tên Tài Khoản
+            const customerID = row.cells[4].innerText.toLowerCase();  // Cột Mã Khách Hàng
+            const status = row.cells[5].innerText.toLowerCase().trim(); // Cột Trạng Thái
+
+            // Kiểm tra nếu searchInput có trong accountID, accountName hoặc customerID
+            const matchesSearch = 
+                accountID.includes(searchInput) || 
+                accountName.includes(searchInput) || 
+                customerID.includes(searchInput);
+
+            const matchesStatus = statusFilter === '' ||
+                (statusFilter === '1' && status === 'Hoạt động') ||
+                (statusFilter === '0' && status === 'Ngưng hoạt động');
 
             if (matchesSearch && matchesStatus) {
                 row.style.display = '';
@@ -314,29 +366,128 @@
             }
         });
     }
+*/
+function filterAccounts() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const tableRows = document.querySelectorAll('#table-content tr');
+
+    tableRows.forEach(row => {
+        const accountID = row.cells[0].innerText.toLowerCase();  // Cột Mã Tài Khoản
+        const accountName = row.cells[1].innerText.toLowerCase(); // Cột Tên Tài Khoản
+        const customerID = row.cells[4].innerText.toLowerCase();  // Cột Mã Khách Hàng
+        const status = row.cells[5].innerText.toLowerCase().trim(); // Cột Trạng Thái
+
+        // Kiểm tra nếu searchInput có trong accountID, accountName hoặc customerID
+        const matchesSearch = 
+            accountID.includes(searchInput) || 
+            accountName.includes(searchInput) || 
+            customerID.includes(searchInput);
+
+        const matchesStatus = 
+            statusFilter === '' || // Nếu trạng thái là Tất cả
+            (statusFilter === '1' && status === 'hoạt động') ||
+            (statusFilter === '0' && status === 'ngưng hoạt động');
+
+        // Nếu ô tìm kiếm không trống và không khớp với trạng thái
+        if (searchInput && matchesSearch) {
+            row.style.display = matchesStatus ? '' : 'none'; // Hiển thị hoặc ẩn dựa trên trạng thái
+        } else if (!searchInput) {
+            // Nếu ô tìm kiếm trống, chỉ cần kiểm tra trạng thái
+            row.style.display = matchesStatus ? '' : 'none';
+        } else {
+            row.style.display = 'none'; // Ẩn hàng nếu không khớp với tìm kiếm
+        }
+    });
+}
 
 
+    function fetchCustomerName(customerID, isEdit = false) {
+        const customerNameInput = isEdit ? document.getElementById('customerName') : document.getElementById('newCustomerName'); // Ô nhập tên khách hàng
+
+        if (customerID) {
+            // Sử dụng endpoint của CustomerControllerAdmin để lấy thông tin khách hàng
+            fetch(`/admin/customers/${customerID}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else if (response.status === 404) {
+                        // Nếu không tìm thấy khách hàng, hiển thị thông báo
+                        customerNameInput.value = 'Khách hàng không tồn tại';
+                        throw new Error('Khách hàng không tồn tại');
+                    } else {
+                        throw new Error('Lỗi mạng: ' + response.status);
+                    }
+                })
+                .then(data => {
+                    // Kiểm tra xem dữ liệu có tồn tại không và có chứa thuộc tính customerName không
+                    if (data && data.customerName) {
+                        // Cập nhật tên khách hàng vào ô tên
+                        customerNameInput.value = data.customerName;
+                    } else {
+                        // Nếu không có tên, hiển thị thông báo không tồn tại vào ô nhập
+                        customerNameInput.value = 'Khách hàng không tồn tại';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching customer:', error);
+                    // Nếu có lỗi, cũng có thể hiển thị thông báo không tồn tại vào ô nhập
+                    customerNameInput.value = 'Lỗi trong việc lấy thông tin khách hàng';
+                });
+        } else {
+            // Nếu không có mã khách hàng, xóa tên
+            customerNameInput.value = '';
+        }
+    }
+
+
+
+
+
+    function showAddModal() {
+        // Làm sạch các trường trong form
+        document.getElementById('addForm').reset(); // Giả sử form của bạn có id là 'accountForm'
+        
+        // Hiện modal
+        const addModal = new bootstrap.Modal(document.getElementById('addModal'));
+        addModal.show();
+    }
     function addAccount() {
         const accountName = document.getElementById('newAccountName').value;
         const email = document.getElementById('newEmail').value;
         const status = document.getElementById('newStatus').value;
+        const customerID = document.getElementById('newCustomerID').value;
+        const customerNameInput = document.getElementById('newCustomerName').value;
+        const password = document.getElementById('newPassword').value; // Lấy giá trị mật khẩu
 
-        // Kiểm tra dữ liệu
-        if (!accountName || !email) {
+        // Kiểm tra dữ liệu đầu vào
+        if (!accountName || !email || !customerID || !password) {
             showAlert('danger', 'Vui lòng điền đầy đủ thông tin!');
             return;
         }
-
-        // Kiểm tra định dạng email
         if (!isValidEmail(email)) {
             showAlert('danger', 'Vui lòng nhập địa chỉ email hợp lệ!');
             return;
         }
+        if (customerNameInput === "Khách hàng không tồn tại") {
+            showAlert('danger', 'Chưa có thông tin khách hàng');
+            return;
+        }
 
+        // Hiển thị alert xác nhận
+        const confirmation = confirm("Bạn có chắc chắn muốn thêm tài khoản này không?");
+        if (!confirmation) {
+            // Nếu người dùng không xác nhận, dừng thao tác
+            return;
+        }
+
+        // Thêm tài khoản
         const accountData = {
-            accountName: accountName,
-            email: email,
-            status: status
+            accountName,
+            email,
+            status,
+            customerID,
+            password // Thêm mật khẩu vào dữ liệu gửi
         };
 
         fetch('/admin/accounts/add', {
@@ -347,21 +498,103 @@
             body: JSON.stringify(accountData)
         })
         .then(response => {
-            if (response.ok) {
-                showAlert('success', 'Thêm tài khoản thành công!');
-                loadAccounts(); // Tải lại danh sách tài khoản
-                document.getElementById('addForm').reset(); // Reset form
-                const addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
-                addModal.hide(); // Đóng modal
-            } else {
-                showAlert('danger', 'Thêm tài khoản thất bại!');
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    showAlert('danger', errorData.message || 'Thêm tài khoản thất bại!');
+                });
             }
+            showAlert('success', 'Thêm tài khoản thành công!');
+            loadAccounts();
+            document.getElementById('addForm').reset();
+            const addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
+            addModal.hide();
         })
         .catch(error => {
             console.error('Lỗi khi thêm tài khoản:', error);
-            showAlert('danger', 'Đã xảy ra lỗi khi thêm tài khoản!');
         });
     }
+
+
+
+
+/*
+    function addAccount() {
+        const accountName = document.getElementById('newAccountName').value;
+        const email = document.getElementById('newEmail').value;
+        const status = document.getElementById('newStatus').value;
+        const customerID = document.getElementById('newCustomerID').value;
+        const customerNameInput = document.getElementById('newCustomerName').value;
+
+        // Kiểm tra dữ liệu đầu vào
+        if (!accountName || !email || !customerID) {
+            showAlert('danger', 'Vui lòng điền đầy đủ thông tin!');
+            return;
+        }
+        if (!isValidEmail(email)) {
+            showAlert('danger', 'Vui lòng nhập địa chỉ email hợp lệ!');
+            return;
+        }
+
+        // Kiểm tra sự tồn tại của customerID
+        fetch(`/admin/accounts/checkCustomerID/${customerID}`)
+            .then(response => {
+                if (!response.ok) return showAlert('danger', 'Lỗi khi kiểm tra customerID');
+                return response.text();
+            })
+            .then(data => {
+                if (data !== "CustomerID exists.") {
+                    showAlert('warning', 'Khách hàng không tồn tại, nhưng sẽ tiếp tục kiểm tra tài khoản!');
+                    return; // Tiếp tục kiểm tra tài khoản
+                }
+                return fetch(`/admin/accounts/checkAccountByCustomerID/${customerID}`);
+            })
+            .then(response => {
+                if (!response.ok) return showAlert('danger', 'Khách hàng này đã có tài khoản!');
+                return response.json();
+            })
+            .then(data => {
+                if (data.length > 0) {
+                    showAlert('danger', 'Khách hàng này đã có tài khoản!');
+                    return;
+                }
+
+                // Thêm tài khoản
+                const accountData = {
+                    accountName,
+                    email,
+                    status,
+                    customerID
+                };
+                return fetch('/admin/accounts/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(accountData)
+                });
+            })
+            .then(response => {
+                if (response.ok) {
+                    showAlert('success', 'Thêm tài khoản thành công!');
+                    loadAccounts();
+                    document.getElementById('addForm').reset();
+                    const addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
+                    addModal.hide();
+                } else {
+                    showAlert('danger', 'Thêm tài khoản thất bại!');
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi thêm tài khoản:', error);
+            });
+    }
+
+*/
+
+
+
+
+
 
     // Hàm kiểm tra định dạng email
     function isValidEmail(email) {
@@ -404,6 +637,15 @@
                 document.getElementById('accountName').value = account.accountName;
                 document.getElementById('email').value = account.email;
                 document.getElementById('status').value = account.status;
+                document.getElementById('password').value = account.password;
+
+                if (account.customer) {
+                    document.getElementById('customerID').value = account.customer.customerId;
+                    fetchCustomerName(account.customer.customerId, true);
+                } else {
+                    document.getElementById('customerID').value = '';
+                    document.getElementById('customerName').value = '';
+                }
 
                 const editModal = new bootstrap.Modal(document.getElementById('editModal'));
                 editModal.show();
@@ -413,6 +655,7 @@
                 showAlert('danger', 'Có lỗi xảy ra khi lấy thông tin tài khoản!');
             });
     }
+
     
 
     function closeModal() {
@@ -425,19 +668,30 @@
         const accountName = document.getElementById('accountName').value;
         const email = document.getElementById('email').value;
         const status = document.getElementById('status').value;
+		const customerID = document.getElementById('customerID').value;
+		const customerName = document.getElementById('customerName').value;
+		const password = document.getElementById('password').value;
 
-        // Kiểm tra dữ liệu
-        if (!accountId || !accountName || !email) {
+		if (!accountName || !email || !customerID || !password) {
             showAlert('danger', 'Vui lòng điền đầy đủ thông tin!');
             return;
         }
-
-        // Kiểm tra định dạng email
         if (!isValidEmail(email)) {
             showAlert('danger', 'Vui lòng nhập địa chỉ email hợp lệ!');
             return;
         }
-
+        if (customerName === "Khách hàng không tồn tại") {
+            showAlert('danger', 'Chưa có thông tin khách hàng');
+            return;
+        }
+/*
+        // Hiển thị alert xác nhận
+        const confirmation = confirm("Bạn có chắc chắn muốn thêm tài khoản này không?");
+        if (!confirmation) {
+            // Nếu người dùng không xác nhận, dừng thao tác
+            return;
+        }
+*/
         // Hiển thị modal xác nhận
         const confirmSaveButton = document.getElementById('confirmSaveButton');
         confirmSaveButton.onclick = function() {
@@ -450,7 +704,8 @@
                     accountId: accountId,
                     accountName: accountName,
                     email: email,
-                    status: status
+                    status: status,
+                    password: password
                 })
             })
             .then(response => {

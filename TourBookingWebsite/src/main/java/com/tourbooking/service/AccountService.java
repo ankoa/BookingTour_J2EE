@@ -6,6 +6,7 @@ import com.tourbooking.model.Account;
 import com.tourbooking.repository.AccountRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -22,12 +23,12 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
-    // Tìm tài khoản theo ID
-    public Account getAccountById(String accountId) {
-        return accountRepository.findById(Integer.parseInt(accountId)).orElse(null);
+    public Optional<Account> getAccountById(String accountId) {
+        return accountRepository.findById(Integer.parseInt(accountId));
     }
 
- // Thêm tài khoản mới
+
+    // Thêm tài khoản mới
     public boolean addAccount(Account account) {
         try {
             accountRepository.save(account); // Lưu tài khoản mới
@@ -61,5 +62,10 @@ public class AccountService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    // Kiểm tra sự tồn tại của customerID
+    public boolean doesCustomerIDExist(Integer customerID) {
+        return accountRepository.checkCustomerIDExists(customerID);
     }
 }
