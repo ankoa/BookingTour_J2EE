@@ -95,19 +95,19 @@ public class BookingService {
         List<Customer> customers = new ArrayList<>();
 
         // luu nguoi dai dien
-        Customer customerRelative = customerMapper.toCustomer(
+        Customer customerRelationship = customerMapper.toCustomer(
                 new CustomerRequest(bookingRequest.getName(), 0, bookingRequest.getPhoneNumber(), null, bookingRequest.getAddress())
         );
-        customerRelative.setCustomerType(1);
-        customerRelative.setTime(currentDate);
-        customerRelative.setPhoneNumber(bookingRequest.getPhoneNumber());
-        customerRepository.save(customerRelative);
-        customers.add(customerRelative);
+        customerRelationship.setCustomerType(1);
+        customerRelationship.setTime(currentDate);
+        customerRelationship.setPhoneNumber(bookingRequest.getPhoneNumber());
+        customerRepository.save(customerRelationship);
+        customers.add(customerRelationship);
 
         // luu danh sach nguoi lon
         bookingRequest.getAdults().forEach(customerRequest -> {
             Customer customer = customerMapper.toCustomer(customerRequest);
-            customer.setCustomer(customerRelative);
+            customer.setRelatedCustomer(customerRelationship);
             customer.setTime(currentDate);
             customer.setCustomerType(1);
             customerRepository.save(customer);
@@ -117,7 +117,7 @@ public class BookingService {
         // luu danh sach tre em
         bookingRequest.getChildren().forEach(customerRequest -> {
             Customer customer = customerMapper.toCustomer(customerRequest);
-            customer.setCustomer(customerRelative);
+            customer.setRelatedCustomer(customerRelationship);
             customer.setTime(currentDate);
             customer.setCustomerType(2);
             customerRepository.save(customer);
@@ -130,7 +130,7 @@ public class BookingService {
 
         //luu du lie booking
         Booking newBooking = new Booking();
-        newBooking.setCustomer(customerRelative);
+        newBooking.setCustomer(customerRelationship);
         newBooking.setAdultCount(bookingRequest.getAdults().size());
         newBooking.setChildCount(bookingRequest.getChildren().size());
         newBooking.setStatus(1);
