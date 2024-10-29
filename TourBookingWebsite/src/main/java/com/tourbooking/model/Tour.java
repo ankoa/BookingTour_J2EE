@@ -43,14 +43,11 @@ public class Tour {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonBackReference
     private Category category;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<TourImage> tourImages;
-
-
 
 
 }

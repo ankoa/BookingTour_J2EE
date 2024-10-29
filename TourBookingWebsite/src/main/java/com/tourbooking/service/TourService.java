@@ -38,6 +38,7 @@ public class TourService {
     }
 
     // Lấy tour theo ID
+
     public Tour getTourById(String id) {
         return tourRepository.findById(Integer.parseInt(id)).orElse(null);
     }
@@ -79,6 +80,12 @@ public class TourService {
             return null; // Hoặc xử lý ngoại lệ phù hợp
         }
     }
+    public List<Tour> searchTours(String searchValue) {
+        return tourRepository.searchTours(searchValue);
+    }
+
+
+
 
     public List<String> getListImageUrl(String id) {
         Tour tour = tourRepository.findById(Integer.parseInt(id)).orElseThrow(() -> new IllegalArgumentException(

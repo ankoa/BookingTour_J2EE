@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -51,7 +52,7 @@ public class BookingService {
 
     // Tìm tài khoản theo ID
     public Account getAccountById(String accountId) {
-        return accountRepository.findById((Integer.parseInt(accountId))).orElse(null);
+        return accountRepository.findById(Integer.parseInt(accountId)).orElse(null);
     }
 
     // Thêm tài khoản mới
@@ -64,21 +65,26 @@ public class BookingService {
     }
 
     // Cập nhật tài khoản
-    public Account upcurrentDateAccount(String accountId, Account accountDetails) {
-        Account account = accountRepository.findById((Integer.parseInt(accountId))).orElse(null);
-        if (account != null) {
-            account.setAccountName(accountDetails.getAccountName());
-            account.setEmail(accountDetails.getEmail());
-            account.setStatus(accountDetails.getStatus());
-            account.setTime(accountDetails.getTime());
-            return accountRepository.save(account);
-        }
-        return null;
+    public Account updateAccount(String accountId, Account accountDetails) {
+        return accountRepository.findById(Integer.parseInt(accountId))
+                .map(account -> {
+                    // Kiểm tra dữ liệu hợp lệ trước khi cập nhật
+                    if (accountDetails.getAccountName() != null) {
+                        account.setAccountName(accountDetails.getAccountName());
+                    }
+                    if (accountDetails.getEmail() != null) {
+                        account.setEmail(accountDetails.getEmail());
+                    }
+                    account.setStatus(accountDetails.getStatus());
+                    account.setTime(accountDetails.getTime());
+                    return accountRepository.save(account);
+                })
+                .orElse(null);
     }
 
     // Xóa tài khoản
     public void deleteAccount(String accountId) {
-        accountRepository.deleteById((Integer.parseInt(accountId)));
+        accountRepository.deleteById(Integer.parseInt(accountId));
     }
 
     public void submitForm(BookingRequest bookingRequest) {

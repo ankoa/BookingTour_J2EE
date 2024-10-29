@@ -4,45 +4,68 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.tourbooking.model.Account;
 import com.tourbooking.repository.AccountRepository;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
+    @Autowired
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
     // Lấy tất cả các tài khoản
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
 
-    // Tìm tài khoản theo ID
-    public Account getAccountById(String accountId) {
-        return accountRepository.findById(Integer.parseInt(accountId)).orElse(null);
+    public Optional<Account> getAccountById(String accountId) {
+        return accountRepository.findById(Integer.parseInt(accountId));
     }
 
+
     // Thêm tài khoản mới
-    public Account createAccount(Account account) {
-        return accountRepository.save(account);
+    public boolean addAccount(Account account) {
+        try {
+            accountRepository.save(account); // Lưu tài khoản mới
+            return true; // Trả về true nếu thêm thành công
+        } catch (Exception e) {
+            // Ghi log lỗi nếu cần
+            return false; // Trả về false nếu có lỗi xảy ra
+        }
     }
 
     // Cập nhật tài khoản
-    public Account updateAccount(String accountId, Account accountDetails) {
-        Account account = accountRepository.findById((Integer.parseInt(accountId))).orElse(null);
-        if (account != null) {
-            account.setAccountName(accountDetails.getAccountName());
-            account.setEmail(accountDetails.getEmail());
-            account.setStatus(accountDetails.getStatus());
-            account.setTime(accountDetails.getTime());
-            return accountRepository.save(account);
+    public boolean updateAccount(Account account) {
+        // Tìm tài khoản theo ID
+        Account existingAccount = accountRepository.findById(account.getAccountId()).orElse(null);
+        if (existingAccount != null) {
+            // Cập nhật thông tin tài khoản
+            existingAccount.setAccountName(account.getAccountName());
+            existingAccount.setEmail(account.getEmail());
+            existingAccount.setStatus(account.getStatus());
+            accountRepository.save(existingAccount);
+            return true;
         }
-        return null;
+        return false; // Tài khoản không tồn tại
     }
 
-    // Xóa tài khoản
-    public void deleteAccount(String accountId) {
-        accountRepository.deleteById((Integer.parseInt(accountId)));
+    // Vô hiệu hóa tài khoản bằng cách cập nhật status thành 0
+    public boolean deleteAccount(String accountId) {
+        try {
+            accountRepository.deactivateAccount(Integer.parseInt(accountId));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // Kiểm tra sự tồn tại của customerID
+    public boolean doesCustomerIDExist(Integer customerID) {
+        return accountRepository.checkCustomerIDExists(customerID);
     }
 }

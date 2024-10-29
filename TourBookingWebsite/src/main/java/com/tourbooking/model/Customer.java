@@ -6,17 +6,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,22 +51,21 @@ public class Customer {
     @JsonManagedReference
     private Account account;
 
-
+    // Quan hệ nhiều khách hàng có thể liên kết tới một khách hàng liên quan
     @ManyToOne
-    @JoinColumn(name ="customer_rel_id" , nullable = true, referencedColumnName = "customer_id")
+    @JoinColumn(name ="customer_rel_id", referencedColumnName = "customer_id")
     @JsonBackReference
-    Customer customer;
+    private Customer relatedCustomer;
 
-    //    Người liên quan
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    // Một khách hàng có thể liên kết tới nhiều khách hàng
+    @OneToMany(mappedBy = "relatedCustomer", cascade = CascadeType.ALL)
     @JsonManagedReference
-    Set<Customer> customers;
+    private Set<Customer> customers;
 
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     @JsonManagedReference
-    Set<Booking> bookings;
+    private Set<Booking> bookings;
 
     @Column(name="customer_type")
     private int customerType;
-
 }
