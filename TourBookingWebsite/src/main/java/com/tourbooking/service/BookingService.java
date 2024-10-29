@@ -119,7 +119,8 @@ public class BookingService {
         });
 
         // lay tour time da dat
-        TourTime tourTime = tourTimeRepository.findById(bookingRequest.getTourTimeId()).orElse(null);
+        TourTime tourTime = tourTimeRepository.findById(bookingRequest.getTourTimeId())
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + bookingRequest.getTourTimeId()));
 
         //luu du lie booking
         Booking newBooking = new Booking();
@@ -130,16 +131,28 @@ public class BookingService {
         newBooking.setTime(currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         newBooking.setTourTime(tourTime);
 
-        //co ma giam hop le thi gia vao tong cong
-        Discount discount = null;
-        if (bookingRequest.getVoucherCode() != null) {
-            discount = discountRepository.findByDiscountCode(bookingRequest.getVoucherCode());
+        //gia thuong
+        int price = tourTime.getPriceAdult() * bookingRequest.getChildren().size() +
+                tourTime.getPriceChild() * bookingRequest.getAdults().size();
+
+        //gia co discount
+        if (!tourTime.getDiscounts().isEmpty()) {
+            for (Discount discount : tourTime.getDiscounts()) {
+                if (discount.getStartDate() != null)
+                    if (!currentDate.after(discount.getStartDate())) continue;
+                if (discount.getEndDate() != null)
+                    if (!currentDate.before(discount.getEndDate())) continue;
+                price = (tourTime.getPriceAdult() - discount.getDiscountValue()) * bookingRequest.getChildren().size() +
+                        (tourTime.getPriceChild() - discount.getDiscountValue()) * bookingRequest.getAdults().size();
+                break;
+            }
+
         }
-        if (tourTime != null && discount != null)
-            newBooking.setTotalPrice(tourTime.getPriceAdult() * bookingRequest.getChildren().size() +
-                    tourTime.getPriceChild() * bookingRequest.getAdults().size() - discount.getDiscountValue());
-        else newBooking.setTotalPrice(tourTime.getPriceAdult() * bookingRequest.getChildren().size() +
-                tourTime.getPriceChild() * bookingRequest.getAdults().size());
+        if (bookingRequest.getVoucherCode() != null) {
+            Discount discount = null;
+            discount = discountRepository.findByDiscountCode(bookingRequest.getVoucherCode());
+            newBooking.setTotalPrice(price - discount.getDiscountValue());
+        } else newBooking.setTotalPrice(price);
         bookingRepository.save(newBooking);
 
 

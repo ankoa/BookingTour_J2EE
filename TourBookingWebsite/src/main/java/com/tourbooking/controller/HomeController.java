@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-// thay the autowired va tu tao private final,
 @Controller
 public class HomeController {
 
@@ -22,8 +21,6 @@ public class HomeController {
 
     @Autowired
     private TourTimeService tourTimeService;
-    @Autowired
-    private SpringDataWebAutoConfiguration springDataWebAutoConfiguration;
 
     @GetMapping("/")
     public String index() {
@@ -49,9 +46,7 @@ public class HomeController {
         }
 
         List<String> listImage = tourService.getListImageUrl(id);
-
-        List<TourTimeResponse> tourTimes = tourService.getTourTimeResponseById(id);
-
+        List<TourTimeResponse> tourTimes = tourTimeService.getListTourTimeResponseByTourId(id);
 
         model.addAttribute("tourTimes", tourTimes);
         model.addAttribute("tour", tour);
@@ -63,7 +58,6 @@ public class HomeController {
 
     @GetMapping("/order-booking")
     public String getOrderBooking(Model model, @RequestParam(required = true) String tourTimeId) {
-        System.out.println(tourTimeId);
         TourTimeResponse tourTimeResponse = tourTimeService.getTourTimeResponseById(tourTimeId);
         String tourName = tourTimeService.getTourName(tourTimeId);
         model.addAttribute("tourTimeResponse", tourTimeResponse);
