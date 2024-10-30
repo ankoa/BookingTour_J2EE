@@ -65,6 +65,7 @@ public class TourService {
     public void deleteTour(int id) {
         tourRepository.deleteById(id);
     }
+
     private String saveImage(MultipartFile imageFile) {
         String uploadDir = "uploads/"; // Nếu là thư mục trong dự án
         // Hoặc chỉ định đường dẫn tuyệt đối
@@ -80,21 +81,31 @@ public class TourService {
             return null; // Hoặc xử lý ngoại lệ phù hợp
         }
     }
+
     public List<Tour> searchTours(String searchValue) {
         return tourRepository.searchTours(searchValue);
     }
 
-
-
-
     public List<String> getListImageUrl(String id) {
         Tour tour = tourRepository.findById(Integer.parseInt(id)).orElseThrow(() -> new IllegalArgumentException(
                 "Không tìm thấy tour với ID: " + id));
-        return tour.getTourImages() != null ? tour.getTourImages().stream()
+
+        List<String> listImage = tour.getTourImages() != null ? tour.getTourImages().stream()
                 .map(TourImage::getImageUrl) // Lấy thuộc tính imageUrl
                 .filter(Objects::nonNull) // Lọc bỏ các giá trị null
                 .collect(Collectors.toList())
                 : new ArrayList<>();
+        if (listImage == null || listImage.isEmpty()) {
+            listImage = new ArrayList<>(Arrays.asList(
+                    "/client/img/54.jpg",
+                    "/client/img/55.jpg",
+                    "/client/img/54.jpg",
+                    "/client/img/55.jpg",
+                    "/client/img/54.jpg",
+                    "/client/img/55.jpg",
+                    "/client/img/54.jpg"));
+        }
+        return listImage;
     }
 
 }
