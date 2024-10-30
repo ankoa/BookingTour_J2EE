@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 27, 2024 lúc 06:07 PM
+-- Thời gian đã tạo: Th10 30, 2024 lúc 10:30 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.1.25
 
@@ -42,12 +42,12 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`account_id`, `account_name`, `email`, `password`, `status`, `time`, `customerID`) VALUES
-(1, 'UserOne', 'user1@example.com', 'password1', 1, '2024-10-25 09:00:00.000000', 1),
-(2, '', 'user2@example.com', 'password2', 0, '2024-10-25 09:05:00.000000', 2),
-(3, 'UserThree', 'user3@example.com', 'password3', 1, '2024-10-25 09:10:00.000000', 3),
-(4, 'UserFour', 'user4@example.com', 'password4', 0, '2024-10-25 09:15:00.000000', 4),
-(5, 'UserFive', 'user5@example.com', 'password5', 1, '2024-10-25 09:20:00.000000', 5),
-(6, 'UserSix', 'user6@example.com', 'password6', 0, '2024-10-25 09:25:00.000000', 6),
+(1, 'UserOne', 'user1@example.com', 'tom001', 0, '2024-10-28 11:20:06.000000', 1),
+(2, 'dsfgfhg', 'user2@example.com', 'password2', 0, '2024-10-28 21:06:13.000000', 2),
+(3, 'UserThree', 'user3@example.com', 'password3', 0, '2024-10-25 09:10:00.000000', 3),
+(4, 'UserFour', 'user4@example.com', 'password4', 0, '2024-10-28 11:38:45.000000', 4),
+(5, 'UserFive', 'user5@example.com', 'password5', 0, '2024-10-25 09:20:00.000000', 5),
+(6, 'UserSix', 'user6@example.com', 'password6', 0, '2024-10-28 11:39:01.000000', 6),
 (7, 'UserSeven', 'user7@example.com', 'password7', 0, '2024-10-25 09:30:00.000000', 7),
 (8, 'UserEight', 'user8@example.com', 'password8', 0, '2024-10-25 09:35:00.000000', 8),
 (9, 'UserNine', 'user9@example.com', 'password9', 0, '2024-10-25 09:40:00.000000', 9),
@@ -56,7 +56,7 @@ INSERT INTO `account` (`account_id`, `account_name`, `email`, `password`, `statu
 (12, 'UserTwelve', 'user12@example.com', 'password12', 0, '2024-10-25 09:55:00.000000', 12),
 (13, 'UserThirteen', 'user13@example.com', 'password13', 0, '2024-10-25 10:00:00.000000', 13),
 (14, 'UserFourteen', 'user14@example.com', 'password14', 0, '2024-10-25 10:05:00.000000', 14),
-(15, 'UserFifteen', 'user15@example.com', 'password15', 1, '2024-10-25 10:10:00.000000', 15),
+(15, 'UserFifteen', 'user15@example.com', 'password15', 0, '2024-10-25 10:10:00.000000', 15),
 (16, 'UserSixteen', 'user16@example.com', 'password16', 0, '2024-10-25 10:15:00.000000', 16),
 (17, 'UserSeventeen', 'user17@example.com', 'password17', 0, '2024-10-25 10:20:00.000000', 17),
 (18, 'UserEighteen', 'user18@example.com', 'password18', 0, '2024-10-25 10:25:00.000000', 18),
@@ -97,7 +97,7 @@ INSERT INTO `account` (`account_id`, `account_name`, `email`, `password`, `statu
 (53, 'user3', 'user3@example.com', 'password3', 1, '2024-10-25 11:42:00.000000', 53),
 (54, 'user4', 'user4@example.com', 'password4', 1, '2024-10-25 11:43:00.000000', 54),
 (55, 'user5', 'user5@example.com', 'password5', 0, '2024-10-25 11:44:00.000000', 55),
-(56, 'user6', 'user6@example.com', 'password6', 1, '2024-10-25 11:45:00.000000', 56),
+(56, 'user6', 'user6@example.com', 'password6', 0, '2024-10-25 11:45:00.000000', 56),
 (57, 'user7', 'user7@example.com', 'password7', 1, '2024-10-25 11:46:00.000000', 57),
 (58, 'user8', 'user8@example.com', 'password8', 0, '2024-10-25 11:47:00.000000', 58),
 (59, 'user9', 'user9@example.com', 'password9', 1, '2024-10-25 11:48:00.000000', 59),
@@ -182,89 +182,90 @@ CREATE TABLE `customer` (
   `sex` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT NULL,
   `time` datetime(6) DEFAULT NULL,
-  `account_id` int(11) DEFAULT NULL,
   `customer_rel_id` int(11) DEFAULT NULL,
-  `phone_number` int(11) DEFAULT NULL
+  `phone_number` int(11) DEFAULT NULL,
+  `account_id` int(11) DEFAULT NULL,
+  `customer_type` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `customer`
 --
 
-INSERT INTO `customer` (`customer_id`, `address`, `birthday`, `customer_name`, `sex`, `status`, `time`, `account_id`, `customer_rel_id`, `phone_number`) VALUES
-(1, 'Bình Tân', '2003-11-10 00:00:00.000000', 'Quang Linh', 1, 1, '2024-10-17 10:52:45.000000', NULL, NULL, 123456789),
-(2, 'Tân Bình', '2003-11-11 00:00:00.000000', 'Quang Hải', 1, 1, '2024-10-17 10:52:45.000000', NULL, NULL, 123456789),
-(3, 'Tân Phú', '2002-11-11 00:00:00.000000', 'Hải', 1, 1, '2024-10-17 10:52:45.000000', NULL, 1, 123456789),
-(4, '123 Main St', '1990-01-01 00:00:00.000000', 'Customer One', 1, 1, '2024-10-25 09:00:00.000000', 1, NULL, 123456789),
-(5, '456 Elm St', '1991-02-02 00:00:00.000000', 'Customer Two', 0, 1, '2024-10-25 09:05:00.000000', 2, NULL, 987654321),
-(6, '789 Oak St', '1992-03-03 00:00:00.000000', 'Customer Three', 1, 1, '2024-10-25 09:10:00.000000', 3, NULL, 123456789),
-(7, '101 Maple St', '1989-04-04 00:00:00.000000', 'Customer Four', 0, 1, '2024-10-25 09:15:00.000000', 4, NULL, 987123456),
-(8, '202 Cedar St', '1993-05-05 00:00:00.000000', 'Customer Five', 1, 1, '2024-10-25 09:20:00.000000', 5, NULL, 123789456),
-(9, '303 Pine St', '1994-06-06 00:00:00.000000', 'Customer Six', 0, 1, '2024-10-25 09:25:00.000000', 6, NULL, 987654320),
-(10, '404 Birch St', '1995-07-07 00:00:00.000000', 'Customer Seven', 1, 1, '2024-10-25 09:30:00.000000', 7, NULL, 123456701),
-(11, '505 Walnut St', '1996-08-08 00:00:00.000000', 'Customer Eight', 0, 1, '2024-10-25 09:35:00.000000', 8, NULL, 987345612),
-(12, '606 Chestnut St', '1997-09-09 00:00:00.000000', 'Customer Nine', 1, 1, '2024-10-25 09:40:00.000000', 9, NULL, 123654789),
-(13, '707 Aspen St', '1998-10-10 00:00:00.000000', 'Customer Ten', 0, 1, '2024-10-25 09:45:00.000000', 10, NULL, 987543210),
-(14, '808 Cypress St', '1990-01-11 00:00:00.000000', 'Customer Eleven', 1, 1, '2024-10-25 09:50:00.000000', 11, NULL, 123456782),
-(15, '909 Spruce St', '1991-02-12 00:00:00.000000', 'Customer Twelve', 0, 1, '2024-10-25 09:55:00.000000', 12, NULL, 987456312),
-(16, '1001 Beech St', '1992-03-13 00:00:00.000000', 'Customer Thirteen', 1, 1, '2024-10-25 10:00:00.000000', 13, NULL, 123456783),
-(17, '1102 Fir St', '1993-04-14 00:00:00.000000', 'Customer Fourteen', 0, 1, '2024-10-25 10:05:00.000000', 14, NULL, 987564321),
-(18, '1203 Willow St', '1994-05-15 00:00:00.000000', 'Customer Fifteen', 1, 1, '2024-10-25 10:10:00.000000', 15, NULL, 123456784),
-(19, '1304 Poplar St', '1995-06-16 00:00:00.000000', 'Customer Sixteen', 0, 1, '2024-10-25 10:15:00.000000', 16, NULL, 987234567),
-(20, '1405 Redwood St', '1996-07-17 00:00:00.000000', 'Customer Seventeen', 1, 1, '2024-10-25 10:20:00.000000', 17, NULL, 123345678),
-(21, '1506 Mahogany St', '1997-08-18 00:00:00.000000', 'Customer Eighteen', 0, 1, '2024-10-25 10:25:00.000000', 18, NULL, 987652345),
-(22, '1607 Ash St', '1998-09-19 00:00:00.000000', 'Customer Nineteen', 1, 1, '2024-10-25 10:30:00.000000', 19, NULL, 123478569),
-(23, '1708 Elm St', '1999-10-20 00:00:00.000000', 'Customer Twenty', 0, 1, '2024-10-25 10:35:00.000000', 20, NULL, 987451230),
-(24, '1809 Maple St', '2000-11-21 00:00:00.000000', 'Customer Twenty-One', 1, 1, '2024-10-25 10:40:00.000000', 21, NULL, 123456710),
-(25, '1910 Pine St', '2001-12-22 00:00:00.000000', 'Customer Twenty-Two', 0, 1, '2024-10-25 10:45:00.000000', 22, NULL, 987456321),
-(26, '2011 Cedar St', '2002-01-23 00:00:00.000000', 'Customer Twenty-Three', 1, 1, '2024-10-25 10:50:00.000000', 23, NULL, 123789457),
-(27, '2112 Birch St', '2003-02-24 00:00:00.000000', 'Customer Twenty-Four', 0, 1, '2024-10-25 10:55:00.000000', 24, NULL, 987345613),
-(28, '2213 Walnut St', '2004-03-25 00:00:00.000000', 'Customer Twenty-Five', 1, 1, '2024-10-25 11:00:00.000000', 25, NULL, 123654780),
-(29, '2314 Chestnut St', '2005-04-26 00:00:00.000000', 'Customer Twenty-Six', 0, 1, '2024-10-25 11:05:00.000000', 26, NULL, 987453219),
-(30, '2415 Aspen St', '2006-05-27 00:00:00.000000', 'Customer Twenty-Seven', 1, 1, '2024-10-25 11:10:00.000000', 27, NULL, 123456709),
-(31, '2516 Cypress St', '2007-06-28 00:00:00.000000', 'Customer Twenty-Eight', 0, 1, '2024-10-25 11:15:00.000000', 28, NULL, 987564322),
-(32, '2617 Spruce St', '2008-07-29 00:00:00.000000', 'Customer Twenty-Nine', 1, 1, '2024-10-25 11:20:00.000000', 29, NULL, 123456711),
-(33, '2718 Beech St', '2009-08-30 00:00:00.000000', 'Customer Thirty', 0, 1, '2024-10-25 11:25:00.000000', 30, NULL, 987652346),
-(34, '2819 Fir St', '2010-09-01 00:00:00.000000', 'Customer Thirty-One', 1, 1, '2024-10-25 11:30:00.000000', 31, NULL, 123478570),
-(35, '2920 Willow St', '2011-10-02 00:00:00.000000', 'Customer Thirty-Two', 0, 1, '2024-10-25 11:35:00.000000', 32, NULL, 987543211),
-(36, '3021 Poplar St', '2012-11-03 00:00:00.000000', 'Customer Thirty-Three', 1, 1, '2024-10-25 11:40:00.000000', 33, NULL, 123789468),
-(37, '3122 Redwood St', '2013-12-04 00:00:00.000000', 'Customer Thirty-Four', 0, 1, '2024-10-25 11:45:00.000000', 34, NULL, 987234568),
-(38, '3223 Mahogany St', '2014-01-05 00:00:00.000000', 'Customer Thirty-Five', 1, 1, '2024-10-25 11:50:00.000000', 35, NULL, 123456785),
-(39, '3324 Ash St', '2015-02-06 00:00:00.000000', 'Customer Thirty-Six', 0, 1, '2024-10-25 11:55:00.000000', 36, NULL, 987453212),
-(40, '3425 Elm St', '2016-03-07 00:00:00.000000', 'Customer Thirty-Seven', 1, 1, '2024-10-25 12:00:00.000000', 37, NULL, 123789455),
-(41, '3526 Maple St', '2017-04-08 00:00:00.000000', 'Customer Thirty-Eight', 0, 1, '2024-10-25 12:05:00.000000', 38, NULL, 987345670),
-(42, '3627 Pine St', '2018-05-09 00:00:00.000000', 'Customer Thirty-Nine', 1, 1, '2024-10-25 12:10:00.000000', 39, NULL, 123456786),
-(43, '3728 Cedar St', '2019-06-10 00:00:00.000000', 'Customer Forty', 0, 1, '2024-10-25 12:15:00.000000', 40, NULL, 987654323),
-(44, '3829 Birch St', '2020-07-11 00:00:00.000000', 'Customer Forty-One', 1, 1, '2024-10-25 12:20:00.000000', 41, NULL, 123478532),
-(45, '3930 Walnut St', '2021-08-12 00:00:00.000000', 'Customer Forty-Two', 0, 1, '2024-10-25 12:25:00.000000', 42, NULL, 987543208),
-(46, '4031 Chestnut St', '2022-09-13 00:00:00.000000', 'Customer Forty-Three', 1, 1, '2024-10-25 12:30:00.000000', 43, NULL, 123654790),
-(47, '4132 Aspen St', '2023-10-14 00:00:00.000000', 'Customer Forty-Four', 0, 1, '2024-10-25 12:35:00.000000', 44, NULL, 987654321),
-(48, '4233 Maple St', '2024-11-15 00:00:00.000000', 'Customer Forty-Five', 1, 1, '2024-10-25 12:40:00.000000', 45, NULL, 123789469),
-(49, '4334 Pine St', '2025-01-16 00:00:00.000000', 'Customer Forty-Six', 0, 1, '2024-10-25 12:45:00.000000', 46, NULL, 987654310),
-(50, '4435 Cedar St', '2024-03-17 00:00:00.000000', 'Customer Forty-Seven', 1, 1, '2024-10-25 12:50:00.000000', 47, NULL, 123654787),
-(51, '4536 Birch St', '2023-05-18 00:00:00.000000', 'Customer Forty-Eight', 0, 1, '2024-10-25 12:55:00.000000', 48, NULL, 987543291),
-(52, '4637 Walnut St', '2022-07-19 00:00:00.000000', 'Customer Forty-Nine', 1, 1, '2024-10-25 13:00:00.000000', 49, NULL, 123789456),
-(53, '4738 Chestnut St', '2021-09-20 00:00:00.000000', 'Customer Fifty', 0, 1, '2024-10-25 13:05:00.000000', 50, NULL, 987654324),
-(54, '4839 Aspen St', '2020-11-21 00:00:00.000000', 'Customer Fifty-One', 1, 1, '2024-10-25 13:10:00.000000', 51, NULL, 123456702),
-(55, '4940 Cypress St', '2019-01-22 00:00:00.000000', 'Customer Fifty-Two', 0, 1, '2024-10-25 13:15:00.000000', 52, NULL, 987453213),
-(56, '5041 Spruce St', '2018-03-23 00:00:00.000000', 'Customer Fifty-Three', 1, 1, '2024-10-25 13:20:00.000000', 53, NULL, 123654791),
-(57, '5142 Beech St', '2017-05-24 00:00:00.000000', 'Customer Fifty-Four', 0, 1, '2024-10-25 13:25:00.000000', 54, NULL, 987654312),
-(58, '5243 Fir St', '2016-07-25 00:00:00.000000', 'Customer Fifty-Five', 1, 1, '2024-10-25 13:30:00.000000', 55, NULL, 123789460),
-(59, '5344 Willow St', '2015-09-26 00:00:00.000000', 'Customer Fifty-Six', 0, 1, '2024-10-25 13:35:00.000000', 56, NULL, 987543214),
-(60, '5445 Poplar St', '2014-11-27 00:00:00.000000', 'Customer Fifty-Seven', 1, 1, '2024-10-25 13:40:00.000000', 57, NULL, 123456788),
-(61, '5546 Redwood St', '2013-01-28 00:00:00.000000', 'Customer Fifty-Eight', 0, 1, '2024-10-25 13:45:00.000000', 58, NULL, 987654325),
-(62, '5647 Mahogany St', '2012-03-29 00:00:00.000000', 'Customer Fifty-Nine', 1, 1, '2024-10-25 13:50:00.000000', 59, NULL, 123789461),
-(63, '5748 Ash St', '2011-05-30 00:00:00.000000', 'Customer Sixty', 0, 1, '2024-10-25 13:55:00.000000', 60, NULL, 987453215),
-(64, '5849 Elm St', '2010-07-31 00:00:00.000000', 'Customer Sixty-One', 1, 1, '2024-10-25 14:00:00.000000', 61, NULL, 123654792),
-(65, '5950 Maple St', '2009-09-01 00:00:00.000000', 'Customer Sixty-Two', 0, 1, '2024-10-25 14:05:00.000000', 62, NULL, 987654313),
-(66, '6051 Pine St', '2008-11-02 00:00:00.000000', 'Customer Sixty-Three', 1, 1, '2024-10-25 14:10:00.000000', 63, NULL, 123789462),
-(67, '6152 Cedar St', '2007-01-03 00:00:00.000000', 'Customer Sixty-Four', 0, 1, '2024-10-25 14:15:00.000000', 64, NULL, 987543216),
-(68, '6253 Birch St', '2006-03-04 00:00:00.000000', 'Customer Sixty-Five', 1, 1, '2024-10-25 14:20:00.000000', 65, NULL, 123456789),
-(69, '6354 Walnut St', '2005-05-05 00:00:00.000000', 'Customer Sixty-Six', 0, 1, '2024-10-25 14:25:00.000000', 66, NULL, 987654326),
-(70, '6455 Chestnut St', '2004-07-06 00:00:00.000000', 'Customer Sixty-Seven', 1, 1, '2024-10-25 14:30:00.000000', 67, NULL, 123789463),
-(71, '6556 Aspen St', '2003-09-07 00:00:00.000000', 'Customer Sixty-Eight', 0, 1, '2024-10-25 14:35:00.000000', 68, NULL, 987453217),
-(72, '6657 Cypress St', '2002-11-08 00:00:00.000000', 'Customer Sixty-Nine', 1, 1, '2024-10-25 14:40:00.000000', 69, NULL, 123654793),
-(73, '6758 Spruce St', '2001-01-09 00:00:00.000000', 'Customer Seventy', 0, 1, '2024-10-25 14:45:00.000000', 70, NULL, 987654327);
+INSERT INTO `customer` (`customer_id`, `address`, `birthday`, `customer_name`, `sex`, `status`, `time`, `customer_rel_id`, `phone_number`, `account_id`, `customer_type`) VALUES
+(1, 'Bình Tân', '2003-11-10 00:00:00.000000', 'Quang Linh', 1, 1, '2024-10-17 10:52:45.000000', NULL, 123456789, NULL, NULL),
+(2, 'Tân Bình', '2003-11-11 00:00:00.000000', 'Quang Hải', 1, 1, '2024-10-17 10:52:45.000000', NULL, 123456789, NULL, NULL),
+(3, 'Tân Phú', '2002-11-11 00:00:00.000000', 'Hải', 1, 1, '2024-10-17 10:52:45.000000', 1, 123456789, NULL, NULL),
+(4, '123 Main St', '1990-01-01 00:00:00.000000', 'Customer One', 1, 1, '2024-10-25 09:00:00.000000', NULL, 123456789, NULL, NULL),
+(5, '456 Elm St', '1991-02-02 00:00:00.000000', 'Customer Two', 0, 1, '2024-10-25 09:05:00.000000', NULL, 987654321, NULL, NULL),
+(6, '789 Oak St', '1992-03-03 00:00:00.000000', 'Customer Three', 1, 1, '2024-10-25 09:10:00.000000', NULL, 123456789, NULL, NULL),
+(7, '101 Maple St', '1989-04-04 00:00:00.000000', 'Customer Four', 0, 1, '2024-10-25 09:15:00.000000', NULL, 987123456, NULL, NULL),
+(8, '202 Cedar St', '1993-05-05 00:00:00.000000', 'Customer Five', 1, 1, '2024-10-25 09:20:00.000000', NULL, 123789456, NULL, NULL),
+(9, '303 Pine St', '1994-06-06 00:00:00.000000', 'Customer Six', 0, 1, '2024-10-25 09:25:00.000000', NULL, 987654320, NULL, NULL),
+(10, '404 Birch St', '1995-07-07 00:00:00.000000', 'Customer Seven', 1, 1, '2024-10-25 09:30:00.000000', NULL, 123456701, NULL, NULL),
+(11, '505 Walnut St', '1996-08-08 00:00:00.000000', 'Customer Eight', 0, 1, '2024-10-25 09:35:00.000000', NULL, 987345612, NULL, NULL),
+(12, '606 Chestnut St', '1997-09-09 00:00:00.000000', 'Customer Nine', 1, 1, '2024-10-25 09:40:00.000000', NULL, 123654789, NULL, NULL),
+(13, '707 Aspen St', '1998-10-10 00:00:00.000000', 'Customer Ten', 0, 1, '2024-10-25 09:45:00.000000', NULL, 987543210, NULL, NULL),
+(14, '808 Cypress St', '1990-01-11 00:00:00.000000', 'Customer Eleven', 1, 1, '2024-10-25 09:50:00.000000', NULL, 123456782, NULL, NULL),
+(15, '909 Spruce St', '1991-02-12 00:00:00.000000', 'Customer Twelve', 0, 1, '2024-10-25 09:55:00.000000', NULL, 987456312, NULL, NULL),
+(16, '1001 Beech St', '1992-03-13 00:00:00.000000', 'Customer Thirteen', 1, 1, '2024-10-25 10:00:00.000000', NULL, 123456783, NULL, NULL),
+(17, '1102 Fir St', '1993-04-14 00:00:00.000000', 'Customer Fourteen', 0, 1, '2024-10-25 10:05:00.000000', NULL, 987564321, NULL, NULL),
+(18, '1203 Willow St', '1994-05-15 00:00:00.000000', 'Customer Fifteen', 1, 1, '2024-10-25 10:10:00.000000', NULL, 123456784, NULL, NULL),
+(19, '1304 Poplar St', '1995-06-16 00:00:00.000000', 'Customer Sixteen', 0, 1, '2024-10-25 10:15:00.000000', NULL, 987234567, NULL, NULL),
+(20, '1405 Redwood St', '1996-07-17 00:00:00.000000', 'Customer Seventeen', 1, 1, '2024-10-25 10:20:00.000000', NULL, 123345678, NULL, NULL),
+(21, '1506 Mahogany St', '1997-08-18 00:00:00.000000', 'Customer Eighteen', 0, 1, '2024-10-25 10:25:00.000000', NULL, 987652345, NULL, NULL),
+(22, '1607 Ash St', '1998-09-19 00:00:00.000000', 'Customer Nineteen', 1, 1, '2024-10-25 10:30:00.000000', NULL, 123478569, NULL, NULL),
+(23, '1708 Elm St', '1999-10-20 00:00:00.000000', 'Customer Twenty', 0, 1, '2024-10-25 10:35:00.000000', NULL, 987451230, NULL, NULL),
+(24, '1809 Maple St', '2000-11-21 00:00:00.000000', 'Customer Twenty-One', 1, 1, '2024-10-25 10:40:00.000000', NULL, 123456710, NULL, NULL),
+(25, '1910 Pine St', '2001-12-22 00:00:00.000000', 'Customer Twenty-Two', 0, 1, '2024-10-25 10:45:00.000000', NULL, 987456321, NULL, NULL),
+(26, '2011 Cedar St', '2002-01-23 00:00:00.000000', 'Customer Twenty-Three', 1, 1, '2024-10-25 10:50:00.000000', NULL, 123789457, NULL, NULL),
+(27, '2112 Birch St', '2003-02-24 00:00:00.000000', 'Customer Twenty-Four', 0, 1, '2024-10-25 10:55:00.000000', NULL, 987345613, NULL, NULL),
+(28, '2213 Walnut St', '2004-03-25 00:00:00.000000', 'Customer Twenty-Five', 1, 1, '2024-10-25 11:00:00.000000', NULL, 123654780, NULL, NULL),
+(29, '2314 Chestnut St', '2005-04-26 00:00:00.000000', 'Customer Twenty-Six', 0, 1, '2024-10-25 11:05:00.000000', NULL, 987453219, NULL, NULL),
+(30, '2415 Aspen St', '2006-05-27 00:00:00.000000', 'Customer Twenty-Seven', 1, 1, '2024-10-25 11:10:00.000000', NULL, 123456709, NULL, NULL),
+(31, '2516 Cypress St', '2007-06-28 00:00:00.000000', 'Customer Twenty-Eight', 0, 1, '2024-10-25 11:15:00.000000', NULL, 987564322, NULL, NULL),
+(32, '2617 Spruce St', '2008-07-29 00:00:00.000000', 'Customer Twenty-Nine', 1, 1, '2024-10-25 11:20:00.000000', NULL, 123456711, NULL, NULL),
+(33, '2718 Beech St', '2009-08-30 00:00:00.000000', 'Customer Thirty', 0, 1, '2024-10-25 11:25:00.000000', NULL, 987652346, NULL, NULL),
+(34, '2819 Fir St', '2010-09-01 00:00:00.000000', 'Customer Thirty-One', 1, 1, '2024-10-25 11:30:00.000000', NULL, 123478570, NULL, NULL),
+(35, '2920 Willow St', '2011-10-02 00:00:00.000000', 'Customer Thirty-Two', 0, 1, '2024-10-25 11:35:00.000000', NULL, 987543211, NULL, NULL),
+(36, '3021 Poplar St', '2012-11-03 00:00:00.000000', 'Customer Thirty-Three', 1, 1, '2024-10-25 11:40:00.000000', NULL, 123789468, NULL, NULL),
+(37, '3122 Redwood St', '2013-12-04 00:00:00.000000', 'Customer Thirty-Four', 0, 1, '2024-10-25 11:45:00.000000', NULL, 987234568, NULL, NULL),
+(38, '3223 Mahogany St', '2014-01-05 00:00:00.000000', 'Customer Thirty-Five', 1, 1, '2024-10-25 11:50:00.000000', NULL, 123456785, NULL, NULL),
+(39, '3324 Ash St', '2015-02-06 00:00:00.000000', 'Customer Thirty-Six', 0, 1, '2024-10-25 11:55:00.000000', NULL, 987453212, NULL, NULL),
+(40, '3425 Elm St', '2016-03-07 00:00:00.000000', 'Customer Thirty-Seven', 1, 1, '2024-10-25 12:00:00.000000', NULL, 123789455, NULL, NULL),
+(41, '3526 Maple St', '2017-04-08 00:00:00.000000', 'Customer Thirty-Eight', 0, 1, '2024-10-25 12:05:00.000000', NULL, 987345670, NULL, NULL),
+(42, '3627 Pine St', '2018-05-09 00:00:00.000000', 'Customer Thirty-Nine', 1, 1, '2024-10-25 12:10:00.000000', NULL, 123456786, NULL, NULL),
+(43, '3728 Cedar St', '2019-06-10 00:00:00.000000', 'Customer Forty', 0, 1, '2024-10-25 12:15:00.000000', NULL, 987654323, NULL, NULL),
+(44, '3829 Birch St', '2020-07-11 00:00:00.000000', 'Customer Forty-One', 1, 1, '2024-10-25 12:20:00.000000', NULL, 123478532, NULL, NULL),
+(45, '3930 Walnut St', '2021-08-12 00:00:00.000000', 'Customer Forty-Two', 0, 1, '2024-10-25 12:25:00.000000', NULL, 987543208, NULL, NULL),
+(46, '4031 Chestnut St', '2022-09-13 00:00:00.000000', 'Customer Forty-Three', 1, 1, '2024-10-25 12:30:00.000000', NULL, 123654790, NULL, NULL),
+(47, '4132 Aspen St', '2023-10-14 00:00:00.000000', 'Customer Forty-Four', 0, 1, '2024-10-25 12:35:00.000000', NULL, 987654321, NULL, NULL),
+(48, '4233 Maple St', '2024-11-15 00:00:00.000000', 'Customer Forty-Five', 1, 1, '2024-10-25 12:40:00.000000', NULL, 123789469, NULL, NULL),
+(49, '4334 Pine St', '2025-01-16 00:00:00.000000', 'Customer Forty-Six', 0, 1, '2024-10-25 12:45:00.000000', NULL, 987654310, NULL, NULL),
+(50, '4435 Cedar St', '2024-03-17 00:00:00.000000', 'Customer Forty-Seven', 1, 1, '2024-10-25 12:50:00.000000', NULL, 123654787, NULL, NULL),
+(51, '4536 Birch St', '2023-05-18 00:00:00.000000', 'Customer Forty-Eight', 0, 1, '2024-10-25 12:55:00.000000', NULL, 987543291, NULL, NULL),
+(52, '4637 Walnut St', '2022-07-19 00:00:00.000000', 'Customer Forty-Nine', 1, 1, '2024-10-25 13:00:00.000000', NULL, 123789456, NULL, NULL),
+(53, '4738 Chestnut St', '2021-09-20 00:00:00.000000', 'Customer Fifty', 0, 1, '2024-10-25 13:05:00.000000', NULL, 987654324, NULL, NULL),
+(54, '4839 Aspen St', '2020-11-21 00:00:00.000000', 'Customer Fifty-One', 1, 1, '2024-10-25 13:10:00.000000', NULL, 123456702, NULL, NULL),
+(55, '4940 Cypress St', '2019-01-22 00:00:00.000000', 'Customer Fifty-Two', 0, 1, '2024-10-25 13:15:00.000000', NULL, 987453213, NULL, NULL),
+(56, '5041 Spruce St', '2018-03-23 00:00:00.000000', 'Customer Fifty-Three', 1, 1, '2024-10-25 13:20:00.000000', NULL, 123654791, NULL, NULL),
+(57, '5142 Beech St', '2017-05-24 00:00:00.000000', 'Customer Fifty-Four', 0, 1, '2024-10-25 13:25:00.000000', NULL, 987654312, NULL, NULL),
+(58, '5243 Fir St', '2016-07-25 00:00:00.000000', 'Customer Fifty-Five', 1, 1, '2024-10-25 13:30:00.000000', NULL, 123789460, NULL, NULL),
+(59, '5344 Willow St', '2015-09-26 00:00:00.000000', 'Customer Fifty-Six', 0, 1, '2024-10-25 13:35:00.000000', NULL, 987543214, NULL, NULL),
+(60, '5445 Poplar St', '2014-11-27 00:00:00.000000', 'Customer Fifty-Seven', 1, 1, '2024-10-25 13:40:00.000000', NULL, 123456788, NULL, NULL),
+(61, '5546 Redwood St', '2013-01-28 00:00:00.000000', 'Customer Fifty-Eight', 0, 1, '2024-10-25 13:45:00.000000', NULL, 987654325, NULL, NULL),
+(62, '5647 Mahogany St', '2012-03-29 00:00:00.000000', 'Customer Fifty-Nine', 1, 1, '2024-10-25 13:50:00.000000', NULL, 123789461, NULL, NULL),
+(63, '5748 Ash St', '2011-05-30 00:00:00.000000', 'Customer Sixty', 0, 1, '2024-10-25 13:55:00.000000', NULL, 987453215, NULL, NULL),
+(64, '5849 Elm St', '2010-07-31 00:00:00.000000', 'Customer Sixty-One', 1, 1, '2024-10-25 14:00:00.000000', NULL, 123654792, NULL, NULL),
+(65, '5950 Maple St', '2009-09-01 00:00:00.000000', 'Customer Sixty-Two', 0, 1, '2024-10-25 14:05:00.000000', NULL, 987654313, NULL, NULL),
+(66, '6051 Pine St', '2008-11-02 00:00:00.000000', 'Customer Sixty-Three', 1, 1, '2024-10-25 14:10:00.000000', NULL, 123789462, NULL, NULL),
+(67, '6152 Cedar St', '2007-01-03 00:00:00.000000', 'Customer Sixty-Four', 0, 1, '2024-10-25 14:15:00.000000', NULL, 987543216, NULL, NULL),
+(68, '6253 Birch St', '2006-03-04 00:00:00.000000', 'Customer Sixty-Five', 1, 1, '2024-10-25 14:20:00.000000', NULL, 123456789, NULL, NULL),
+(69, '6354 Walnut St', '2005-05-05 00:00:00.000000', 'Customer Sixty-Six', 0, 1, '2024-10-25 14:25:00.000000', NULL, 987654326, NULL, NULL),
+(70, '6455 Chestnut St', '2004-07-06 00:00:00.000000', 'Customer Sixty-Seven', 1, 1, '2024-10-25 14:30:00.000000', NULL, 123789463, NULL, NULL),
+(71, '6556 Aspen St', '2003-09-07 00:00:00.000000', 'Customer Sixty-Eight', 0, 1, '2024-10-25 14:35:00.000000', NULL, 987453217, NULL, NULL),
+(72, '6657 Cypress St', '2002-11-08 00:00:00.000000', 'Customer Sixty-Nine', 1, 1, '2024-10-25 14:40:00.000000', NULL, 123654793, NULL, NULL),
+(73, '6758 Spruce St', '2001-01-09 00:00:00.000000', 'Customer Seventy', 0, 1, '2024-10-25 14:45:00.000000', NULL, 987654327, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -310,21 +311,27 @@ CREATE TABLE `tour` (
 --
 
 INSERT INTO `tour` (`tour_id`, `tour_stay`, `status`, `tour_code`, `tour_detail`, `tour_name`, `category_id`) VALUES
-(1, '2', 1, 'S999G09', 'Chi Tiết Tour Được thành Lập', 'Du lịch Thành Cổ, Thị Xã, Tỉnh Quảng Trị', 3),
-(3, '3', 1, 'S999G01', '', 'Bà nà', 1),
-(4, '4', 1, 'S999G02', '', 'Thái Lan', 2),
-(5, '5', 1, 'S999G03', '', 'Du lịch Tượng Nữ Thần Tự Do', 2),
+(1, '3', 1, 'S999G01', 'fsghjhkkl', 'Bà nà', 1),
+(3, '3', 0, 'S999G01', '', 'Bà nà', 1),
+(4, '4', 0, 'S999G02', '', 'Thái Lan', 2),
+(5, '5', 0, 'S999G03', '', 'Du lịch Tượng Nữ Thần Tự Do', 2),
 (6, '6', 1, 'S999G04', '', 'Du lịch Mỹ', 2),
-(7, '7', 1, 'S999G05', '', 'Du lịch Thành Phố Hồ Chí Minh', 1),
-(8, '8', 1, 'S999G07', '', 'Du lịch Hà Nội', 1),
+(7, '7', 0, 'S999G05', '', 'Du lịch Thành Phố Hồ Chí Minh', 1),
+(8, '8', 0, 'S999G07', '', 'Du lịch Hà Nội', 1),
 (9, '9', 1, 'S999G06', '', 'Du lịch Quản Trị', 1),
 (10, '2', 1, 'S999G08', '', 'Du lịch Đông Hà', 1),
 (11, '4', 1, 'S999G10', 'dưa', 'Dương', 1),
-(12, '3', 0, 'S999G11', '', 'Tour du lịch Đà Nẵng', 1),
-(13, '6', 0, 'S999G12', '', 'Du lịch Nam Định', 1),
+(12, '3', 1, 'S999G11', '', 'Tour du lịch Đà Nẵng', 1),
+(13, '6', 1, 'S999G12', '', 'Du lịch Nam Định', 1),
 (14, '7', 0, 'S999G13', '', 'Du lịch Tây Bắc', 1),
 (15, '1', 1, '1', '1', '1', 3),
-(16, '1', 1, '1', '1', '1', 3);
+(16, '1', 1, '1', '1', '1', 3),
+(17, '1', 1, 'sdfgh', '1fdgghj', '1', 3),
+(18, '1', 1, '11111', '1', '1', 3),
+(19, '1', 1, '11', '1', '1', 2),
+(20, '11', 1, 'qqqqqq', 'q', 'q', 2),
+(21, '3', 0, 'hhhhhh', 'hhhhhhhhhh', 'hhhhhh', 2),
+(22, '3', 1, 'szdfc', 'dứagdhfjg', '1', 2);
 
 -- --------------------------------------------------------
 
@@ -354,7 +361,8 @@ INSERT INTO `tour_discount` (`tour_time_id`, `discount_id`) VALUES
 CREATE TABLE `tour_image` (
   `image_id` int(11) NOT NULL,
   `image_url` varchar(255) DEFAULT NULL,
-  `tour_id` int(11) DEFAULT NULL
+  `tour_id` int(11) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -485,8 +493,8 @@ ALTER TABLE `category`
 --
 ALTER TABLE `customer`
   ADD PRIMARY KEY (`customer_id`),
-  ADD UNIQUE KEY `UKjwt2qo9oj3wd7ribjkymryp8s` (`account_id`),
-  ADD UNIQUE KEY `UKod6gs5c5g422iwnfkh4iiifkw` (`customer_rel_id`);
+  ADD UNIQUE KEY `UKod6gs5c5g422iwnfkh4iiifkw` (`customer_rel_id`),
+  ADD UNIQUE KEY `UKjwt2qo9oj3wd7ribjkymryp8s` (`account_id`);
 
 --
 -- Chỉ mục cho bảng `discount`
@@ -544,7 +552,7 @@ ALTER TABLE `transport_detail`
 -- AUTO_INCREMENT cho bảng `account`
 --
 ALTER TABLE `account`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT cho bảng `booking`
@@ -574,7 +582,7 @@ ALTER TABLE `discount`
 -- AUTO_INCREMENT cho bảng `tour`
 --
 ALTER TABLE `tour`
-  MODIFY `tour_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `tour_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT cho bảng `tour_image`
@@ -628,7 +636,8 @@ ALTER TABLE `booking_detail`
 -- Các ràng buộc cho bảng `customer`
 --
 ALTER TABLE `customer`
-  ADD CONSTRAINT `FKkdgk9jkvgwwit7uxkew7amrnh` FOREIGN KEY (`customer_rel_id`) REFERENCES `customer` (`customer_id`);
+  ADD CONSTRAINT `FKkdgk9jkvgwwit7uxkew7amrnh` FOREIGN KEY (`customer_rel_id`) REFERENCES `customer` (`customer_id`),
+  ADD CONSTRAINT `FKn9x2k8svpxj3r328iy1rpur83` FOREIGN KEY (`account_id`) REFERENCES `account` (`account_id`);
 
 --
 -- Các ràng buộc cho bảng `tour`
