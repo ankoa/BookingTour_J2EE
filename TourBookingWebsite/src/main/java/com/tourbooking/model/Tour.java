@@ -25,7 +25,7 @@ public class Tour {
     @Column(name = "tour_name")
     private String tourName;
 
-    @Column(name = "tour_detail")
+    @Column(name = "tour_detail",columnDefinition = "TEXT")
     private String tourDetail;
 
     @Column(name = "status")
