@@ -27,13 +27,13 @@ public class TourTimeService {
     @Autowired
     private TransportMapper transportMapper;
 
-    public int getReservedCount(TourTime tourTime) {
-        int reservedCount=tourTime.getQuantity();
+    private int getRemainPax(TourTime tourTime) {
+        int reservedCount=0;
         Set<Booking> bookings =tourTime.getBookings();
         for(Booking booking : bookings){
             reservedCount+=booking.getAdultCount()+booking.getChildCount();
         }
-        return reservedCount;
+        return tourTime.getQuantity()-reservedCount;
     }
 
     public String getTourName(String id) {
@@ -49,8 +49,7 @@ public class TourTimeService {
 
         List<TourTimeResponse> monthMap = new ArrayList<>();
         for (TourTime tourTime : tourTimes) {
-            int reservedCount = getReservedCount(tourTime);
-            TourTimeResponse tourTimeResponse = toTourTimeResponse(tourTime, (tourTime.getQuantity() - reservedCount));
+            TourTimeResponse tourTimeResponse = toTourTimeResponse(tourTime,  getRemainPax(tourTime));
             monthMap.add(tourTimeResponse);
         }
         monthMap.sort((t1, t2) -> t1.getDepartureTime().compareTo(t2.getDepartureTime()));
@@ -58,7 +57,7 @@ public class TourTimeService {
         return monthMap;
     }
 
-    private TourTimeResponse toTourTimeResponse(TourTime tourTime, int tourReservedCount) {
+    private TourTimeResponse toTourTimeResponse(TourTime tourTime, int remainPax) {
         TourTimeResponse tourTimeResponse = tourTimeMapper.toTourTimeResponse(tourTime);
 
         Date currentDate = new Date();
@@ -71,15 +70,15 @@ public class TourTimeService {
                 if (discount.getEndDate() != null)
                     if (!currentDate.before(discount.getEndDate())) continue;
                 tourTimeResponse.setIsDiscount(true);
-                tourTimeResponse.setDiscountPrice(discount.getDiscountValue());
+                tourTimeResponse.setDiscountValue(discount.getDiscountValue());
                 break;
             }
         else {
             tourTimeResponse.setIsDiscount(false);
-            tourTimeResponse.setDiscountPrice(0);
+            tourTimeResponse.setDiscountValue(0);
         }
 
-        tourTimeResponse.setRemainPax(tourTime.getQuantity() - tourReservedCount);
+        tourTimeResponse.setRemainPax(remainPax);
 
         Set<TransportDetail> transportDetailsSet = tourTime.getTransportDetails();
         ArrayList<TransportResponse> transportResponseList = new ArrayList<>();
@@ -96,8 +95,6 @@ public class TourTimeService {
     public TourTimeResponse getTourTimeResponseById(String tourTimeId) {
         TourTime tourTime = tourTimeRepository.findById(Integer.parseInt(tourTimeId))
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + tourTimeId));
-        int reserverCount = getReservedCount(tourTime);
-        TourTimeResponse tourTimeResponse = toTourTimeResponse(tourTime, (tourTime.getQuantity() - reserverCount));
-        return tourTimeResponse;
+        return toTourTimeResponse(tourTime,getRemainPax(tourTime));
     }
 }

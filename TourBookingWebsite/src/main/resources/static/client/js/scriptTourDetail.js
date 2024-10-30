@@ -21,13 +21,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if(tourTime.isDiscount)
             details+= `<del>${tourTime.priceAdult}</del>`;
 
-        details+=`<span class="text-danger fw-bold">${tourTime.isDiscount ? tourTime.priceAdult - tourTime.discountPrice : tourTime.priceAdult}</span> VND</p>
+        details+=`<span class="text-danger fw-bold">${tourTime.isDiscount ? tourTime.priceAdult - tourTime.discountValue : tourTime.priceAdult} </span> VND</p>
         <p>Khởi hành tại: ${tourTime.transportResponses[0] ? tourTime.transportResponses[0].departureLocation : "Đang cập nhật"}</p>
         <p>Ngày Khởi hành: ${tourTime.departureTime}</p>
         <p>Thời gian: ${tourTime.dayStay}</p>
-        <p>Số chỗ còn lại: ${tourTime.remainPax} chỗ</p>
-        <div class="book">
-          <a class="btn btn-danger w-100" href="/order-booking?tourTimeId=${tourTime.tourTimeId}">Đặt tour</a></div>`;
+        <p>Số chỗ còn lại: ${tourTime.remainPax<=0?"Hết ":tourTime.remainPax} chỗ</p>`;
+        if(tourTime.remainPax>0)
+            details+=`<div class="book">
+          <a class="btn btn-danger w-100" href="/order-booking?tourTimeId=${tourTime.tourTimeId}">Đặt tour</a>
+        </div>`;
         return details;
     }
 
@@ -48,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="d-flex justify-content-between gap-2">
                             <p>${transport.departureLocation}</p>
-                            <h5>${transport.transportName}</h5>
+                            <p>${transport.transportName}</p>
                             <p>${transport.destinationLocation}</p>
                         </div>` : `
                     `).join('')}

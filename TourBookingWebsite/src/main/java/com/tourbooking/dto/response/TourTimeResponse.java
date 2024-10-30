@@ -28,7 +28,7 @@ public class TourTimeResponse {
     Integer tourTimeId;
 
     //
-    Integer discountPrice;
+    Integer discountValue;
     Boolean isDiscount;
     Integer remainPax;
     List<TransportResponse> transportResponses;
