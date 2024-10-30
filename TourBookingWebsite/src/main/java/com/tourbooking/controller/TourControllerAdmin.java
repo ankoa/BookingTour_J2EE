@@ -50,7 +50,7 @@ public class TourControllerAdmin {
 
     @GetMapping("/tours/{id}")
     public ResponseEntity<Tour> getTourById(@PathVariable int id) {
-        return tourService.getTourById(id)
+        return tourService.getTourByIdInt(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -143,7 +143,7 @@ public class TourControllerAdmin {
             newTour.setStatus(status);
             newTour.setTourCode(tourCode);
             newTour.setDayStay(dayStay);
-
+            System.out.print("okokok");
             // Lưu tour mới vào database
             tourService.addTour(newTour);
 
@@ -160,16 +160,79 @@ public class TourControllerAdmin {
 
 
 
+    @PutMapping("/tours/update-tour")
+    public ResponseEntity<Map<String, String>> updateTour(@RequestBody Map<String, Object> tourData) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            Integer tourID = ((Number) tourData.get("tourId")).intValue();
+            String tourName = (String) tourData.get("tourName");
+            String tourDetail = (String) tourData.get("tourDetail");
+            Integer categoryId = ((Number) tourData.get("category")).intValue();
+            Integer status = ((Number) tourData.get("status")).intValue();
+            String tourCode = (String) tourData.get("tourCode");
+            String dayStay = (String) tourData.get("dayStay");
 
-    @PutMapping("/tours/update-tour/{id}")
-    public ResponseEntity<Tour> updateTour(@PathVariable int id, @RequestBody Tour tour) {
-        Tour updatedTour = tourService.updateTour(id, tour);
-        return updatedTour != null ? ResponseEntity.ok(updatedTour) : ResponseEntity.notFound().build();
+            // Kiểm tra dữ liệu đầu vào
+            System.out.println("Tour ID: " + tourID);
+            System.out.println("Tour Name: " + tourName);
+            System.out.println("Tour Detail: " + tourDetail);
+            System.out.println("Category ID: " + categoryId);
+            System.out.println("Status: " + status);
+            System.out.println("Tour Code: " + tourCode);
+            System.out.println("Day Stay: " + dayStay);
+
+            if (tourName == null || tourDetail == null || categoryId == null ||
+                status == null || tourCode == null || dayStay == null) {
+                response.put("message", "Vui lòng điền đầy đủ thông tin!");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Lấy category và tour
+            Category category = categoryService.getCategoryById(categoryId)
+                                  .orElseThrow(() -> new IllegalArgumentException("Category không tồn tại!"));
+            Tour existingTour = tourService.getTourByIdInt(tourID)
+                                 .orElseThrow(() -> new IllegalArgumentException("Tour không tồn tại!"));
+
+            // Cập nhật các trường cho đối tượng tour hiện tại
+            existingTour.setTourName(tourName);
+            existingTour.setTourDetail(tourDetail);
+            existingTour.setCategory(category);
+            existingTour.setStatus(status);
+            existingTour.setTourCode(tourCode);
+            existingTour.setDayStay(dayStay);
+
+            // Lưu tour đã cập nhật vào database
+            Tour updatedTour = tourService.updateTour(tourID, existingTour);
+
+            // Kiểm tra kết quả trả về và đưa ra thông báo phù hợp
+            if (updatedTour != null) {
+                response.put("message", "Cập nhật tour thành công!");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("message", "Không tìm thấy tour để cập nhật.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (IllegalArgumentException e) {
+            response.put("message", "Dữ liệu đầu vào không hợp lệ: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) {
+            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
+
+
+
+
 
     @DeleteMapping("/tours/delete-tour/{id}")
-    public ResponseEntity<Void> deleteTour(@PathVariable int id) {
-        tourService.deleteTour(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteTour(@PathVariable String id) {
+        boolean isDeleted = tourService.deleteTour(Integer.parseInt(id));
+        if (isDeleted) {
+            return ResponseEntity.noContent().build(); // Xóa thành công
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tour không tồn tại."); // Không tìm thấy tour
+        }
     }
+
 }

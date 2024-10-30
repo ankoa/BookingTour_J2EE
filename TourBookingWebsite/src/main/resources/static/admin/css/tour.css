@@ -1,0 +1,68 @@
+body {
+            background-color: #f8f9fa;
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: #343a40;
+            font-family: 'Roboto', sans-serif;
+        }
+        .container {
+            margin-top: 25px;
+        }
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        .filter-section input,
+        .filter-section select {
+            width: 100%;
+        }
+        .add-tour-btn {
+            margin-bottom: 10px;
+        }
+        .table-container {
+		    max-height: 400px; /* Thiết lập chiều cao tối đa cho bảng */
+		    overflow-y: auto;  /* Cho phép cuộn theo chiều dọc */
+		    border: 1px solid #dee2e6; /* Thêm viền cho bảng */
+		}
+		
+		table {
+		    width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng */
+		    border-collapse: collapse; /* Gộp các viền của các ô */
+		}
+		
+		th {
+		    background-color: #e9ecef;
+		    color: #495057;
+		    font-weight: bold;
+		    position: sticky; /* Giữ vị trí khi cuộn */
+		    top: 0; /* Ghi nhớ vị trí đầu của bảng */
+		    z-index: 10; /* Đảm bảo header nằm trên các ô khác */
+		}
+        td {
+            background-color: #ffffff;
+            color: #343a40;
+        }
+        td a {
+            margin: 0 5px;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #0d6efd;
+            color: #ffffff;
+        }
+        .tab-content {
+            margin-top: 20px;
+        }
+        .selected-row {
+            background-color: #d1e7dd;
+        }
+        .action-buttons {
+    display: flex;
+    gap: 5px; /* Khoảng cách giữa các nút */
+}
+    .alert {
+        display: none; 
+        position: fixed; 
+        top: 20px; 
+        right: 20px; 
+        z-index: 1051; 
+    }

@@ -42,8 +42,8 @@ public class TourService {
     public Tour getTourById(String id) {
         return tourRepository.findById(Integer.parseInt(id)).orElse(null);
     }
-
-    public Optional<Tour> getTourById(int id) {
+    
+    public Optional<Tour> getTourByIdInt(int id) {
         return tourRepository.findById(id);
     }
 
@@ -52,18 +52,24 @@ public class TourService {
         return tourRepository.save(tour);
     }
 
-    // Cập nhật tour
     public Tour updateTour(int id, Tour tour) {
         if (tourRepository.existsById(id)) {
             tour.setTourId(id);
-            return tourRepository.save(tour);
+            return tourRepository.save(tour); // Trả về đối tượng Tour đã cập nhật
         }
-        return null;
+        return null; // Trả về null nếu không tồn tại tour với ID đã cho
     }
 
+
     // Xóa tour
-    public void deleteTour(int id) {
-        tourRepository.deleteById(id);
+
+    public boolean deleteTour(int id) {
+        try {
+            tourRepository.deleteTour(id);            
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private String saveImage(MultipartFile imageFile) {
