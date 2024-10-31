@@ -24,7 +24,10 @@ public class RestDiscountController {
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "Gửi dữ liệu thành công!");
-        response.put("discountValue", discount.getDiscountValue()+"");
+        if (discount != null)
+            response.put("discountValue", discount.getDiscountValue() + "");
+        else
+            response.put("discountValue", 0 + "");
 
         return ResponseEntity.ok(response);
     }

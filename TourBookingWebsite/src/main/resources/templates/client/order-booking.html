@@ -8,7 +8,6 @@
     <div th:replace="client/navbar :: navbar"></div>
     <script th:inline="javascript">
         const tourTimeResponse = /*[[${tourTimeResponse}]]*/ {};
-        const tourName = /*[[${tourName}]]*/ {};
     </script>
     <main id="main">
         <div th:class="'order-booking order-booking-'+${tourTimeResponse.tourTimeId}">
@@ -126,12 +125,12 @@
                                 <div class="d-flex justify-content-between">
                                     <p class="title">Người lớn</p>
                                     <span class="price text-danger " id="price-adult">0 x <b
-                                            th:text="${tourTimeResponse.priceAdult} +' ₫'"></b></span>
+                                            th:text="${tourTimeResponse.isDiscount ? tourTimeResponse.priceAdult - tourTimeResponse.discountValue : tourTimeResponse.priceAdult} +' ₫'"></b></span>
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <p class="title">Trẻ em</p>
                                     <span class="price text-danger " id="price-child">0 x <b
-                                            th:text="${tourTimeResponse.priceChild} +' ₫'"></b></span>
+                                            th:text="${tourTimeResponse.isDiscount ? tourTimeResponse.priceChild - tourTimeResponse.discountValue : tourTimeResponse.priceChild} +' ₫'"></b></span>
                                 </div>
 
 

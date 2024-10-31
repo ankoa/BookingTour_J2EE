@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -26,7 +27,7 @@ public class BookingService {
     private BookingRepository bookingRepository;
 
     @Autowired
-    private CustomerMapper customerMapper;
+    CustomerMapper customerMapper;
 
     @Autowired
     private TourRepository tourRepository;
@@ -40,133 +41,131 @@ public class BookingService {
     @Autowired
     private BookingDetailRepository bookingDetailRepository;
 
-    // Retrieve all accounts
+    public BookingService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+
+    // Lấy tất cả các tài khoản
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
 
-    // Find account by ID
+    // Tìm tài khoản theo ID
     public Account getAccountById(String accountId) {
         return accountRepository.findById(Integer.parseInt(accountId)).orElse(null);
     }
 
-    // Create a new account
+    // Thêm tài khoản mới
     public Account createAccount(Account account) {
         return accountRepository.save(account);
     }
 
-    // Create a new customer
     public Customer createCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
 
-    // Update account with validation
+    // Cập nhật tài khoản
     public Account updateAccount(String accountId, Account accountDetails) {
         return accountRepository.findById(Integer.parseInt(accountId))
                 .map(account -> {
+                    // Kiểm tra dữ liệu hợp lệ trước khi cập nhật
                     if (accountDetails.getAccountName() != null) {
                         account.setAccountName(accountDetails.getAccountName());
                     }
                     if (accountDetails.getEmail() != null) {
                         account.setEmail(accountDetails.getEmail());
                     }
-                    if (accountDetails.getStatus() != null) {
-                        account.setStatus(accountDetails.getStatus());
-                    }
-                    if (accountDetails.getTime() != null) {
-                        account.setTime(accountDetails.getTime());
-                    }
+                    account.setStatus(accountDetails.getStatus());
+                    account.setTime(accountDetails.getTime());
                     return accountRepository.save(account);
                 })
                 .orElse(null);
     }
 
-    // Delete account by ID
+    // Xóa tài khoản
     public void deleteAccount(String accountId) {
         accountRepository.deleteById(Integer.parseInt(accountId));
     }
 
-    // Submit booking form
     public void submitForm(BookingRequest bookingRequest) {
+        //thoi gian hien tai
         Date currentDate = new Date();
-        List<Customer> customers = createCustomerList(bookingRequest, currentDate);
-        Customer customerRepresentative = customers.get(0);  // assuming the first is the representative
 
-        TourTime tourTime = tourTimeRepository.findById(bookingRequest.getTourTimeId()).orElse(null);
-        Booking newBooking = createBooking(bookingRequest, currentDate, customerRepresentative, tourTime);
-        
-        bookingRepository.save(newBooking);
-        saveBookingDetails(customers, newBooking, tourTime);
-    }
-
-    private List<Customer> createCustomerList(BookingRequest bookingRequest, Date currentDate) {
+        //danh sach khach hang vua book
         List<Customer> customers = new ArrayList<>();
 
-        // Representative Customer
-        Customer customerRepresentative = customerMapper.toCustomer(new CustomerRequest(
-                bookingRequest.getName(), 0, bookingRequest.getPhoneNumber(), null, bookingRequest.getAddress()));
-        customerRepresentative.setCustomerType(1);
-        customerRepresentative.setTime(currentDate);
-        customerRepository.save(customerRepresentative);
-        customers.add(customerRepresentative);
+        // luu nguoi dai dien
+        Customer customerRelationship = customerMapper.toCustomer(
+                new CustomerRequest(bookingRequest.getName(), 0, bookingRequest.getPhoneNumber(), null, bookingRequest.getAddress())
+        );
+        customerRelationship.setCustomerType(1);
+        customerRelationship.setTime(currentDate);
+        customerRelationship.setPhoneNumber(bookingRequest.getPhoneNumber());
+        customerRepository.save(customerRelationship);
+        customers.add(customerRelationship);
 
-        // Adult Customers
+        // luu danh sach nguoi lon
         bookingRequest.getAdults().forEach(customerRequest -> {
             Customer customer = customerMapper.toCustomer(customerRequest);
-            customer.setCustomer(customerRepresentative);
+            customer.setRelatedCustomer(customerRelationship);
             customer.setTime(currentDate);
             customer.setCustomerType(1);
             customerRepository.save(customer);
             customers.add(customer);
         });
 
-        // Child Customers
+        // luu danh sach tre em
         bookingRequest.getChildren().forEach(customerRequest -> {
             Customer customer = customerMapper.toCustomer(customerRequest);
-            customer.setCustomer(customerRepresentative);
+            customer.setRelatedCustomer(customerRelationship);
             customer.setTime(currentDate);
             customer.setCustomerType(2);
             customerRepository.save(customer);
             customers.add(customer);
         });
 
-        return customers;
-    }
+        // lay tour time da dat
+        TourTime tourTime = tourTimeRepository.findById(bookingRequest.getTourTimeId())
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + bookingRequest.getTourTimeId()));
 
-    private Booking createBooking(BookingRequest bookingRequest, Date currentDate, Customer customerRepresentative, TourTime tourTime) {
+        //luu du lie booking
         Booking newBooking = new Booking();
-        newBooking.setCustomer(customerRepresentative);
+        newBooking.setCustomer(customerRelationship);
         newBooking.setAdultCount(bookingRequest.getAdults().size());
         newBooking.setChildCount(bookingRequest.getChildren().size());
         newBooking.setStatus(1);
         newBooking.setTime(currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         newBooking.setTourTime(tourTime);
 
-        Discount discount = null;
+        //gia thuong
+        int price = tourTime.getPriceAdult() * bookingRequest.getChildren().size() +
+                tourTime.getPriceChild() * bookingRequest.getAdults().size();
+
+        //gia co discount
+        if (!tourTime.getDiscounts().isEmpty()) {
+            for (Discount discount : tourTime.getDiscounts()) {
+                if (discount.getStartDate() != null)
+                    if (!currentDate.after(discount.getStartDate())) continue;
+                if (discount.getEndDate() != null)
+                    if (!currentDate.before(discount.getEndDate())) continue;
+                price = (tourTime.getPriceAdult() - discount.getDiscountValue()) * bookingRequest.getChildren().size() +
+                        (tourTime.getPriceChild() - discount.getDiscountValue()) * bookingRequest.getAdults().size();
+                break;
+            }
+
+        }
         if (bookingRequest.getVoucherCode() != null) {
+            Discount discount = null;
             discount = discountRepository.findByDiscountCode(bookingRequest.getVoucherCode());
-        }
+            newBooking.setTotalPrice(price - discount.getDiscountValue());
+        } else newBooking.setTotalPrice(price);
+        bookingRepository.save(newBooking);
 
-        if (tourTime != null && discount != null) {
-            newBooking.setTotalPrice(
-                    tourTime.getPriceAdult() * bookingRequest.getAdults().size() +
-                    tourTime.getPriceChild() * bookingRequest.getChildren().size() -
-                    discount.getDiscountValue()
-            );
-        } else if (tourTime != null) {
-            newBooking.setTotalPrice(
-                    tourTime.getPriceAdult() * bookingRequest.getAdults().size() +
-                    tourTime.getPriceChild() * bookingRequest.getChildren().size()
-            );
-        }
-        return newBooking;
-    }
 
-    private void saveBookingDetails(List<Customer> customers, Booking booking, TourTime tourTime) {
         for (Customer customer : customers) {
             BookingDetail bookingDetail = new BookingDetail();
             bookingDetail.setCustomer(customer);
-            bookingDetail.setBooking(booking);
+            bookingDetail.setBooking(newBooking);
             bookingDetail.setPrice(customer.getCustomerType() == 1 ? tourTime.getPriceAdult() : tourTime.getPriceChild());
             bookingDetail.setStatus(1);
             bookingDetailRepository.save(bookingDetail);

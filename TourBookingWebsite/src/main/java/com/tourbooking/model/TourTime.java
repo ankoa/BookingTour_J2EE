@@ -41,7 +41,7 @@ public class TourTime {
     @Column(name = "price_child", nullable = false)
     private int priceChild;
 
-    @Column(name="note", nullable = false)
+    @Column(name="note",columnDefinition = "TEXT")
     private String note;
 
     @Column(name = "status", nullable = false)

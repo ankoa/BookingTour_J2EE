@@ -3,7 +3,11 @@ import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.model.Tour;
 import com.tourbooking.model.TourImage;
 import com.tourbooking.model.TourTime;
+import com.tourbooking.mapper.TourTimeMapper;
+import com.tourbooking.mapper.TransportMapper;
+import com.tourbooking.model.*;
 import com.tourbooking.repository.TourRepository;
+import com.tourbooking.repository.TourTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +26,15 @@ public class TourService {
     @Autowired
     private TourTimeService tourTimeService;
 
+    @Autowired
+    TourTimeMapper tourTimeMapper;
+
+    @Autowired
+    TransportMapper transportMapper;
+
+    @Autowired
+    TourTimeRepository tourTimeRepository;
+
     // Lấy tất cả các tour
     public List<Tour> getAllTours() {
         return tourRepository.findAll();
@@ -33,7 +46,7 @@ public class TourService {
         return tourRepository.findById(Integer.parseInt(id)).orElse(null);
     }
     
-    public Optional<Tour> getTourById(int id) {
+    public Optional<Tour> getTourByIdInt(int id) {
         return tourRepository.findById(id);
     }
 
@@ -42,24 +55,30 @@ public class TourService {
         return tourRepository.save(tour);
     }
 
-    // Cập nhật tour
     public Tour updateTour(int id, Tour tour) {
         if (tourRepository.existsById(id)) {
             tour.setTourId(id);
-            return tourRepository.save(tour);
+            return tourRepository.save(tour); // Trả về đối tượng Tour đã cập nhật
         }
-        return null;
+        return null; // Trả về null nếu không tồn tại tour với ID đã cho
     }
 
+
     // Xóa tour
-    public void deleteTour(int id) {
-        tourRepository.deleteById(id);
+
+    public boolean deleteTour(int id) {
+        try {
+            tourRepository.deleteTour(id);            
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
+
     private String saveImage(MultipartFile imageFile) {
         String uploadDir = "uploads/"; // Nếu là thư mục trong dự án
         // Hoặc chỉ định đường dẫn tuyệt đối
         // String uploadDir = "/home/user/images/";
-        
         String fileName = imageFile.getOriginalFilename(); // Lấy tên file
         File file = new File(uploadDir + fileName);
         try {
@@ -71,41 +90,31 @@ public class TourService {
             return null; // Hoặc xử lý ngoại lệ phù hợp
         }
     }
+
     public List<Tour> searchTours(String searchValue) {
         return tourRepository.searchTours(searchValue);
     }
 
+    public List<String> getListImageUrl(String id) {
+        Tour tour = tourRepository.findById(Integer.parseInt(id)).orElseThrow(() -> new IllegalArgumentException(
+                "Không tìm thấy tour với ID: " + id));
 
-
-
-    public List<String> getListImageUrl(String id){
-        Tour tour = tourRepository.findById(Integer.parseInt(id)).orElse(null);
-        return tour.getTourImages() != null ?
-                tour.getTourImages().stream()
-                        .map(TourImage::getImageUrl)  // Lấy thuộc tính imageUrl
-                        .filter(Objects::nonNull)  // Lọc bỏ các giá trị null
-                        .collect(Collectors.toList())
+        List<String> listImage = tour.getTourImages() != null ? tour.getTourImages().stream()
+                .map(TourImage::getImageUrl) // Lấy thuộc tính imageUrl
+                .filter(Objects::nonNull) // Lọc bỏ các giá trị null
+                .collect(Collectors.toList())
                 : new ArrayList<>();
-    }
-    public List<TourTimeResponse> getTourTimeResponseById(String tourId) {
-        // Lấy tour times từ repository
-        Tour tour = tourRepository.findById(Integer.parseInt(tourId)).orElse(null);
-
-        //Xuat list tourTimes roi map sang tourTimeResponse
-        Set<TourTime> tourTimes=tour.getTourTimes();
-
-        List<TourTimeResponse> monthMap = new ArrayList<>();
-        for (TourTime tourTime : tourTimes) {
-
-            int reservedCount=tourTimeService.getReservedCount(tourTime);
-
-            TourTimeResponse tourTimeResponse = new TourTimeResponse(tourTime,(tourTime.getQuantity()-reservedCount));
-            monthMap.add(tourTimeResponse);
+        if (listImage == null || listImage.isEmpty()) {
+            listImage = new ArrayList<>(Arrays.asList(
+                    "/client/img/54.jpg",
+                    "/client/img/55.jpg",
+                    "/client/img/54.jpg",
+                    "/client/img/55.jpg",
+                    "/client/img/54.jpg",
+                    "/client/img/55.jpg",
+                    "/client/img/54.jpg"));
         }
-        Collections.sort(monthMap, (t1, t2) -> t1.getDepartureTime().compareTo(t2.getDepartureTime()));
-
-        return monthMap;
+        return listImage;
     }
-
 
 }

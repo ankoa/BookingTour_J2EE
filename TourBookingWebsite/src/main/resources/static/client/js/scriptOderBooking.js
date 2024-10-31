@@ -83,12 +83,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const elementPriceAdult = document.getElementById("price-adult");
     const elementPriceChild = document.getElementById("price-child");
     const elementTotalPrice = document.getElementById("total-price");
-    const elementValueDiscount =document.getElementById("value-discount");
+    const elementValueDiscount = document.getElementById("value-discount");
 
 
     let countChild = 0;
     let countAdult = 0;
     let discountValue = 0;
+    let priceAdult = tourTimeResponse.priceAdult;
+    let priceChild = tourTimeResponse.priceChild;
+
+    if (tourTimeResponse.isDiscount) {
+        priceAdult = tourTimeResponse.priceAdult-tourTimeResponse.discountValue;
+        priceChild = tourTimeResponse.priceChild-tourTimeResponse.discountValue;
+    }
 
     // Hàm giảm giá trị
     elementMinusBtnChild.addEventListener("click", () => {
@@ -138,14 +145,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function ChangedValue() {
-        const priceAdult = tourTimeResponse.priceAdult * countAdult;
-        const priceChild = tourTimeResponse.priceChild * countChild;
-        const totalPrice = priceAdult + priceChild - discountValue;
-        elementPriceAdult.innerHTML = `${countAdult} x <b>${tourTimeResponse.priceAdult.toLocaleString('vi-VN')} ₫</b>`;
-        elementPriceChild.innerHTML = `${countChild} x <b>${tourTimeResponse.priceChild.toLocaleString('vi-VN')} ₫</b>`;
-        elementPriceCustomer.innerHTML = `<b>${(priceAdult + priceChild).toLocaleString('vi-VN')} ₫</b>`;
+        let priceTotalAdult = priceAdult * countAdult;
+        let priceTotalChild = priceChild * countChild;
+        const totalPrice = priceTotalAdult + priceTotalChild - discountValue;
+        elementPriceAdult.innerHTML = `${countAdult} x <b>${priceAdult.toLocaleString('vi-VN')} ₫</b>`;
+        elementPriceChild.innerHTML = `${countChild} x <b>${priceChild.toLocaleString('vi-VN')} ₫</b>`;
+        elementPriceCustomer.innerHTML = `<b>${(priceTotalAdult + priceTotalChild).toLocaleString('vi-VN')} ₫</b>`;
         elementTotalPrice.innerHTML = `<b>${(totalPrice > 0 ? totalPrice : 0).toLocaleString('vi-VN')} ₫</b>`;
-        elementValueDiscount.innerHTML=`- <b>${discountValue.toLocaleString('vi-VN')} ₫</b>`
+        elementValueDiscount.innerHTML = `- <b>${discountValue.toLocaleString('vi-VN')} ₫</b>`
     }
 
     async function fetchDiscountByCode(discountCode) {
@@ -168,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch (error) {
             console.error('Error fetching discount:', error);
-            discountCode=0;
+            discountCode = 0;
             return false;
         }
     }
@@ -179,18 +186,18 @@ document.addEventListener("DOMContentLoaded", function () {
         if (isValid) {
             document.getElementById("box-mess-voucher").textContent = `Áp dụng mã giảm giá thành công`;
             document.getElementById("box-mess-voucher").classList.remove("border-danger");
-            document.getElementById("box-mess-voucher").classList.add("border-success","p-2","border");
+            document.getElementById("box-mess-voucher").classList.add("border-success", "p-2", "border");
             ChangedValue();
         } else {
             document.getElementById("box-mess-voucher").textContent = `Áp dụng mã giảm giá không thành công`;
             document.getElementById("box-mess-voucher").classList.remove("border-success");
-            document.getElementById("box-mess-voucher").classList.add("border-danger","p-2","border");
+            document.getElementById("box-mess-voucher").classList.add("border-danger", "p-2", "border");
             ChangedValue();
         }
     });
 
 
-    document.getElementById("submit-form").addEventListener("submit", async function(event) {
+    document.getElementById("submit-form").addEventListener("submit", async function (event) {
         event.preventDefault();
 
         const formData = new FormData(this);
@@ -203,21 +210,20 @@ document.addEventListener("DOMContentLoaded", function () {
             adults: [],
             children: [],
             note: formData.get('note'),
-            tourTimeId:tourTimeResponse.tourTimeId
+            tourTimeId: tourTimeResponse.tourTimeId
         };
-        for(let i=0;i<formData.get('valueAdult');i++)
+        for (let i = 0; i < formData.get('valueAdult'); i++)
             processedData.adults.push({
                 customerName: formData.get(`name-adult-${i}`),
                 sex: formData.get(`sex-adult-${i}`),
-                birthday:formData.get(`birthday-adult-${i}`)
+                birthday: formData.get(`birthday-adult-${i}`)
             });
-        for(let i=0;i<formData.get('valueChild');i++)
+        for (let i = 0; i < formData.get('valueChild'); i++)
             processedData.children.push({
                 customerName: formData.get(`name-child-${i}`),
                 sex: formData.get(`sex-child-${i}`),
-                birthday:formData.get(`birthday-child-${i}`)
+                birthday: formData.get(`birthday-child-${i}`)
             });
-
 
 
         try {
