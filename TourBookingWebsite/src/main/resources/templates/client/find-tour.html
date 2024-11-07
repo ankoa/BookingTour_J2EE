@@ -6,6 +6,9 @@
 <div id="wrapper" class="container">
   <div th:replace="client/navbar :: navbar"></div>
 
+  <div th:if="${user != null}">
+    <span th:text="${user.getAccount().getCustomer().getCustomerId()}"></span>
+  </div>
   <main id="main">
     <div class="container find-tour-header">
       <div class="breadcrumb-container">

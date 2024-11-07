@@ -36,6 +36,9 @@ public class Account {
     @Column(name = "time")
     private LocalDateTime time;
 
+    @Column(name = "role")
+    private String role;
+
     @Column(name = "status")
     private int status;
 
