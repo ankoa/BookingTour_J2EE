@@ -35,7 +35,7 @@ public class BookingDetail {
     @Column(name = "price", nullable = false)
     private int price;
 
-    @Column(name = "detail")
+    @Column(name = "detail",columnDefinition = "TEXT")
     private String detail;
 
     @Column(name = "status", nullable = false)

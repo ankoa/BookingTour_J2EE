@@ -6,13 +6,16 @@ import com.tourbooking.mapper.CustomerMapper;
 import com.tourbooking.model.*;
 import com.tourbooking.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -94,15 +97,22 @@ public class BookingService {
         //danh sach khach hang vua book
         List<Customer> customers = new ArrayList<>();
 
-        // luu nguoi dai dien
-        Customer customerRelationship = customerMapper.toCustomer(
-                new CustomerRequest(bookingRequest.getName(), 0, bookingRequest.getPhoneNumber(), null, bookingRequest.getAddress())
-        );
-        customerRelationship.setCustomerType(1);
-        customerRelationship.setTime(currentDate);
-        customerRelationship.setPhoneNumber(bookingRequest.getPhoneNumber());
-        customerRepository.save(customerRelationship);
-        customers.add(customerRelationship);
+        Customer customerRelationship;
+        if (bookingRequest.getAccountId() != null) {
+            Account account = getAccountById(bookingRequest.getAccountId());
+            customerRelationship = account.getCustomer();
+        } else {
+            CustomerRequest customerRequest = new CustomerRequest();
+            customerRequest.setCustomerName(bookingRequest.getName());
+            customerRequest.setSex(0);
+            customerRequest.setPhoneNumber(bookingRequest.getPhoneNumber());
+            customerRequest.setAddress(bookingRequest.getAddress());
+
+            customerRelationship = customerMapper.toCustomer(customerRequest);
+            customerRelationship.setCustomerType(1);
+            customerRelationship.setTime(currentDate);
+            customerRepository.save(customerRelationship);
+        }
 
         // luu danh sach nguoi lon
         bookingRequest.getAdults().forEach(customerRequest -> {
@@ -170,5 +180,11 @@ public class BookingService {
             bookingDetail.setStatus(1);
             bookingDetailRepository.save(bookingDetail);
         }
+    }
+
+    public List<Booking> getBookingWithPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "time"));
+        Page<Booking> listBooking=bookingRepository.findAll(pageable);
+        return listBooking.getContent();
     }
 }

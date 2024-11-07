@@ -46,11 +46,6 @@ public class Customer {
     @Column(name = "status")
     private int status;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
-    @JsonManagedReference
-    private Account account;
-
     // Quan hệ nhiều khách hàng có thể liên kết tới một khách hàng liên quan
     @ManyToOne
     @JoinColumn(name ="customer_rel_id", referencedColumnName = "customer_id")

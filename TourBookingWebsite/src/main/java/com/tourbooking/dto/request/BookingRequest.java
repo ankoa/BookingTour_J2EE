@@ -20,4 +20,5 @@ public class BookingRequest {
     private Set<CustomerRequest> adults;
     private Set<CustomerRequest> children;
     private int tourTimeId;
+    private String accountId;
 }

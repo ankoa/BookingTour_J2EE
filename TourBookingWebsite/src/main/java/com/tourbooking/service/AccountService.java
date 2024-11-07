@@ -27,6 +27,10 @@ public class AccountService {
         return accountRepository.findById(Integer.parseInt(accountId));
     }
 
+    // public Account getAccountById(String accountId) {
+    //     return accountRepository.findById(Integer.parseInt(accountId)).orElse(null);
+    // }
+
 
     // Thêm tài khoản mới
     public boolean addAccount(Account account) {

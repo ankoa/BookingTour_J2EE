@@ -44,18 +44,18 @@ document.addEventListener("DOMContentLoaded", function () {
         <li class="item d-flex justify-content-between row">
           <div class="input col-sm-4">
               Họ tên
-              <input type="text" name="name-child-${index}" class="w-100">
+              <input type="text" name="name-child-${index}" class="w-100" required>
           </div>
           <div class="input col-sm-4">
               Giới tính
-              <select name="sex-child-${index}" class="w-100">
+              <select name="sex-child-${index}" class="w-100" required>
                   <option value="1">Nam</option>
                   <option value="2">Nữ</option>
               </select>
           </div>
           <div class="input col-sm-4">
               Ngày sinh
-              <input type="date" name="birthday-child-${index}" class="w-100">
+              <input type="date" name="birthday-child-${index}" class="w-100" required>
           </div>
         </li>
       </ul>
@@ -93,35 +93,35 @@ document.addEventListener("DOMContentLoaded", function () {
     let priceChild = tourTimeResponse.priceChild;
 
     if (tourTimeResponse.isDiscount) {
-        priceAdult = tourTimeResponse.priceAdult-tourTimeResponse.discountValue;
-        priceChild = tourTimeResponse.priceChild-tourTimeResponse.discountValue;
+        priceAdult = tourTimeResponse.priceAdult - tourTimeResponse.discountValue;
+        priceChild = tourTimeResponse.priceChild - tourTimeResponse.discountValue;
     }
 
     // Hàm giảm giá trị
     elementMinusBtnChild.addEventListener("click", () => {
-            handleQuantity("minus", "child");
+            handleChangeQuantity("minus", "child");
         }
     );
     elementPlusBtnChild.addEventListener("click", () => {
-            handleQuantity("plus", "child");
+            handleChangeQuantity("plus", "child");
         }
     );
     elementMinusBtnAdult.addEventListener("click", () => {
-            handleQuantity("minus", "adult");
+            handleChangeQuantity("minus", "adult");
         }
     );
     elementPlusBtnAdult.addEventListener("click", () => {
-            handleQuantity("plus", "adult");
+            handleChangeQuantity("plus", "adult");
         }
     );
 
-    function handleQuantity(action, type) {
+    function handleChangeQuantity(action, type) {
         const elementArray = document.createElement('div');
         if (type === "child") {
             if (action == "minus" && countChild > 0) {
                 countChild--;
             }
-            if (action == "plus") {
+            if (action == "plus" && (countChild + countAdult) <= tourTimeResponse.remainPax) {
                 countChild++;
             }
 
@@ -130,10 +130,10 @@ document.addEventListener("DOMContentLoaded", function () {
             elementItemsChildInfo.innerHTML = elementArray.innerHTML;
             elementCounterValueChild.value = countChild;
         } else {
-            if (action == "minus" && countAdult > 0) {
+            if (action == "minus" && countAdult > 1) {
                 countAdult--;
             }
-            if (action == "plus") {
+            if (action == "plus" && (countChild + countAdult) <= tourTimeResponse.remainPax) {
                 countAdult++;
             }
             for (let i = 0; i < countAdult; i++)
@@ -210,7 +210,8 @@ document.addEventListener("DOMContentLoaded", function () {
             adults: [],
             children: [],
             note: formData.get('note'),
-            tourTimeId: tourTimeResponse.tourTimeId
+            tourTimeId: tourTimeResponse.tourTimeId,
+            accountId: formData.get('accountId')
         };
         for (let i = 0; i < formData.get('valueAdult'); i++)
             processedData.adults.push({
@@ -246,4 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Gửi dữ liệu thất bại!");
         }
     });
+
+    handleChangeQuantity("plus", "adult")
+    // ChangedValue()
 });
