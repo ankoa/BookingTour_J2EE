@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<th:block th:replace="client/header :: header"></th:block>
+<body>
+<div id="wrapper" class="container">
+    <div th:replace="client/navbar :: navbar"></div>
+    <div class="row h-100 align-items-center justify-content-center">
+        <div class="col-12 col-sm-12 col-md-10 col-lg-8 col-xl-8">
+            <form id="registerForm" class="needs-validation" novalidate>
+                <div class="rounded p-4 p-sm-5 my-4 mx-3" style="box-shadow: 0 0 10px 0 hsla(0, 0%, 9%, .12);">
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <h3>Đăng ký</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="username" placeholder="Tên đăng nhập" pattern=".{1,15}" required>
+                                <label for="username">Tên đăng nhập <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="email" placeholder="Email" required>
+                                <label for="email">Email <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="password" placeholder="Mật khẩu" required>
+                                <label for="password">Mật khẩu <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback">Vui lòng nhập mật khẩu.</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="cf-password" placeholder="Xác nhận mật khẩu" required>
+                                <label for="cf-password">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback">Vui lòng xác nhận mật khẩu.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="full-name" placeholder="Họ tên" required>
+                                <label for="full-name">Họ tên <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback">Vui lòng nhập họ tên.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="phone" placeholder="Số điện thoại" required>
+                                <label for="phone">Số điện thoại <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback">Vui lòng nhập số điện thoại.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="address" placeholder="Địa chỉ" required>
+                                <label for="address">Địa chỉ <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback">Vui lòng nhập địa chỉ.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating mb-4">
+                                <input type="date" class="form-control" id="birthday" placeholder="Ngày sinh" required>
+                                <label for="birthday">Ngày sinh <span class="text-danger">*</span></label>
+                                <div class="invalid-feedback">Vui lòng nhập ngày sinh.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group mb-4">
+                                <label for="sex" class="col-sm-2 control-label w-100">Giới tính</label>
+                                <select class="form-select" name="sex" id="sex" required>
+                                    <option value="">Chọn giới tính</option>
+                                    <option value="male">Nam</option>
+                                    <option value="female">Nữ</option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn giới tính.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Đăng ký</button>
+                    <p class="text-center mb-0">Bạn đã có tài khoản? <a href="/account-login">Đăng nhập</a></p>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+</body>
+<div th:replace="client/footer::footer"></div>
+</html>

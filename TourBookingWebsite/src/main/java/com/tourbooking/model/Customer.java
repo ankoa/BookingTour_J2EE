@@ -67,5 +67,5 @@ public class Customer {
     private Set<Booking> bookings;
 
     @Column(name="customer_type")
-    private int customerType;
+    private Integer customerType;
 }
