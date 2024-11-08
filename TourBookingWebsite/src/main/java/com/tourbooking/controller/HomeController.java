@@ -7,15 +7,12 @@ import com.tourbooking.service.TourService;
 import com.tourbooking.service.TourTimeService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 @Controller
 public class HomeController {
@@ -28,7 +25,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String index() {
-        return "index"; // Trả về tên template mà không cần phần mở rộng
+        return "client/index"; // Trả về tên template mà không cần phần mở rộng
     }
 
     @GetMapping("/sample")
@@ -38,7 +35,7 @@ public class HomeController {
 
     @GetMapping("/home")
     public String getHome(Model model) {
-        return "client/home";
+        return "index";
     }
 
     @GetMapping("/account-login")
@@ -50,10 +47,10 @@ public class HomeController {
     }
 
     @RequestMapping("/login-success")
-    public String afterLoginSuccess (HttpServletRequest request) {
-//        if (request.isUserInRole("ROLE_ADMIN")) {
-//            return "redirect:/admin/tour-all";
-//        }
+    public String afterLoginSuccess(HttpServletRequest request) {
+        // if (request.isUserInRole("ROLE_ADMIN")) {
+        // return "redirect:/admin/tour-all";
+        // }
         return "redirect:/find-tour";
     }
 
@@ -64,14 +61,16 @@ public class HomeController {
     }
 
     @GetMapping("/find-tour")
-    public String getFindTour(Model model,@AuthenticationPrincipal CustomUserDetails user) {
-            model.addAttribute("user", user);
+    public String getFindTour(Model model, @AuthenticationPrincipal CustomUserDetails user) {
+        model.addAttribute("user", user);
 
         return "client/find-tour";
     }
 
-    @GetMapping("/tour-detail/{id}")
-    public String getTourDetail(@PathVariable("id") String id, Model model) {
+    @GetMapping("/tour/{id}")
+    public String getTourDetail(@PathVariable("id") String id, Model model,
+            @AuthenticationPrincipal CustomUserDetails user) {
+        model.addAttribute("user", user);
         Tour tour = tourService.getTourById(id);
         if (tour == null) {
             return "redirect:/";
@@ -89,13 +88,15 @@ public class HomeController {
     }
 
     @GetMapping("/order-booking")
-    public String getOrderBooking(Model model, @RequestParam(required = true) String tourTimeId) {
+    public String getOrderBooking(Model model,
+            @RequestParam(required = true) String tourTimeId,
+            @AuthenticationPrincipal CustomUserDetails user) {
+        model.addAttribute("user", user);
         TourTimeResponse tourTimeResponse = tourTimeService.getTourTimeResponseById(tourTimeId);
         String tourName = tourTimeService.getTourName(tourTimeId);
         model.addAttribute("tourTimeResponse", tourTimeResponse);
         model.addAttribute("tourName", tourName);
         return "client/order-booking";
     }
-
 
 }

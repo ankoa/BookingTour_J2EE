@@ -33,7 +33,7 @@ public class BookingService {
     CustomerMapper customerMapper;
 
     @Autowired
-    private TourRepository tourRepository;
+    private TourTimeService tourTimeService;
 
     @Autowired
     private TourTimeRepository tourTimeRepository;
@@ -54,8 +54,12 @@ public class BookingService {
     }
 
     // Tìm tài khoản theo ID
+    public Account getAccountById(Integer accountId) {
+        return accountRepository.findById(accountId).orElse(null);
+    }
+    
     public Account getAccountById(String accountId) {
-        return accountRepository.findById(Integer.parseInt(accountId)).orElse(null);
+        return getAccountById(Integer.parseInt(accountId));
     }
 
     // Thêm tài khoản mới
@@ -90,13 +94,23 @@ public class BookingService {
         accountRepository.deleteById(Integer.parseInt(accountId));
     }
 
-    public void submitForm(BookingRequest bookingRequest) {
+    public boolean submitForm(BookingRequest bookingRequest) {
+        // lay tour time da dat
+        TourTime tourTime = tourTimeRepository.findById(bookingRequest.getTourTimeId())
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + bookingRequest.getTourTimeId()));
+
+        //check remainPax
+        if (tourTimeService.getRemainPax(tourTime) < (bookingRequest.getAdults().size() + bookingRequest.getChildren().size()))
+        {
+            return false;
+        }
         //thoi gian hien tai
         Date currentDate = new Date();
 
         //danh sach khach hang vua book
         List<Customer> customers = new ArrayList<>();
 
+        //kiem tra va luu nguuoi dai dien
         Customer customerRelationship;
         if (bookingRequest.getAccountId() != null) {
             Account account = getAccountById(bookingRequest.getAccountId());
@@ -134,18 +148,6 @@ public class BookingService {
             customers.add(customer);
         });
 
-        // lay tour time da dat
-        TourTime tourTime = tourTimeRepository.findById(bookingRequest.getTourTimeId())
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + bookingRequest.getTourTimeId()));
-
-        //luu du lie booking
-        Booking newBooking = new Booking();
-        newBooking.setCustomer(customerRelationship);
-        newBooking.setAdultCount(bookingRequest.getAdults().size());
-        newBooking.setChildCount(bookingRequest.getChildren().size());
-        newBooking.setStatus(1);
-        newBooking.setTime(currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-        newBooking.setTourTime(tourTime);
 
         //gia thuong
         int price = tourTime.getPriceAdult() * bookingRequest.getChildren().size() +
@@ -162,11 +164,21 @@ public class BookingService {
                         (tourTime.getPriceChild() - discount.getDiscountValue()) * bookingRequest.getAdults().size();
                 break;
             }
-
         }
+
+        //luu du lie booking
+        Booking newBooking = new Booking();
+        newBooking.setCustomer(customerRelationship);
+        newBooking.setAdultCount(bookingRequest.getAdults().size());
+        newBooking.setChildCount(bookingRequest.getChildren().size());
+        newBooking.setStatus(1);
+        newBooking.setTime(currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        newBooking.setTourTime(tourTime);
+
+
         if (bookingRequest.getVoucherCode() != null) {
-            Discount discount = null;
-            discount = discountRepository.findByDiscountCode(bookingRequest.getVoucherCode());
+            Discount discount = discountRepository.findByDiscountCode(bookingRequest.getVoucherCode());
+            newBooking.setVoucherPrice(discount.getDiscountValue());
             newBooking.setTotalPrice(price - discount.getDiscountValue());
         } else newBooking.setTotalPrice(price);
         bookingRepository.save(newBooking);
@@ -180,11 +192,13 @@ public class BookingService {
             bookingDetail.setStatus(1);
             bookingDetailRepository.save(bookingDetail);
         }
+
+        return true;
     }
 
     public List<Booking> getBookingWithPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "time"));
-        Page<Booking> listBooking=bookingRepository.findAll(pageable);
+        Page<Booking> listBooking = bookingRepository.findAll(pageable);
         return listBooking.getContent();
     }
 }

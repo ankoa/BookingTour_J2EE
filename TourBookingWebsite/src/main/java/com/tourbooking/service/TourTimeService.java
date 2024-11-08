@@ -27,7 +27,7 @@ public class TourTimeService {
     @Autowired
     private TransportMapper transportMapper;
 
-    private int getRemainPax(TourTime tourTime) {
+    public int getRemainPax(TourTime tourTime) {
         int reservedCount=0;
         Set<Booking> bookings =tourTime.getBookings();
         for(Booking booking : bookings){

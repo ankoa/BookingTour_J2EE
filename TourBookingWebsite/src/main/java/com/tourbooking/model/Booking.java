@@ -46,4 +46,7 @@ public class Booking {
 
     @Column(name = "time", nullable = false)
     private LocalDateTime time;
+
+    @Column(name="voucher_price")
+    private Integer voucherPrice;
 }

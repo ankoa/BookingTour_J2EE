@@ -7,38 +7,45 @@
 <div id="wrapper" class="container">
     <div th:replace="client/navbar :: navbar"></div>
     <script th:inline="javascript">
-        const tourTimeResponse = /*[[${tourTimeResponse}]]*/ {};
-    console.log(tourTimeResponse)
+        const tourTimeResponse = /*[[${tourTimeResponse}]]*/ {
+            priceAdult: undefined,
+            priceChild: undefined,
+            isDiscount: false,
+            discountValue: undefined,
+            remainPax: 0
+        };
     </script>
     <main id="main">
         <div th:class="'order-booking order-booking-'+${tourTimeResponse.tourTimeId}">
             <h1 class="text-align-center">Đặt Tour</h1>
             <form class="row" id="submit-form">
                 <div class="col col-md-7 col-12">
-                    <h2>Thông tin liên lạc</h2>
-                    <div class="row" th:if="${session.loggedInUser == null}">
-                        <div class="col col-md-6 col-12">
-                            <label for="" class="p-2 w-100">
-                                Họ Tên *
-                                <input type="text" name="name" placeholder="Nhập họ tên" required
-                                       class="border-1 rounded p-2 w-100">
-                            </label>
-                            <label for="" class="p-2 w-100">
-                                Địa chỉ
-                                <input type="text" name="address" placeholder="Nhập Địa chỉ"
-                                       class="border-1 rounded p-2 w-100">
-                            </label>
-                        </div>
-                        <div class="col col-md-6 col-12">
-                            <label for="" class="p-2 w-100">
-                                Số điện thoại *
-                                <input type="tel" name="phone" placeholder="Nhập họ tên" required
-                                       class="border-1 rounded p-2 w-100">
-                            </label>
+                    <div th:if="${user == null}">
+                        <h2>Thông tin liên lạc</h2>
+                        <div class="row">
+                            <div class="col col-md-6 col-12">
+                                <label for="" class="p-2 w-100">
+                                    Họ Tên *
+                                    <input type="text" name="name" placeholder="Nhập họ tên" required
+                                           class="border-1 rounded p-2 w-100">
+                                </label>
+                                <label for="" class="p-2 w-100">
+                                    Địa chỉ
+                                    <input type="text" name="address" placeholder="Nhập Địa chỉ"
+                                           class="border-1 rounded p-2 w-100">
+                                </label>
+                            </div>
+                            <div class="col col-md-6 col-12">
+                                <label for="" class="p-2 w-100">
+                                    Số điện thoại *
+                                    <input type="tel" name="phone" placeholder="Nhập họ tên" required
+                                           class="border-1 rounded p-2 w-100">
+                                </label>
 
+                            </div>
                         </div>
                     </div>
-                    <input th:if="${session.loggedInUser != null}" type="hidden" th:value="${session.loggedInUser}"
+                    <input th:if="${user != null}" type="hidden" th:value="${user.getAccount().getAccountId()}"
                            name="accountId">
 
                     <h2>Hành khách</h2>
@@ -53,7 +60,7 @@
                                             <div id="minus-btn-adult"
                                                  class="btn bg-body-secondary d-flex align-items-center">-
                                             </div>
-                                            <input type="number" name="valueAdult" value="1" id="value-adult"
+                                            <input type="number" name="valueAdult" value="0" id="value-adult"
                                                    class="form-control text-center mx-2" min="0" readonly>
                                             <div id="plus-btn-adult"
                                                  class="btn bg-body-secondary d-flex align-items-center">+
@@ -99,11 +106,6 @@
                                 <textarea name="note" id="" placeholder="Nhập lời nhắn bằng tiếng anh hoặc tiếng việt"
                                           class="p-2 w-100 mt-2"></textarea>
                     </div>
-                    <h3>Điều khoản bắt buộc</h3>
-                    <label>
-                        <input type="checkbox" name="policy" selected required>
-                        Tôi đồng ý với Chính sách bảo vệ dữ liệu cá nhân và các điều khoản trên.
-                    </label>
 
                 </div>
                 <div class="col col-md-5 col-12">
@@ -162,7 +164,7 @@
                                     <h3 class="text-danger" id="total-price">0 ₫</h3>
                                 </div>
                                 <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-danger" id="btn-submit">
+                                    <button type="submit" class="btn btn-danger" id="btn-submit" th:disabled="${tourTimeResponse.remainPax <= 0}">
                                         Xác nhận đặt hàng
                                     </button>
                                 </div>

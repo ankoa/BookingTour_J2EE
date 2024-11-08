@@ -17,19 +17,18 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderTourTimeDetail(tourTime) {
         let details = `
         <p>Mã Tour: ${tourTime.tourTimeCode}</p>
-        <p>Giá bán: `;
-        if(tourTime.isDiscount)
-            details+= `<del>${tourTime.priceAdult}</del>`;
-
-        details+=`<span class="text-danger fw-bold">${tourTime.isDiscount ? tourTime.priceAdult - tourTime.discountValue : tourTime.priceAdult} </span> VND</p>
         <p>Khởi hành tại: ${tourTime.transportResponses[0] ? tourTime.transportResponses[0].departureLocation : "Đang cập nhật"}</p>
         <p>Ngày Khởi hành: ${tourTime.departureTime}</p>
         <p>Thời gian: ${tourTime.dayStay}</p>
-        <p>Số chỗ còn lại: ${tourTime.remainPax<=0?"Hết ":tourTime.remainPax} chỗ</p>`;
+        <p>Số chỗ còn lại: ${tourTime.remainPax<=0?"Hết ":tourTime.remainPax} chỗ</p>
+        <div class="book">
+            <p>Giá bán: `;
+            if(tourTime.isDiscount) details+= `<del>${tourTime.priceAdult.toLocaleString('vi-VN')}</del>`;
+        details+=`<span class="text-danger fw-bold">${tourTime.isDiscount ? (tourTime.priceAdult - tourTime.discountValue).toLocaleString('vi-VN') : tourTime.priceAdult.toLocaleString('vi-VN')} </span>`;
+        details+=` VND</p>`;
         if(tourTime.remainPax>0)
-            details+=`<div class="book">
-          <a class="btn btn-danger w-100" href="/order-booking?tourTimeId=${tourTime.tourTimeId}">Đặt tour</a>
-        </div>`;
+            details+=`<a class="btn btn-danger w-100" href="/order-booking?tourTimeId=${tourTime.tourTimeId}">Đặt tour</a>`
+        details+=`</div>`;
         return details;
     }
 
@@ -182,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    //js lấy ảnh
+    //js chuyển ảnh
     document.querySelectorAll('.img-tour').forEach(function (img) {
         img.addEventListener('click', function () {
             // Lấy nguồn ảnh của hình ảnh đã nhấp

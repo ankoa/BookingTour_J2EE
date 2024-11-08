@@ -17,11 +17,14 @@ public class RestBookingController {
     BookingService bookingService;
 
     @PostMapping("/submit-form")
-    public ResponseEntity<Map<String, String>> submitForm(@RequestBody BookingRequest bookingRequest) {
-        bookingService.submitForm(bookingRequest);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Gửi dữ liệu thành công!");
-
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Map<String, Integer>> submitForm(@RequestBody BookingRequest bookingRequest) {
+        Map<String, Integer> response = new HashMap<>();
+        if (bookingService.submitForm(bookingRequest)) {
+            response.put("status", 200);
+            return ResponseEntity.ok(response);  // Success
+        } else {
+            response.put("status", 400);
+            return ResponseEntity.status(400).body(response);  // Error
+        }
     }
 }

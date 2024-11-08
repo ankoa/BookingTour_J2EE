@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const elementTotalPrice = document.getElementById("total-price");
     const elementValueDiscount = document.getElementById("value-discount");
 
+    const buttonSubmit=document.getElementById("btn-submit");
 
     let countChild = 0;
     let countAdult = 0;
@@ -117,30 +118,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function handleChangeQuantity(action, type) {
         const elementArray = document.createElement('div');
-        if (type === "child") {
-            if (action == "minus" && countChild > 0) {
-                countChild--;
+        if (action === "minus") {
+            if (type === "child" && countChild > 0)
+                    countChild--;
+                if (type === "adult" && countAdult > 0)
+                    countAdult--;
             }
-            if (action == "plus" && (countChild + countAdult) <= tourTimeResponse.remainPax) {
-                countChild++;
-            }
+            if (action === "plus")
+                if ((countChild + countAdult) >= tourTimeResponse.remainPax){
+                    alert("Hết chỗ");
+                    return;
+                }else
+                {
+                    if (type === "child")
+                        countChild++;
+                    if (type === "adult" )
+                        countAdult++;
+                }
 
             for (let i = 0; i < countChild; i++)
                 elementArray.appendChild(generateItemChild(i));
             elementItemsChildInfo.innerHTML = elementArray.innerHTML;
             elementCounterValueChild.value = countChild;
-        } else {
-            if (action == "minus" && countAdult > 1) {
-                countAdult--;
-            }
-            if (action == "plus" && (countChild + countAdult) <= tourTimeResponse.remainPax) {
-                countAdult++;
-            }
+
             for (let i = 0; i < countAdult; i++)
                 elementArray.appendChild(generateItemAdult(i));
             elementItemsAdultInfo.innerHTML = elementArray.innerHTML;
             elementCounterValueAdult.value = countAdult;
-        }
         ChangedValue();
     }
 
@@ -211,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
             children: [],
             note: formData.get('note'),
             tourTimeId: tourTimeResponse.tourTimeId,
-            accountId: formData.get('accountId')
+            accountId: Number(formData.get('accountId'))
         };
         for (let i = 0; i < formData.get('valueAdult'); i++)
             processedData.adults.push({
@@ -238,16 +242,15 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             console.log(processedData)
 
-            if (!response.ok) throw new Error("Có lỗi xảy ra");
+            if (!response.ok) {alert("Gửi dữ liệu thất bại!"); return}
 
             const result = await response.json();
-            alert("Gửi dữ liệu thành công!");
+            if (result.status === 200)
+                alert("Đặt tour thành công")
         } catch (error) {
             console.error("Lỗi:", error);
-            alert("Gửi dữ liệu thất bại!");
         }
     });
 
     handleChangeQuantity("plus", "adult")
-    // ChangedValue()
 });
