@@ -1,5 +1,7 @@
 package com.tourbooking.controller;
 
+import com.tourbooking.dto.response.TourImageResponse;
+import com.tourbooking.dto.response.TourResponse;
 import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.model.Tour;
 import com.tourbooking.security.CustomUserDetails;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -23,7 +26,7 @@ public class HomeController {
     @Autowired
     private TourTimeService tourTimeService;
 
-    @GetMapping("/")
+    @GetMapping({"/",""})
     public String index() {
         return "client/index"; // Trả về tên template mà không cần phần mở rộng
     }
@@ -68,34 +71,38 @@ public class HomeController {
     }
 
     @GetMapping("/tour/{id}")
-    public String getTourDetail(@PathVariable("id") String id, Model model,
-            @AuthenticationPrincipal CustomUserDetails user) {
-        model.addAttribute("user", user);
-        Tour tour = tourService.getTourById(id);
-        if (tour == null) {
+    public String getTour(@PathVariable("id") String id,
+                          Model model,
+                          @AuthenticationPrincipal CustomUserDetails user) {
+        TourResponse tourResponse =  tourService.getTourResponse(id,1);
+
+        if(tourResponse==null)
             return "redirect:/";
+
+        //add image default
+        if (tourResponse.getTourImages().isEmpty()) {
+            List<TourImageResponse> listTourImage = new ArrayList<>();
+            listTourImage.add(new TourImageResponse(999,"/client/img/54.jpg",1));
+            listTourImage.add(new TourImageResponse(2,"/client/img/55.jpg",2));
+            tourResponse.setTourImages(listTourImage);
         }
 
-        List<String> listImage = tourService.getListImageUrl(id);
-        List<TourTimeResponse> tourTimes = tourTimeService.getListTourTimeResponseByTourId(id);
-
-        model.addAttribute("tourTimes", tourTimes);
-        model.addAttribute("tour", tour);
-        model.addAttribute("listImage", listImage);
-
+        model.addAttribute("user", user);
+        model.addAttribute("tourResponse", tourResponse);
         return "client/tour-detail";
-
     }
 
     @GetMapping("/order-booking")
     public String getOrderBooking(Model model,
             @RequestParam(required = true) String tourTimeId,
             @AuthenticationPrincipal CustomUserDetails user) {
+        TourTimeResponse tourTimeResponse = tourTimeService.getTourTimeResponseById(tourTimeId,1);
+
+        if(tourTimeResponse==null)
+            return "redirect:/";
+
         model.addAttribute("user", user);
-        TourTimeResponse tourTimeResponse = tourTimeService.getTourTimeResponseById(tourTimeId);
-        String tourName = tourTimeService.getTourName(tourTimeId);
         model.addAttribute("tourTimeResponse", tourTimeResponse);
-        model.addAttribute("tourName", tourName);
         return "client/order-booking";
     }
 

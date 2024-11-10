@@ -19,7 +19,7 @@
         <div th:class="'order-booking order-booking-'+${tourTimeResponse.tourTimeId}">
             <h1 class="text-align-center">Đặt Tour</h1>
             <form class="row" id="submit-form">
-                <div class="col col-md-7 col-12">
+                <div class="col col-lg-7 col-12">
                     <div th:if="${user == null}">
                         <h2>Thông tin liên lạc</h2>
                         <div class="row">
@@ -50,8 +50,8 @@
 
                     <h2>Hành khách</h2>
                     <div class="row">
-                        <div class="col col-xl-6 col-md-12 col-12">
-                            <div class="border border-2 rounded-2 border-black p-2 m-2">
+                        <div class="col col-xl-6 col-12">
+                            <div class="border border-1 rounded-2 border-black p-2 m-2">
                                 <div class="row">
                                     <div class="col-5 col">Người lớn<br>Từ 12</div>
                                     <div class="col-7 col">
@@ -72,7 +72,7 @@
 
                         </div>
                         <div class="col col-xl-6 col-12">
-                            <div class="border border-2 rounded-2 border-black p-2 m-2">
+                            <div class="border border-1 rounded-2 border-black p-2 m-2">
                                 <div class="row">
                                     <div class="col-5 col">Trẻ em<br>Dưới 12</div>
                                     <div class="col-7 col">
@@ -108,18 +108,19 @@
                     </div>
 
                 </div>
-                <div class="col col-md-5 col-12">
+                <div class="col col-lg-5 col-12">
                     <div class="position-sticky top-0">
                         <h4 class="mt-2">Tóm tắt chuyến đi</h4>
-                        <div class="summary p-4 bg-body-secondary rounded-2 ">
+                        <div class="summary p-3 bg-body-secondary rounded-2 ">
 
                             <div class="row border-1 border-black border-bottom pb-3 ">
                                 <div class="col col-5">
                                     <img src="/client/img/55.jpg" alt="">
                                 </div>
                                 <div class="col col-7">
-                                    <h5 class="tour-name" th:text="${tourName}"></h5>
-                                    <div class="tour-code">Mã tour: <span th:text="${tourTimeResponse.tourTimeCode}">NNSGN1372-009-231024VJ-V-6</span>
+                                    <h5 class="tour-name" th:text="${tourTimeResponse.tourName}"></h5>
+                                    <p  th:text="'Số chỗ còn lại: '+${tourTimeResponse.remainPax}"></p>
+                                    <div class="tour-code">Mã tour: <span th:text="${tourTimeResponse.tourTimeCode}"></span>
                                     </div>
                                 </div>
                             </div>
@@ -141,13 +142,12 @@
                                 </div>
 
 
-                                <div class="d-flex justify-content-between border-top border-2 pt-2">
-
-                                    <p class="title">Mã giảm giá </p>
+                                <div class="d-flex justify-content-between border-top pt-2 flex-wrap">
+                                    <p class="title  custom-w-33">Mã giảm giá</p>
                                     <input type="text" id="value-code-voucher" name="value-code-voucher"
-                                           class="mx-1 btn-add-voucher rounded-2"
+                                           class="rounded-1 custom-w-33"
                                            value="QWE23D">
-                                    <button type="button" class="btn btn-outline-secondary" id="btn-check-discount">
+                                    <button type="button" class="btn btn-outline-secondary custom-w-33" id="btn-check-discount">
                                         Áp dụng
                                     </button>
 

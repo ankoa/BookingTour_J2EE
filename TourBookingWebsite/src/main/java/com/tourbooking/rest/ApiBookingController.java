@@ -1,4 +1,4 @@
-package com.tourbooking.controller;
+package com.tourbooking.rest;
 
 import com.tourbooking.dto.request.BookingRequest;
 import com.tourbooking.service.BookingService;
@@ -11,7 +11,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/order-booking")
-public class RestBookingController {
+@CrossOrigin("*")
+public class ApiBookingController {
 
     @Autowired
     BookingService bookingService;
@@ -19,12 +20,11 @@ public class RestBookingController {
     @PostMapping("/submit-form")
     public ResponseEntity<Map<String, Integer>> submitForm(@RequestBody BookingRequest bookingRequest) {
         Map<String, Integer> response = new HashMap<>();
-        if (bookingService.submitForm(bookingRequest)) {
-            response.put("status", 200);
-            return ResponseEntity.ok(response);  // Success
+
+        if (bookingService.submitForm(bookingRequest,1)) {
+            return ResponseEntity.ok(response);
         } else {
-            response.put("status", 400);
-            return ResponseEntity.status(400).body(response);  // Error
+            return ResponseEntity.status(400).body(response);
         }
     }
 }

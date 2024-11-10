@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 img {
   max-width: 100%;
   max-height: 100%;
@@ -30,6 +31,7 @@ img {
   gap: 5px;
   width: 98%;
 }
+
 .day {
   padding: 0px;
   background-color: #f0f0f0;
@@ -39,37 +41,46 @@ img {
   font-weight: bold;
   height: 60px;
 }
+
 .special-day {
   color: #000;
   font-weight: bold;
   border: 1px solid #ff0000;
 }
+
 .empty {
   background-color: #f0efd4;
 }
+
 .swiper-button-next,
 .swiper-button-prev {
   top: 72px !important;
 }
+
 .swiper-button-next:after,
 .swiper-button-prev:after {
   font-size: 30px !important;
 }
+
 #tour-time-detail {
   padding: 5px;
   margin-top: 10px;
 }
+
 input,
 select {
   max-width: 100%;
   padding: 5px;
 }
+
 .cursor-pointer {
   cursor: pointer;
 }
+
 .scrollbar {
   overflow-y: auto;
 }
+
 .scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 5px;
@@ -78,32 +89,44 @@ select {
 .scrollbar::-webkit-scrollbar-thumb {
   background-color: #ff7e56;
 }
+
 .img-tour.active {
   border: 2px solid red;
 }
-button#btn-check-discount {
-  width: 120px;
-}
+
 #mainImage {
   height: 500px;
 }
+
 .img-tours {
   max-height: 500px;
+}
+
+.custom-w-33 {
+  width: 33%;
+}
+
+.tour-description {
+  text-align: justify;
 }
 
 @media (max-width: 768px) {
   .img-tours {
     height: 100px !important;
   }
+
   .img-tour {
     margin-left: 2px;
   }
+
   .title-day {
     font-size: 10px;
   }
+
   .day {
     font-size: 12px;
   }
+
   #mainImage {
     height: 300px;
   }

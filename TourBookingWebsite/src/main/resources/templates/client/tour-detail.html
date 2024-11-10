@@ -6,22 +6,23 @@
 <body>
 <div id="wrapper" class="container">
     <div th:replace="client/navbar :: navbar"></div>
+
     <script th:inline="javascript">
-        const tourTimes = /*[[${tourTimes}]]*/ {};
-        console.log(tourTimes);
+       const tourTimes = /*[[${tourResponse.tourTimesResponse}]]*/ {};
+
     </script>
 
     <main id="main">
         <div class="tour-detail tour-detail_12">
             <div class="row h-100 position-relative">
                 <div class="col col-lg-9 col-12">
-                    <h1 class="title" th:text="${tour.tourName}"></h1>
+                    <h1 class="title" th:text="${tourResponse.tourName}"></h1>
                     <div id="gallery" class="row flex-row-reverse">
                         <div class="col col-12 col-md-10">
-                            <img id="mainImage" class="img-avatar" th:src="${listImage[0]}" alt="">
+                            <img id="mainImage" class="img-avatar" th:src="${tourResponse.getTourImages()[0].getImageUrl()}" alt="">
                         </div>
                         <div class="col col-12 col-md-2 d-flex flex-md-wrap flex-nowrap img-tours scrollbar h-100">
-                            <img th:each="item : ${listImage}" th:src="@{${item}}"
+                            <img th:each="item : ${tourResponse.getTourImages()}" th:src="@{${item.getImageUrl()}}"
                                  class="img-tour mt-2 object-fit-contain mb-1" alt="">
                         </div>
 
@@ -30,10 +31,9 @@
                     <div id="tour-schedule" class="tour-schedule">
                         <div class="swiper mySwiper">
                             <div class="swiper-wrapper d-flex align-items-center justify-content-center">
-                                <div class="spinner-border" role="status">
-                                    <span class="sr-only">Loading...</span>
+                                <div th:if="${tourResponse.tourTimesResponse.size() == 0}">
+                                    Chưa Có Lịch Khởi Hành
                                 </div>
-                                Chưa Có Lịch Khởi Hành
                             </div>
                             <div class="swiper-button-next"></div>
                             <div class="swiper-button-prev"></div>
@@ -53,7 +53,7 @@
                     </div>
 
                     <h2>Chi tiết tour</h2>
-                    <div th:text="${tour.tourDetail}" class="tour-description">
+                    <div th:text="${tourResponse.tourDetail}" class="tour-description">
 
 
                     </div>
@@ -75,8 +75,8 @@
                                 <div id="collapseTwo" class="accordion-collapse collapse show p-2"
                                      data-bs-parent="#accordionExample">
                                     <div class="accordion-body" id="tour-time-detail">
-                                        <div class="code-tour">Mã chương trình: <span th:text="${tour.tourCode}">NNSGN6127</span>
-                                        </div>
+                                        <!--                                        <div class="code-tour">Mã chương trình: <span th:text="${tour.tourCode}">NNSGN6127</span>-->
+                                        <!--                                        </div>-->
                                         <a href="#tour-schedule" class="btn-primary btn w-100">Chọn ngày khởi hành</a>
                                         <div class="d-flex justify-content-between my-1">
                                             <a href="#" class="btn-primary btn ">Yêu cầu tư vấn</a>

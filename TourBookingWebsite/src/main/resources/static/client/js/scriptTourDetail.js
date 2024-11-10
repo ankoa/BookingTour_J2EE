@@ -18,12 +18,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let details = `
         <p>Mã Tour: ${tourTime.tourTimeCode}</p>
         <p>Khởi hành tại: ${tourTime.transportResponses[0] ? tourTime.transportResponses[0].departureLocation : "Đang cập nhật"}</p>
-        <p>Ngày Khởi hành: ${tourTime.departureTime}</p>
+        <p>Ngày Khởi hành: ${(new Date(tourTime.departureTime)).toLocaleString('vn-VN', {  timeZone: 'UTC',})}</p>
         <p>Thời gian: ${tourTime.dayStay}</p>
         <p>Số chỗ còn lại: ${tourTime.remainPax<=0?"Hết ":tourTime.remainPax} chỗ</p>
         <div class="book">
             <p>Giá bán: `;
-            if(tourTime.isDiscount) details+= `<del>${tourTime.priceAdult.toLocaleString('vi-VN')}</del>`;
+            if(tourTime.isDiscount) details+= `<del>${tourTime.priceAdult?.toLocaleString('vi-VN')}</del>`;
         details+=`<span class="text-danger fw-bold">${tourTime.isDiscount ? (tourTime.priceAdult - tourTime.discountValue).toLocaleString('vi-VN') : tourTime.priceAdult.toLocaleString('vi-VN')} </span>`;
         details+=` VND</p>`;
         if(tourTime.remainPax>0)
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const info = `
             <h4>Phương tiện di chuyển</h4>
             <div class="row w-100">
-                <div class="col col-md-6 col col-12">
+                <div class="col col-md-6 col-12">
                     ${tourTime.transportResponses.map(transport =>
             transport.isOutbound ? `
                         <div class="d-flex justify-content-between gap-2">
@@ -78,13 +78,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="col col-6">
                     <div class="d-flex justify-content-between gap-2">
                         <p>Người lớn</p>
-                        <p>${tourTime.priceAdult} đ</p>
+                        <p>${tourTime.priceAdult?.toLocaleString('vi-VN')} đ</p>
                     </div>
                 </div>
                 <div class="col col-6">
                     <div class="d-flex justify-content-between gap-2">
                         <p>Trẻ em</p>
-                        <p>${tourTime.priceChild} đ</p>
+                        <p>${tourTime.priceChild?.toLocaleString('vi-VN')} đ</p>
                     </div>
                 </div>
             </div>
@@ -126,9 +126,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 daysHTML += `<div class="day cursor-pointer special-day" data-month="${month}" data-day="${i}">`;
                 if (specialEvent.isDiscount)
                     daysHTML += `${i} <img src="https://cdn-icons-png.flaticon.com/512/6664/6664427.png" alt="" width="20px"><br>${
-                        specialEvent.priceAdult / 1000
+                        (specialEvent.priceAdult / 1000).toLocaleString('vi-VN')
                     }k</div>`;
-                else daysHTML += `${i} <br>${specialEvent.priceAdult / 1000}k</div>`;
+                else daysHTML += `${i} <br>${(specialEvent.priceAdult / 1000).toLocaleString('vi-VN')}k</div>`;
             } else {
                 daysHTML += `<div class="day cursor-pointer">${i}</div>`;
             }
@@ -137,29 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return `<div class="days">${daysHTML}</div>`;
     }
 
-    // Tạo các slide cho mỗi tháng
-    const TourTimesRendered = new Map();
-    tourTimes.forEach((monthData) => {
-        const month = new Date(monthData.departureTime);
 
-        const monthKey = `${month.getFullYear()}-${month.getMonth() + 1}`;
-        if (!TourTimesRendered.has(monthKey)) {
-
-            const monthSlide = document.createElement("div");
-            monthSlide.classList.add("swiper-slide");
-
-            // Thêm tên tháng và các ngày trong tháng
-            monthSlide.innerHTML =
-                `<h2>Tháng ${getMonthFromDate(month) + 1}</h2>` + renderDaysInMonth(month);
-
-            // Thêm slide vào Swiper
-            swiperWrapper.appendChild(monthSlide);
-            TourTimesRendered.set(monthKey, []);
-        }
-        // Kiểm tra nếu tháng có dữ liệu
-
-
-    });
 
     // Hàm xử lý khi nhấp vào ngày đặc biệt
     function handleSpecialDayClick(event) {
@@ -197,14 +175,37 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+        // spaceBetween: 30,
     const swiper = new Swiper(".mySwiper", {
-        spaceBetween: 30,
         navigation: {
             nextEl: ".swiper-button-next",
             prevEl: ".swiper-button-prev",
         },
         allowTouchMove: false,
     });
+
+    // Tạo các slide cho mỗi tháng
+    const tourTimesRendered = new Map();
+    tourTimes.forEach((monthData) => {
+        const month = new Date(monthData.departureTime);
+
+        const monthKey = `${month.getFullYear()}-${month.getMonth() + 1}`;
+        if (!tourTimesRendered.has(monthKey)) {
+
+            const monthSlide = document.createElement("div");
+            monthSlide.classList.add("swiper-slide");
+
+            // Thêm tên tháng và các ngày trong tháng
+            monthSlide.innerHTML =
+                `<h2>Tháng ${getMonthFromDate(month) + 1}</h2>` + renderDaysInMonth(month);
+
+            // Thêm slide vào Swiper
+            swiperWrapper.appendChild(monthSlide);
+            tourTimesRendered.set(monthKey, []);
+        }
+        // Kiểm tra nếu tháng có dữ liệu
+    });
+
 });
 
 

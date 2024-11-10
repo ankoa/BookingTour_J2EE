@@ -57,7 +57,6 @@ public class BookingService {
     public Account getAccountById(Integer accountId) {
         return accountRepository.findById(accountId).orElse(null);
     }
-    
     public Account getAccountById(String accountId) {
         return getAccountById(Integer.parseInt(accountId));
     }
@@ -94,37 +93,42 @@ public class BookingService {
         accountRepository.deleteById(Integer.parseInt(accountId));
     }
 
-    public boolean submitForm(BookingRequest bookingRequest) {
+    public boolean submitForm(BookingRequest bookingRequest, Integer status) {
         // lay tour time da dat
-        TourTime tourTime = tourTimeRepository.findById(bookingRequest.getTourTimeId())
+        TourTime tourTime = tourTimeService.findById(bookingRequest.getTourTimeId(),status)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + bookingRequest.getTourTimeId()));
 
-        //check remainPax
-        if (tourTimeService.getRemainPax(tourTime) < (bookingRequest.getAdults().size() + bookingRequest.getChildren().size()))
-        {
-            return false;
+        if (status != null && tourTime.getStatus() != status) return false;
+
+        int voucherValue=0;
+        if (bookingRequest.getVoucherCode() != null) {
+            Discount discount = discountRepository.findByDiscountCode(bookingRequest.getVoucherCode());
+            if (discount != null&& discount.getStatus()==1)
+                voucherValue=discount.getDiscountValue();
         }
-        //thoi gian hien tai
+
+            //check remainPax
+        if (tourTimeService.calculateRemainPax(tourTime) <
+                (bookingRequest.getAdults().size() + bookingRequest.getChildren().size())) return false;
+
         Date currentDate = new Date();
 
         //danh sach khach hang vua book
         List<Customer> customers = new ArrayList<>();
 
-        //kiem tra va luu nguuoi dai dien
+        //kiem tra va luu nguoi dai dien
         Customer customerRelationship;
-        if (bookingRequest.getAccountId() != null) {
+        if (bookingRequest.getAccountId() != 0) {
             Account account = getAccountById(bookingRequest.getAccountId());
+            if(status !=null && account.getStatus() != status){return false;}
+            if(status !=null && account.getCustomer().getStatus() != status){return false;}
             customerRelationship = account.getCustomer();
         } else {
             CustomerRequest customerRequest = new CustomerRequest();
-            customerRequest.setCustomerName(bookingRequest.getName());
-            customerRequest.setSex(0);
-            customerRequest.setPhoneNumber(bookingRequest.getPhoneNumber());
-            customerRequest.setAddress(bookingRequest.getAddress());
-
             customerRelationship = customerMapper.toCustomer(customerRequest);
             customerRelationship.setCustomerType(1);
             customerRelationship.setTime(currentDate);
+            customerRelationship.setStatus(1);
             customerRepository.save(customerRelationship);
         }
 
@@ -150,8 +154,10 @@ public class BookingService {
 
 
         //gia thuong
-        int price = tourTime.getPriceAdult() * bookingRequest.getChildren().size() +
-                tourTime.getPriceChild() * bookingRequest.getAdults().size();
+        int totalPrice = tourTime.getPriceAdult() * bookingRequest.getAdults().size() +
+                tourTime.getPriceChild() * bookingRequest.getChildren().size();
+
+        int discountValue = 0;
 
         //gia co discount
         if (!tourTime.getDiscounts().isEmpty()) {
@@ -160,7 +166,7 @@ public class BookingService {
                     if (!currentDate.after(discount.getStartDate())) continue;
                 if (discount.getEndDate() != null)
                     if (!currentDate.before(discount.getEndDate())) continue;
-                price = (tourTime.getPriceAdult() - discount.getDiscountValue()) * bookingRequest.getChildren().size() +
+                discountValue = (tourTime.getPriceAdult() - discount.getDiscountValue()) * bookingRequest.getChildren().size() +
                         (tourTime.getPriceChild() - discount.getDiscountValue()) * bookingRequest.getAdults().size();
                 break;
             }
@@ -174,13 +180,10 @@ public class BookingService {
         newBooking.setStatus(1);
         newBooking.setTime(currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         newBooking.setTourTime(tourTime);
+        newBooking.setTotalPrice(totalPrice);
+        newBooking.setVoucherPrice(discountValue+voucherValue);
 
 
-        if (bookingRequest.getVoucherCode() != null) {
-            Discount discount = discountRepository.findByDiscountCode(bookingRequest.getVoucherCode());
-            newBooking.setVoucherPrice(discount.getDiscountValue());
-            newBooking.setTotalPrice(price - discount.getDiscountValue());
-        } else newBooking.setTotalPrice(price);
         bookingRepository.save(newBooking);
 
 

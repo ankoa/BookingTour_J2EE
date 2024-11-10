@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const elementTotalPrice = document.getElementById("total-price");
     const elementValueDiscount = document.getElementById("value-discount");
 
-    const buttonSubmit=document.getElementById("btn-submit");
+    const buttonSubmit = document.getElementById("btn-submit");
 
     let countChild = 0;
     let countAdult = 0;
@@ -117,38 +117,56 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     function handleChangeQuantity(action, type) {
-        const elementArray = document.createElement('div');
         if (action === "minus") {
             if (type === "child" && countChild > 0)
-                    countChild--;
-                if (type === "adult" && countAdult > 0)
-                    countAdult--;
+                removeLastItem(type)
+            if (type === "adult" && countAdult > 1)
+                removeLastItem(type)
+        }
+        if (action === "plus")
+            if ((countChild + countAdult) < tourTimeResponse.remainPax) {
+                if (type === "child")
+                    addItem(type)
+                if (type === "adult")
+                    addItem(type)
+
+            } else {
+                alert("Da Dat Gioi Han");
             }
-            if (action === "plus")
-                if ((countChild + countAdult) >= tourTimeResponse.remainPax){
-                    alert("Hết chỗ");
-                    return;
-                }else
-                {
-                    if (type === "child")
-                        countChild++;
-                    if (type === "adult" )
-                        countAdult++;
-                }
-
-            for (let i = 0; i < countChild; i++)
-                elementArray.appendChild(generateItemChild(i));
-            elementItemsChildInfo.innerHTML = elementArray.innerHTML;
-            elementCounterValueChild.value = countChild;
-
-            for (let i = 0; i < countAdult; i++)
-                elementArray.appendChild(generateItemAdult(i));
-            elementItemsAdultInfo.innerHTML = elementArray.innerHTML;
-            elementCounterValueAdult.value = countAdult;
-        ChangedValue();
+        ChangedElementsPrice();
     }
 
-    function ChangedValue() {
+    function addItem(type) {
+        if (type === "child") {
+            countChild++;
+            elementItemsChildInfo.appendChild(generateItemChild(countChild));
+            elementCounterValueChild.value = countChild;
+        }
+        if (type === "adult") {
+            countAdult++;
+            elementItemsAdultInfo.appendChild(generateItemAdult(countAdult));
+            elementCounterValueAdult.value = countAdult;
+        }
+    }
+
+    function removeLastItem(type) {
+        if (type === "child") {
+            countChild--;
+            if (elementItemsChildInfo.lastElementChild) {
+                elementItemsChildInfo.removeChild(elementItemsChildInfo.lastElementChild);
+            }
+            elementCounterValueChild.value = countChild;
+        }
+        if (type === "adult") {
+            countAdult--;
+            if (elementItemsAdultInfo.lastElementChild) {
+                elementItemsAdultInfo.removeChild(elementItemsAdultInfo.lastElementChild);
+            }
+            elementCounterValueAdult.value = countAdult;
+        }
+    }
+
+    function ChangedElementsPrice() {
         let priceTotalAdult = priceAdult * countAdult;
         let priceTotalChild = priceChild * countChild;
         const totalPrice = priceTotalAdult + priceTotalChild - discountValue;
@@ -187,16 +205,16 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("btn-check-discount").addEventListener("click", async () => {
         const isValid = await fetchDiscountByCode(document.getElementById("value-code-voucher").value);
 
-        if (isValid) {
+        if (isValid.discountValue>0) {
             document.getElementById("box-mess-voucher").textContent = `Áp dụng mã giảm giá thành công`;
             document.getElementById("box-mess-voucher").classList.remove("border-danger");
             document.getElementById("box-mess-voucher").classList.add("border-success", "p-2", "border");
-            ChangedValue();
+            ChangedElementsPrice();
         } else {
             document.getElementById("box-mess-voucher").textContent = `Áp dụng mã giảm giá không thành công`;
             document.getElementById("box-mess-voucher").classList.remove("border-success");
             document.getElementById("box-mess-voucher").classList.add("border-danger", "p-2", "border");
-            ChangedValue();
+            ChangedElementsPrice();
         }
     });
 
@@ -242,7 +260,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             console.log(processedData)
 
-            if (!response.ok) {alert("Gửi dữ liệu thất bại!"); return}
+            if (!response.ok) {
+                alert("Gửi dữ liệu thất bại!");
+                return
+            }
 
             const result = await response.json();
             if (result.status === 200)
