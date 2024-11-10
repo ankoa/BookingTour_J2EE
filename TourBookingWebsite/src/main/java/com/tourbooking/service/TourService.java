@@ -1,8 +1,11 @@
 package com.tourbooking.service;
 import com.tourbooking.dto.response.TourTimeResponse;
+import com.tourbooking.dto.response.TourResponse;
 import com.tourbooking.model.Tour;
 import com.tourbooking.model.TourImage;
 import com.tourbooking.model.TourTime;
+
+import com.tourbooking.mapper.TourMapper;
 import com.tourbooking.mapper.TourTimeMapper;
 import com.tourbooking.mapper.TransportMapper;
 import com.tourbooking.model.*;
@@ -15,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TourService {
@@ -28,6 +30,9 @@ public class TourService {
 
     @Autowired
     TourTimeMapper tourTimeMapper;
+
+    @Autowired
+    TourMapper tourMapper;
 
     @Autowired
     TransportMapper transportMapper;
@@ -45,7 +50,6 @@ public class TourService {
     public Tour getTourById(String id) {
         return tourRepository.findById(Integer.parseInt(id)).orElse(null);
     }
-    
     public Optional<Tour> getTourByIdInt(int id) {
         return tourRepository.findById(id);
     }
@@ -68,7 +72,7 @@ public class TourService {
 
     public boolean deleteTour(int id) {
         try {
-            tourRepository.deleteTour(id);            
+            tourRepository.deleteTour(id);
             return true;
         } catch (Exception e) {
             return false;
@@ -95,26 +99,26 @@ public class TourService {
         return tourRepository.searchTours(searchValue);
     }
 
-    public List<String> getListImageUrl(String id) {
-        Tour tour = tourRepository.findById(Integer.parseInt(id)).orElseThrow(() -> new IllegalArgumentException(
-                "Không tìm thấy tour với ID: " + id));
 
-        List<String> listImage = tour.getTourImages() != null ? tour.getTourImages().stream()
-                .map(TourImage::getImageUrl) // Lấy thuộc tính imageUrl
-                .filter(Objects::nonNull) // Lọc bỏ các giá trị null
-                .collect(Collectors.toList())
-                : new ArrayList<>();
-        if (listImage == null || listImage.isEmpty()) {
-            listImage = new ArrayList<>(Arrays.asList(
-                    "/client/img/54.jpg",
-                    "/client/img/55.jpg",
-                    "/client/img/54.jpg",
-                    "/client/img/55.jpg",
-                    "/client/img/54.jpg",
-                    "/client/img/55.jpg",
-                    "/client/img/54.jpg"));
+    public TourResponse getTourResponse(String id,Integer status) {
+        Tour tour = tourRepository.findById(
+                Integer.parseInt(id)).orElseThrow(() -> new IllegalArgumentException(
+                "Không tìm thấy tour với ID: " + id
+        ));
+
+        if (status != null && tour.getStatus() !=status)  return null;
+        TourResponse tourResponse = tourMapper.toTourResponse(tour);
+
+        List<TourTimeResponse> tourTimeResponses = new ArrayList<>();
+        for (TourTime tourTime : tour.getTourTimes()) {
+            if (status != null && tourTime.getStatus() != status) continue;
+
+            TourTimeResponse tourTimeResponse = tourTimeService.toTourTimeResponse(tourTime,status);
+
+            tourTimeResponses.add(tourTimeResponse);
         }
-        return listImage;
+        tourTimeResponses.sort((t1, t2) -> t1.getDepartureTime().compareTo(t2.getDepartureTime()));
+        tourResponse.setTourTimesResponse(tourTimeResponses);
+        return tourResponse;
     }
-
 }

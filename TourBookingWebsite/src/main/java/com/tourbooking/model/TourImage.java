@@ -1,5 +1,6 @@
 package com.tourbooking.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class TourImage {
     private int imageId;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "tour_id")
     private Tour tour;
 

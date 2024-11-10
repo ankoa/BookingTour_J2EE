@@ -6,6 +6,10 @@ import com.tourbooking.mapper.CustomerMapper;
 import com.tourbooking.model.*;
 import com.tourbooking.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
@@ -30,7 +34,7 @@ public class BookingService {
     CustomerMapper customerMapper;
 
     @Autowired
-    private TourRepository tourRepository;
+    private TourTimeService tourTimeService;
 
     @Autowired
     private TourTimeRepository tourTimeRepository;
@@ -51,8 +55,11 @@ public class BookingService {
     }
 
     // Tìm tài khoản theo ID
+    public Account getAccountById(Integer accountId) {
+        return accountRepository.findById(accountId).orElse(null);
+    }
     public Account getAccountById(String accountId) {
-        return accountRepository.findById(Integer.parseInt(accountId)).orElse(null);
+        return getAccountById(Integer.parseInt(accountId));
     }
 
     // Thêm tài khoản mới
@@ -87,22 +94,44 @@ public class BookingService {
         accountRepository.deleteById(Integer.parseInt(accountId));
     }
 
-    public void submitForm(BookingRequest bookingRequest) {
-        //thoi gian hien tai
+    public boolean submitForm(BookingRequest bookingRequest, Integer status) {
+        // lay tour time da dat
+        TourTime tourTime = tourTimeService.findById(bookingRequest.getTourTimeId(),status)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + bookingRequest.getTourTimeId()));
+
+        if (status != null && tourTime.getStatus() != status) return false;
+
+        int voucherValue=0;
+        if (bookingRequest.getVoucherCode() != null) {
+            Discount discount = discountRepository.findByDiscountCode(bookingRequest.getVoucherCode());
+            if (discount != null&& discount.getStatus()==1)
+                voucherValue=discount.getDiscountValue();
+        }
+
+            //check remainPax
+        if (tourTimeService.calculateRemainPax(tourTime) <
+                (bookingRequest.getAdults().size() + bookingRequest.getChildren().size())) return false;
+
         Date currentDate = new Date();
 
         //danh sach khach hang vua book
         List<Customer> customers = new ArrayList<>();
 
-        // luu nguoi dai dien
-        Customer customerRelationship = customerMapper.toCustomer(
-                new CustomerRequest(bookingRequest.getName(), 0, bookingRequest.getPhoneNumber(), null, bookingRequest.getAddress())
-        );
-        customerRelationship.setCustomerType(1);
-        customerRelationship.setTime(currentDate);
-        customerRelationship.setPhoneNumber(bookingRequest.getPhoneNumber());
-        customerRepository.save(customerRelationship);
-        customers.add(customerRelationship);
+        //kiem tra va luu nguoi dai dien
+        Customer customerRelationship;
+        if (bookingRequest.getAccountId() != 0) {
+            Account account = getAccountById(bookingRequest.getAccountId());
+            if(status !=null && account.getStatus() != status){return false;}
+            if(status !=null && account.getCustomer().getStatus() != status){return false;}
+            customerRelationship = account.getCustomer();
+        } else {
+            CustomerRequest customerRequest = new CustomerRequest();
+            customerRelationship = customerMapper.toCustomer(customerRequest);
+            customerRelationship.setCustomerType(1);
+            customerRelationship.setTime(currentDate);
+            customerRelationship.setStatus(1);
+            customerRepository.save(customerRelationship);
+        }
 
         // luu danh sach nguoi lon
         bookingRequest.getAdults().forEach(customerRequest -> {
@@ -124,9 +153,25 @@ public class BookingService {
             customers.add(customer);
         });
 
-        // lay tour time da dat
-        TourTime tourTime = tourTimeRepository.findById(bookingRequest.getTourTimeId())
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + bookingRequest.getTourTimeId()));
+
+        //gia thuong
+        int totalPrice = tourTime.getPriceAdult() * bookingRequest.getAdults().size() +
+                tourTime.getPriceChild() * bookingRequest.getChildren().size();
+
+        int discountValue = 0;
+
+        //gia co discount
+        if (!tourTime.getDiscounts().isEmpty()) {
+            for (Discount discount : tourTime.getDiscounts()) {
+                if (discount.getStartDate() != null)
+                    if (!currentDate.after(discount.getStartDate())) continue;
+                if (discount.getEndDate() != null)
+                    if (!currentDate.before(discount.getEndDate())) continue;
+                discountValue = (tourTime.getPriceAdult() - discount.getDiscountValue()) * bookingRequest.getChildren().size() +
+                        (tourTime.getPriceChild() - discount.getDiscountValue()) * bookingRequest.getAdults().size();
+                break;
+            }
+        }
 
         //luu du lie booking
         Booking newBooking = new Booking();
@@ -136,29 +181,10 @@ public class BookingService {
         newBooking.setStatus(1);
         newBooking.setTime(currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         newBooking.setTourTime(tourTime);
+        newBooking.setTotalPrice(totalPrice);
+        newBooking.setTotalDiscount(discountValue+voucherValue);
 
-        //gia thuong
-        int price = tourTime.getPriceAdult() * bookingRequest.getChildren().size() +
-                tourTime.getPriceChild() * bookingRequest.getAdults().size();
 
-        //gia co discount
-        if (!tourTime.getDiscounts().isEmpty()) {
-            for (Discount discount : tourTime.getDiscounts()) {
-                if (discount.getStartDate() != null)
-                    if (!currentDate.after(discount.getStartDate())) continue;
-                if (discount.getEndDate() != null)
-                    if (!currentDate.before(discount.getEndDate())) continue;
-                price = (tourTime.getPriceAdult() - discount.getDiscountValue()) * bookingRequest.getChildren().size() +
-                        (tourTime.getPriceChild() - discount.getDiscountValue()) * bookingRequest.getAdults().size();
-                break;
-            }
-
-        }
-        if (bookingRequest.getVoucherCode() != null) {
-            Discount discount = null;
-            discount = discountRepository.findByDiscountCode(bookingRequest.getVoucherCode());
-            newBooking.setTotalPrice(price - discount.getDiscountValue());
-        } else newBooking.setTotalPrice(price);
         bookingRepository.save(newBooking);
 
 
@@ -170,6 +196,14 @@ public class BookingService {
             bookingDetail.setStatus(1);
             bookingDetailRepository.save(bookingDetail);
         }
+
+        return true;
+    }
+
+    public List<Booking> getBookingWithPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "time"));
+        Page<Booking> listBooking = bookingRepository.findAll(pageable);
+        return listBooking.getContent();
     }
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll(); // Lấy tất cả booking từ repository

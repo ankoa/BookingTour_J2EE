@@ -33,7 +33,7 @@ public class Category {
     @Column(name = "category_name", nullable = false)
     private String categoryName; 
 
-    @Column(name = "category_detail")
+    @Column(name = "category_detail",columnDefinition = "TEXT")
     private String categoryDetail; 
 
     @Column(name = "status", nullable = false)

@@ -38,10 +38,11 @@ public class Discount {
     @Column(name = "status", nullable = false)
     private int status;
 
-    @Column(name = "note")
+    @Column(name = "note",columnDefinition = "TEXT")
     private String note;
 
 	@ManyToMany(mappedBy = "discounts")
+	@JsonBackReference
 	private Set<TourTime> tourTimes;
 }
 

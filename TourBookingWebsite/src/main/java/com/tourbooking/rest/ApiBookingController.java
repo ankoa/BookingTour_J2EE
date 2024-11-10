@@ -1,4 +1,4 @@
-package com.tourbooking.controller;
+package com.tourbooking.rest;
 
 import com.tourbooking.dto.request.BookingRequest;
 import com.tourbooking.service.BookingService;
@@ -11,17 +11,20 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/order-booking")
-public class RestBookingController {
+@CrossOrigin("*")
+public class ApiBookingController {
 
     @Autowired
     BookingService bookingService;
 
     @PostMapping("/submit-form")
-    public ResponseEntity<Map<String, String>> submitForm(@RequestBody BookingRequest bookingRequest) {
-        bookingService.submitForm(bookingRequest);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Gửi dữ liệu thành công!");
+    public ResponseEntity<Map<String, Integer>> submitForm(@RequestBody BookingRequest bookingRequest) {
+        Map<String, Integer> response = new HashMap<>();
 
-        return ResponseEntity.ok(response);
+        if (bookingService.submitForm(bookingRequest,1)) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(400).body(response);
+        }
     }
 }
