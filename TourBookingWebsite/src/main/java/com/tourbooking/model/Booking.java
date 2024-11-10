@@ -22,16 +22,6 @@ public class Booking {
     @Column(name = "booking_id")
     private int bookingId;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "customer_id")
-    @JsonBackReference
-    private Customer customer;
-
-    @ManyToOne
-	@JoinColumn(name = "tour_time_id", nullable = false)
-	@JsonBackReference
-	private TourTime tourTime;
-
     @Column(name = "total_price", nullable = false)
     private int totalPrice;
 
@@ -46,4 +36,12 @@ public class Booking {
 
     @Column(name = "time", nullable = false)
     private LocalDateTime time;
+
+    @ManyToOne
+    @JoinColumn(name = "tour_time_id", nullable = false)
+    private TourTime tourTime;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "customer_id")
+    private Customer customer;
 }

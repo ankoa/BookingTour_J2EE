@@ -35,7 +35,6 @@ public class TransportDetail {
 
     @ManyToOne
     @JoinColumn(name = "tour_time_id", nullable = false, referencedColumnName = "tour_time_id")
-    @JsonBackReference
     private TourTime tourTime;
 
     @ManyToOne

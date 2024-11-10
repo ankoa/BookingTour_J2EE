@@ -1,4 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PropertiesComponent">{}</component>
+  <component name="ChangeListManager">
+    <list default="true" id="67bb5f78-a938-4ee2-ad24-8744bb00ae7e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/model/Booking.java" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/model/Booking.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/model/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/model/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/model/Discount.java" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/model/Discount.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/model/TransportDetail.java" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/model/TransportDetail.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/repository/BookingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/repository/BookingRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/service/BookingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/service/BookingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/service/TourTimeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/java/com/tourbooking/service/TourTimeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/static/admin/css/account.css" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/static/admin/css/account.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/static/admin/css/tour.css" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/static/admin/css/tour.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/static/admin/js/account.js" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/static/admin/js/account.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/static/admin/js/tour.js" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/static/admin/js/tour.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/templates/admin/account-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/templates/admin/account-all.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/templates/admin/tour-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/TourBookingWebsite/src/main/resources/templates/admin/tour-all.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2oeTC1DFnXqzfFN60OYv9MgsyCl" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;client&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/j2ee project/TourBookingWebsite&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="TourBookingWebsite" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="TourBookingWebsite" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.22855.74" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.22855.74" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="67bb5f78-a938-4ee2-ad24-8744bb00ae7e" name="Changes" comment="" />
+      <created>1731228910961</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731228910961</updated>
+      <workItem from="1731228912012" duration="38000" />
+      <workItem from="1731229908467" duration="138000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
 </project>
