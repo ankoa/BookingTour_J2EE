@@ -1,30 +1,25 @@
 package com.tourbooking.controller;
 
+import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.model.Tour;
-import com.tourbooking.model.TourImage;
 import com.tourbooking.service.TourService;
 import com.tourbooking.service.TourTimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
-// thay the autowired va tu tao private final,
 @Controller
 public class HomeController {
 
     @Autowired
-    private  TourService tourService;
-    
+    private TourService tourService;
+
     @Autowired
-    private  TourTimeService tourTimeService;
+    private TourTimeService tourTimeService;
 
     @GetMapping("/")
     public String index() {
@@ -46,18 +41,13 @@ public class HomeController {
     public String getTourDetail(@PathVariable("id") String id, Model model) {
         Tour tour = tourService.getTourById(id);
         if (tour == null) {
-           return "redirect:/";
+            return "redirect:/";
         }
 
-//        List<String> listImage = new ArrayList<>(tour.getTourImages());
         List<String> listImage = tourService.getListImageUrl(id);
+        List<TourTimeResponse> tourTimes = tourTimeService.getListTourTimeResponseByTourId(id);
 
-//        List<String> listImage = List.of("/img/54.jpg", "/img/54.jpg", "/img/55.jpg","/img/55.jpg","/img/55.jpg","/img/55.jpg");
-
-        List<Map<String, Object>> groupedTourTimes = tourTimeService.groupTourTimesByMonth(id);
-
-
-        model.addAttribute("locations", groupedTourTimes);
+        model.addAttribute("tourTimes", tourTimes);
         model.addAttribute("tour", tour);
         model.addAttribute("listImage", listImage);
 
@@ -66,7 +56,13 @@ public class HomeController {
     }
 
     @GetMapping("/order-booking")
-    public String getOrderBooking(Model model) {
+    public String getOrderBooking(Model model, @RequestParam(required = true) String tourTimeId) {
+        TourTimeResponse tourTimeResponse = tourTimeService.getTourTimeResponseById(tourTimeId);
+        String tourName = tourTimeService.getTourName(tourTimeId);
+        model.addAttribute("tourTimeResponse", tourTimeResponse);
+        model.addAttribute("tourName", tourName);
         return "client/order-booking";
     }
+
+
 }

@@ -25,4 +25,7 @@ public class TourImage {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "status")
+    private int status;
 }

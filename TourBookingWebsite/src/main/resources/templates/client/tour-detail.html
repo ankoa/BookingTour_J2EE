@@ -7,8 +7,7 @@
 <div id="wrapper" class="container">
     <div th:replace="client/navbar :: navbar"></div>
     <script th:inline="javascript">
-        const tourTimes = /*[[${locations}]]*/ {};
-        const tour = /*[[${tour}]]*/ {};
+        const tourTimes = /*[[${tourTimes}]]*/ {};
         console.log(tourTimes);
     </script>
 
@@ -19,10 +18,10 @@
                     <h1 class="title" th:text="${tour.tourName}"></h1>
                     <div id="gallery" class="row flex-row-reverse">
                         <div class="col col-12 col-md-10">
-                            <img id="mainImage" class="img-avatar" th:src="${listImage.isEmpty()?'https://media.travel.com.vn/Tour/tfd_230914105438_245930_Shanghai%20skyline.jpg':listImage[0]}" alt="">
+                            <img id="mainImage" class="img-avatar" th:src="${listImage[0]}" alt="">
                         </div>
                         <div class="col col-12 col-md-2 d-flex flex-md-wrap flex-nowrap img-tours scrollbar h-100">
-                            <img th:each="item : ${listImage}" th:src="@{${item?item:'https://media.travel.com.vn/Tour/tfd_230914105438_245930_Shanghai%20skyline.jpg'}}"
+                            <img th:each="item : ${listImage}" th:src="@{${item}}"
                                  class="img-tour mt-2 object-fit-contain mb-1" alt="">
                         </div>
 
@@ -40,7 +39,8 @@
                     </div>
 
                     <div id="tour-info-content"
-                         class="w-100 d-flex justify-content-center flex-column align-items-center">
+                         class="w-100 d-flex justify-content-center flex-column align-items-center p-0 p-sm-2 bg-light rounded-3">
+
 
                     </div>
 
@@ -132,7 +132,6 @@
                 </div>
                 <div class="col col-12 col-lg-3 ">
                     <div class="form_booktour position-sticky top-0 pt-3">
-                        <div class="price">Giá chỉ: <span class="text-danger fw-bold">1200000</span>/khách</div>
                         <div class="code-tour">Mã chương trình: <span th:text="${tour.tourCode}">NNSGN6127</span></div>
                         <a href="#tour-schedule" class="btn-primary btn w-100">Chọn ngày khởi hành</a>
                         <div class="row mt-2">
@@ -154,7 +153,7 @@
     </main>
 
 
-    <script src="/assets/js/scriptTourDetail.js"></script>
+    <script src="/client/js/scriptTourDetail.js"></script>
     <div th:replace="client/footer::footer"></div>
 
 </div>

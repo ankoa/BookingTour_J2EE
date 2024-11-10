@@ -215,6 +215,7 @@ function filterAccounts() {
             }
             showAlert('success', 'Thêm tài khoản thành công!');
             loadAccounts();
+			clearFormSearch();
             document.getElementById('addForm').reset();
             const addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
             addModal.hide();
@@ -324,6 +325,8 @@ function filterAccounts() {
                         showAlert('success', 'Xóa tài khoản thành công!');
                         // Disable the delete button instead of removing the row
                         loadAccounts()
+						clearFormSearch();
+
                     } else {
                         showAlert('danger', 'Xóa tài khoản thất bại!');
                     }
@@ -422,6 +425,7 @@ function filterAccounts() {
                 if (response.ok) {
                     showAlert('success', 'Lưu thay đổi thành công!');
                     loadAccounts();
+					clearFormSearch();
                     closeModal(); // Đóng modal sau khi lưu thành công
                 } else {
                     showAlert('danger', 'Lưu thay đổi thất bại!');
@@ -439,4 +443,11 @@ function filterAccounts() {
         // Mở modal xác nhận
         $('#confirmSaveModal').modal('show');
     }
+	function clearFormSearch() {
+	    // Xóa nội dung ô input tìm kiếm
+	    document.getElementById('searchInput').value = '';
+
+	    // Đặt lại các ô select về giá trị mặc định
+	    document.getElementById('statusFilter').selectedIndex = 0;
+	}
 

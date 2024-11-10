@@ -11,7 +11,7 @@
     <div th:replace="MenuAdmin :: navbar"></div>
 
     <!-- Thông báo -->
-<div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+	<div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
 
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -31,194 +31,207 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="text-center">
-            <h1>Danh Sách Tour</h1>
-        </div>
+ <div class="container">
+    <div class="text-center">
+        <h1>Danh Sách Tour</h1>
+    </div>
 
-        <!-- Tab Navigation -->
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="quan-ly-tour-tab" data-bs-toggle="tab" data-bs-target="#quan-ly-tour"
-                        type="button" role="tab" aria-controls="quan-ly-tour" aria-selected="true">Danh sách Tour</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="loai-tour-tab" data-bs-toggle="tab" data-bs-target="#loai-tour"
-                        type="button" role="tab" aria-controls="loai-tour" aria-selected="false">Loại Tour</button>
-            </li>
-        </ul>
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="quan-ly-tour-tab" data-bs-toggle="tab" data-bs-target="#quan-ly-tour"
+                    type="button" role="tab" aria-controls="quan-ly-tour" aria-selected="true">Danh sách Tour</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="loai-tour-tab" data-bs-toggle="tab" data-bs-target="#loai-tour"
+                    type="button" role="tab" aria-controls="loai-tour" aria-selected="false">Loại Tour</button>
+        </li>
+    </ul>
 
-        <div class="tab-content" id="myTabContent">
-            <!-- Quản lý Tour Tab -->
-            <div class="tab-pane fade show active" id="quan-ly-tour" role="tabpanel" aria-labelledby="quan-ly-tour-tab">
-                <!-- Thanh Tìm Kiếm -->
-                <div class="filter-section mb-3">
-                    <form class="row g-2" id="searchForm" onsubmit="return false;">
-					    <div class="col-md-4">
-					        <input 
-					            type="text"
-					            id="searchInput"
-					            class="form-control border border-secondary"
-					            placeholder="Tìm kiếm theo ID, Tên, Mã Tour"
-					            aria-label="Search"
-					            aria-describedby="button-addon2"
-					            oninput="filterTours()"
-					        />
-					    </div>
-					    <div class="col-md-4">
-					        <select id="categorySelect" class="form-select" onchange="filterTours()">
-					            <option value="">Chọn Loại Tour</option>
-					            <!-- Dữ liệu sẽ được tải động từ API -->
-					        </select>
-					    </div>
-					    <div class="col-md-4">
-					        <select id="statusSelect" class="form-select" onchange="filterTours()">
-					            <option value="">Chọn Trạng Thái</option>
-					            <option value="1">Kích hoạt</option>
-					            <option value="0">Ngưng hoạt động</option>
-					        </select>
-					    </div>
-					</form>
-                </div>
-
-                <!-- Nút Thêm Tour Mới -->
-                <div class="add-tour-btn text-end">
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTourModal">Thêm Tour Mới</button>
-                </div>
-                <div class="modal fade" id="addTourModal" tabindex="-1" aria-labelledby="addTourModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addTourModalLabel">Thêm Tour Mới</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="addTourForm" onsubmit="addTour(); return false;">
-                                    <div class="mb-3">
-                                        <label for="tourName" class="form-label">Tên Tour</label>
-                                        <input type="text" class="form-control" id="tourName" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="tourDetail" class="form-label">Chi Tiết Tour</label>
-                                        <textarea class="form-control" id="tourDetail" required></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="tourCategory" class="form-label">Loại Tour</label>
-                                        <select class="form-select" id="tourCategory" required>
-                                            <!-- Dữ liệu sẽ được tải động -->
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="tourStatus" class="form-label">Trạng Thái</label>
-                                        <select class="form-select" id="tourStatus" required>
-                                            <option value="1">Kích hoạt</option>
-                                            <option value="0">Ngưng hoạt động</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="tourCode" class="form-label">Mã Tour</label>
-                                        <input type="text" class="form-control" id="tourCode" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="dayStay" class="form-label">Số Ngày Ở</label>
-                                        <input type="number" class="form-control" id="dayStay" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Thêm Tour</button>
-                                    <button type="button" class="btn btn-secondary" id="clearTourForm">Clear</button>
-                                </form>
+    <div class="tab-content" id="myTabContent">
+        <!-- Quản lý Tour Tab -->
+        <div class="tab-pane fade show active" id="quan-ly-tour" role="tabpanel" aria-labelledby="quan-ly-tour-tab">
+            <!-- Thanh Tìm Kiếm và Các Ô Select -->
+            <div class="filter-section mb-3">
+                <form id="searchForm" onsubmit="return false;">
+                    <!-- Hàng chứa ô input tìm kiếm -->
+                    <div class="row g-2 mb-2">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input 
+                                    type="text"
+                                    id="searchInput"
+                                    class="form-control border border-secondary"
+                                    placeholder="Tìm kiếm theo ID, Tên, Mã Tour"
+                                    aria-label="Search"
+                                    oninput="filterTours()"
+                                />
+                                <button type="button" class="btn btn-primary" onclick="filterTours()">Tìm kiếm</button>
+                                
                             </div>
                         </div>
                     </div>
-                </div>
-<!-- Modal chỉnh sửa tour -->
-<div class="modal fade" id="editTourModal" tabindex="-1" aria-labelledby="editTourModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editTourModalLabel">Chỉnh Sửa Tour</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editTourForm" onsubmit="editTourDetails(); return false;">
-                    <div class="mb-3">
-                        <label for="editTourName" class="form-label">Tên Tour</label>
-                        <input type="text" class="form-control" id="editTourName" required>
+
+                    <!-- Hàng chứa các ô select và nút Thêm Tour Mới -->
+                    <div class="row g-2 align-items-center">
+                    	<div class="col-md-5 d-flex">
+	                        <div class="col-md-4">
+	                            <select id="statusSelect" class="form-select" onchange="filterTours()">
+	                                <option value="">Chọn Trạng Thái</option>
+	                                <option value="1">Kích hoạt</option>
+	                                <option value="0">Ngưng hoạt động</option>
+	                            </select>
+	                        </div>
+	                        <div class="col-md-6 ms-2">
+	                            <select id="categorySelect" class="form-select" onchange="filterTours()">
+	                                <option value="">Chọn Loại Tour</option>
+	                                <!-- Dữ liệu sẽ được tải động từ API -->
+	                            </select>
+	                        </div>
+                        </div>
+                        <div class="col-md-7 text-end">
+                            <div class="add-tour-btn text-end">
+				                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTourModal">Thêm Tour Mới</button>
+				            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="editTourDetail" class="form-label">Chi Tiết Tour</label>
-                        <textarea class="form-control" id="editTourDetail" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editTourCategory" class="form-label">Loại Tour</label>
-                        <select class="form-select" id="editTourCategory" required>
-                            <!-- Dữ liệu sẽ được tải động -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editTourStatus" class="form-label">Trạng Thái</label>
-                        <select class="form-select" id="editTourStatus" required>
-                            <option value="1">Kích hoạt</option>
-                            <option value="0">Ngưng hoạt động</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editTourCode" class="form-label">Mã Tour</label>
-                        <input type="text" class="form-control" id="editTourCode" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editDayStay" class="form-label">Số Ngày Ở</label>
-                        <input type="number" class="form-control" id="editDayStay" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
-                    <button type="button" class="btn btn-secondary" id="clearEditTourForm">Clear</button>
-                	<input type="hidden" id="editTourId">
-                	
                 </form>
             </div>
-        </div>
-    </div>
-</div>
 
-                <!-- Bảng hiển thị danh sách Tour -->
-                <div>
-				    <div class="table-container">
-				        <table class="table table-bordered text-center">
-				            <thead>
-				                <tr>
-				                    <th>ID Tour</th>
-				                    <th>Tên Tour</th>
-				                    <th>Chi Tiết Tour</th>
-				                    <th>Trạng Thái</th>
-				                    <th>Mã Tour</th>
-				                    <th>Thời Gian Lưu Trú</th>
-				                    <th>Loại Tour</th>
-				                    <th>Thao Tác</th>
-				                </tr>
-				            </thead>
-				            <tbody id="tourTableBody">
-				                <!-- Nội dung sẽ được tải động bởi Ajax -->
-				            </tbody>
-				        </table>
-				    </div>
-				</div>
-
-            <!-- Loại Tour Tab -->
-            <div class="tab-pane fade" id="loai-tour" role="tabpanel" aria-labelledby="loai-tour-tab">
-                <h3>Loại Tour</h3>
-                <table class="table">
+            <!-- Bảng hiển thị danh sách Tour -->
+            <div class="table-container">
+                <table class="table table-bordered text-center">
                     <thead>
                         <tr>
-                            <th>ID Loại Tour</th>
-                            <th>Tên Loại Tour</th>
+                            <th>ID Tour</th>
+                            <th>Tên Tour</th>
+                            <th>Chi Tiết Tour</th>
+                            <th>Trạng Thái</th>
+                            <th>Mã Tour</th>
+                            <th>Thời Gian Lưu Trú</th>
+                            <th>Loại Tour</th>
+                            <th>Thao Tác</th>
                         </tr>
                     </thead>
-                    <tbody id="categoryTableBody">
+                    <tbody id="tourTableBody">
                         <!-- Nội dung sẽ được tải động bởi Ajax -->
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- Loại Tour Tab -->
+        <div class="tab-pane fade" id="loai-tour" role="tabpanel" aria-labelledby="loai-tour-tab">
+            <h3>Loại Tour</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID Loại Tour</th>
+                        <th>Tên Loại Tour</th>
+                    </tr>
+                </thead>
+                <tbody id="categoryTableBody">
+                    <!-- Nội dung sẽ được tải động bởi Ajax -->
+                </tbody>
+            </table>
+        </div>
     </div>
+</div>
+
+<!-- Modal thêm tour mới -->
+            <div class="modal fade" id="addTourModal" tabindex="-1" aria-labelledby="addTourModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addTourModalLabel">Thêm Tour Mới</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addTourForm" onsubmit="addTour(); return false;">
+                                <div class="mb-3">
+                                    <label for="tourName" class="form-label">Tên Tour</label>
+                                    <input type="text" class="form-control" id="tourName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tourDetail" class="form-label">Chi Tiết Tour</label>
+                                    <textarea class="form-control" id="tourDetail" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tourCategory" class="form-label">Loại Tour</label>
+                                    <select class="form-select" id="tourCategory" required>
+                                        <!-- Dữ liệu sẽ được tải động -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tourStatus" class="form-label">Trạng Thái</label>
+                                    <select class="form-select" id="tourStatus" required>
+                                        <option value="1">Kích hoạt</option>
+                                        <option value="0">Ngưng hoạt động</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tourCode" class="form-label">Mã Tour</label>
+                                    <input type="text" class="form-control" id="tourCode" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dayStay" class="form-label">Số Ngày Ở</label>
+                                    <input type="number" class="form-control" id="dayStay" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Thêm Tour</button>
+                                <button type="button" class="btn btn-secondary" id="clearTourForm">Clear</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal chỉnh sửa tour -->
+            <div class="modal fade" id="editTourModal" tabindex="-1" aria-labelledby="editTourModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editTourModalLabel">Chỉnh Sửa Tour</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editTourForm" onsubmit="editTourDetails(); return false;">
+                                <div class="mb-3">
+                                    <label for="editTourName" class="form-label">Tên Tour</label>
+                                    <input type="text" class="form-control" id="editTourName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editTourDetail" class="form-label">Chi Tiết Tour</label>
+                                    <textarea class="form-control" id="editTourDetail" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editTourCategory" class="form-label">Loại Tour</label>
+                                    <select class="form-select" id="editTourCategory" required>
+                                        <!-- Dữ liệu sẽ được tải động -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editTourStatus" class="form-label">Trạng Thái</label>
+                                    <select class="form-select" id="editTourStatus" required>
+                                        <option value="1">Kích hoạt</option>
+                                        <option value="0">Ngưng hoạt động</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editTourCode" class="form-label">Mã Tour</label>
+                                    <input type="text" class="form-control" id="editTourCode" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editDayStay" class="form-label">Số Ngày Ở</label>
+                                    <input type="number" class="form-control" id="editDayStay" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+                                <button type="button" class="btn btn-secondary" id="clearEditTourForm">Clear</button>
+                                <input type="hidden" id="editTourId">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -229,15 +242,12 @@
 	    const categoryFilter = document.getElementById('categorySelect').value;
 	    const statusFilter = document.getElementById('statusSelect').value;
 	    const tableRows = document.querySelectorAll('#tourTableBody tr');
-
 	    tableRows.forEach(row => {
 	        const tourID = row.cells[0].innerText.toLowerCase();        // Cột ID Tour
 	        const tourName = row.cells[1].innerText.toLowerCase();      // Cột Tên Tour
 	        const tourCode = row.cells[4].innerText.toLowerCase();      // Cột Mã Tour
 	        const status = row.cells[3].innerText.toLowerCase().trim();  // Cột Trạng Thái
-	        const tourCategory = row.cells[6].innerText.toLowerCase();   // Cột Loại Tour
-
-	        // Kiểm tra nếu searchInput có trong tourID, tourName hoặc tourCode
+	        const tourCategoryId = row.cells[6].getAttribute('data-category-id'); // Lấy giá trị từ data-category-id	        // Kiểm tra nếu searchInput có trong tourID, tourName hoặc tourCode
 	        const matchesSearch = 
 	            tourID.includes(searchInput) || 
 	            tourName.includes(searchInput) || 
@@ -246,7 +256,7 @@
 	        // Kiểm tra loại tour
 	        const matchesCategory = 
 	            categoryFilter === '' || // Nếu loại tour là Tất cả
-	            tourCategory === categoryFilter.toLowerCase();
+	            tourCategoryId === categoryFilter; // So sánh với categoryFilter
 
 	        // Kiểm tra trạng thái
 	        const matchesStatus = 
@@ -265,6 +275,7 @@
 	        }
 	    });
 	}
+
 	</script>
 </body>
 </html>

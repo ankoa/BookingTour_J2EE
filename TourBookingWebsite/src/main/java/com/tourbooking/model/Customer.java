@@ -32,7 +32,7 @@ public class Customer {
     private int sex;
 
     @Column(name = "phone_number")
-    private int phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "address")
     private String address;
@@ -46,11 +46,6 @@ public class Customer {
     @Column(name = "status")
     private int status;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
-    @JsonManagedReference
-    private Account account;
-
     // Quan hệ nhiều khách hàng có thể liên kết tới một khách hàng liên quan
     @ManyToOne
     @JoinColumn(name ="customer_rel_id", referencedColumnName = "customer_id")
@@ -61,4 +56,11 @@ public class Customer {
     @OneToMany(mappedBy = "relatedCustomer", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Customer> customers;
+/* lỗi vòng lặp khi lấy list booking
+    @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Booking> bookings;
+*/
+    @Column(name="customer_type")
+    private int customerType;
 }

@@ -42,7 +42,6 @@ public class Discount {
     private String note;
 
 	@ManyToMany(mappedBy = "discounts")
-	@JsonBackReference
 	private Set<TourTime> tourTimes;
 }
 
