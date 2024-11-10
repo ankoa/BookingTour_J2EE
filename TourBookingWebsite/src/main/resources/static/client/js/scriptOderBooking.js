@@ -189,11 +189,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 const discount = await response.json();
                 console.log('Discount:', discount);
-                discountValue = discount.discountValue;
-                return true; // Mã giảm giá hợp lệ
+                if(discount.discountValue>0)  return true;
+                return false;
             } else {
                 console.log('Mã giảm giá không tìm thấy');
-                return false; // Mã giảm giá không hợp lệ
+                return false;
             }
         } catch (error) {
             console.error('Error fetching discount:', error);
@@ -204,8 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("btn-check-discount").addEventListener("click", async () => {
         const isValid = await fetchDiscountByCode(document.getElementById("value-code-voucher").value);
-
-        if (isValid.discountValue>0) {
+        if (isValid) {
             document.getElementById("box-mess-voucher").textContent = `Áp dụng mã giảm giá thành công`;
             document.getElementById("box-mess-voucher").classList.remove("border-danger");
             document.getElementById("box-mess-voucher").classList.add("border-success", "p-2", "border");

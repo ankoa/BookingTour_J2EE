@@ -47,6 +47,6 @@ public class Booking {
     @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "customer_id")
     private Customer customer;
 
-    @Column(name="voucher_price")
-    private Integer voucherPrice;
+    @Column(name="total_discount")
+    private Integer totalDiscount;
 }

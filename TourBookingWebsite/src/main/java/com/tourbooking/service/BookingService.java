@@ -182,7 +182,7 @@ public class BookingService {
         newBooking.setTime(currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         newBooking.setTourTime(tourTime);
         newBooking.setTotalPrice(totalPrice);
-        newBooking.setVoucherPrice(discountValue+voucherValue);
+        newBooking.setTotalDiscount(discountValue+voucherValue);
 
 
         bookingRepository.save(newBooking);
