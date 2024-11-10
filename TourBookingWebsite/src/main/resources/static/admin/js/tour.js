@@ -91,28 +91,35 @@
 	        return;
 	    }
 
-	    tourList.forEach(tour => {
-	        const row = document.createElement("tr");
-	        row.innerHTML = `
-	            <td>${tour.tourId}</td>
-	            <td>${tour.tourName}</td>
-	            <td>${tour.tourDetail ? tour.tourDetail : 'Không có chi tiết'}</td>
-	            <td>${tour.status === 1 ? 'Kích hoạt' : 'Ngưng hoạt động'}</td>
-	            <td>${tour.tourCode}</td>
-	            <td>${tour.dayStay}</td>
-	            <td>${tour.category ? tour.category.categoryName : 'N/A'}</td>
-	            <td>
-	                <div class="text-center">
-	                    <button onclick="window.location.href='/admin/tour-schedule/${tour.tourId}'" class="btn btn-info btn-sm mb-2">Lịch Tour</button>
-	                    <div class="d-flex justify-content-center">
-	                        <button data-id="${tour.tourId}" class="edit-btn btn btn-warning btn-sm mx-1">Sửa</button>
-	                        <button class="delete-btn btn btn-danger btn-sm mx-1" data-id="${tour.tourId}" ${tour.status == 0 ? 'disabled' : ''}>Xóa</button>
-	                    </div>
-	                </div>
-	            </td>
-	        `;
-	        tourTableBody.appendChild(row);
-	    });
+		tourList.forEach(tour => {
+		    const row = document.createElement("tr");
+		    row.innerHTML = `
+		        <td>${tour.tourId}</td>
+		        <td>${tour.tourName}</td>
+		        <td>${tour.tourDetail ? tour.tourDetail : 'Không có chi tiết'}</td>
+		        <td>${tour.status === 1 ? 'Kích hoạt' : 'Ngưng hoạt động'}</td>
+		        <td>${tour.tourCode}</td>
+		        <td>${tour.dayStay}</td>
+		        <td data-category-id="${tour.category ? tour.category.categoryId : ''}">
+		            ${tour.category ? tour.category.categoryName : 'N/A'}
+		        </td>
+		        <td>
+		            <div class="text-center">
+		                <button onclick="window.location.href='/admin/tour-schedule/${tour.tourId}'" class="btnadd-tour-time btn btn-info btn-sm mb-2">Lịch Tour</button>
+		                <div class="d-flex justify-content-center">
+		                    <button data-id="${tour.tourId}" class="edit-btn btn btn-warning btn-sm me-1">Sửa</button>
+		                    <button class="delete-btn btn btn-danger btn-sm ms-1" data-id="${tour.tourId}" ${tour.status == 0 ? 'disabled' : ''}>Xóa</button>
+		                </div>
+		                <div class="d-flex justify-content-center mt-2">
+		                    <button class="btn btn-primary btn-sm" onclick="viewTourImage(${tour.tourId})">
+		                        <i class="fas fa-image"></i> Xem hình ảnh
+		                    </button>
+		                </div>
+		            </div>
+		        </td>
+		    `;
+		    tourTableBody.appendChild(row);
+		});
 
 	    // Gán sự kiện lắng nghe cho các nút xóa
 	    document.querySelectorAll('.delete-btn').forEach(button => {
@@ -183,7 +190,7 @@
 
 	                    // Gọi lại fetchData() để tải lại danh sách mới nhất
 	                    fetchTours();
-
+						clearFormSearch();
 	                    confirmDeleteModal.hide(); // Ẩn modal
 	                } else {
 	                    return response.text().then(text => {
@@ -289,7 +296,7 @@
 	    }
 
 	    const tourData = {
-	        "tourId": 1,
+	        "tourId": tourId,
 	        "tourName": tourName,
 	        "tourDetail": tourDetail,
 	        "category": tourCategoryId, 
@@ -313,6 +320,8 @@
 	        showAlert('success', data.message); // Duyệt thông điệp phản hồi từ máy chủ
 	        $('#editTourModal').modal('hide'); // Đóng modal
 	        fetchTours(); // Tải lại danh sách tour
+			clearFormSearch();
+
 	    })
 	    .catch(error => {
 	        console.error('Error updating tour:', error);
@@ -386,13 +395,22 @@
 	        showAlert('success', data.message); // Duyệt thông điệp phản hồi từ máy chủ
 	        $('#addTourModal').modal('hide'); // Đóng modal
 	        fetchTours(); // Tải lại danh sách tour
+			clearFormSearch();
 	    })
 	    .catch(error => {
 	        console.error('Error adding tour:', error);
 	        showAlert('danger', 'Có lỗi xảy ra. Vui lòng thử lại.'); // Hiển thị thông báo lỗi
 	    });
 	};
+	
+	function clearFormSearch() {
+	    // Xóa nội dung ô input tìm kiếm
+	    document.getElementById('searchInput').value = '';
 
+	    // Đặt lại các ô select về giá trị mặc định
+	    document.getElementById('statusSelect').selectedIndex = 0;
+	    document.getElementById('categorySelect').selectedIndex = 0;
+	}
 
     document.getElementById("clearTourForm").addEventListener("click", function() {
         document.getElementById("addTourForm").reset();

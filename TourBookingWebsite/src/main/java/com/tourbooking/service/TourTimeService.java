@@ -89,4 +89,36 @@ public class TourTimeService {
             tourTime = tourTimeRepository.findBytourTimeIdAndStatus(id, status);
         return tourTime;
     }
+ // Thêm tour time mới
+    public TourTime addTourTime(TourTime tourTime) {
+        return tourTimeRepository.save(tourTime);
+    }
+
+    // Cập nhật tour time
+    public TourTime updateTourTime(TourTime tourTime) {
+        if (!tourTimeRepository.existsById(tourTime.getTourTimeId())) {
+            throw new IllegalArgumentException("Tour time không tồn tại!");
+        }
+        return tourTimeRepository.save(tourTime);
+    }
+
+    // Xóa tour time
+    public boolean deleteTourTime(int tourTimeId) {
+        if (!tourTimeRepository.existsById(tourTimeId)) {
+            return false;
+        }
+        tourTimeRepository.deleteById(tourTimeId);
+        return true;
+    }
+ // Lấy tất cả các TourTime
+    public List<TourTime> getAllTourTimes() {
+        return tourTimeRepository.findAll();
+    }
+
+    // Lấy TourTime theo ID
+    public Optional<TourTime> getTourTimeById(String id) {
+        return tourTimeRepository.findById(Integer.parseInt(id));
+    }
+
+
 }

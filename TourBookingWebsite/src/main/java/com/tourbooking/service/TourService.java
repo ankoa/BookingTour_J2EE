@@ -1,7 +1,10 @@
 package com.tourbooking.service;
-
-import com.tourbooking.dto.response.TourResponse;
 import com.tourbooking.dto.response.TourTimeResponse;
+import com.tourbooking.dto.response.TourResponse;
+import com.tourbooking.model.Tour;
+import com.tourbooking.model.TourImage;
+import com.tourbooking.model.TourTime;
+
 import com.tourbooking.mapper.TourMapper;
 import com.tourbooking.mapper.TourTimeMapper;
 import com.tourbooking.mapper.TransportMapper;

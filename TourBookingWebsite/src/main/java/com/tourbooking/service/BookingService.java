@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -204,4 +205,28 @@ public class BookingService {
         Page<Booking> listBooking = bookingRepository.findAll(pageable);
         return listBooking.getContent();
     }
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll(); // Lấy tất cả booking từ repository
+    }
+    public boolean deactivateBooking(Integer id) {
+        int updatedCount = bookingRepository.deactivateBooking(id);
+        return updatedCount > 0;
+    }
+    public boolean addBooking(Booking booking) {
+        try {
+            // Lưu đối tượng Booking vào cơ sở dữ liệu
+            bookingRepository.save(booking);
+            // Nếu lưu thành công, trả về true
+            return true;
+        } catch (Exception e) {
+            // Nếu có lỗi xảy ra (ví dụ: ngoại lệ khi lưu vào cơ sở dữ liệu), trả về false
+            return false;
+        }
+    }
+    public Optional<Booking> getBookingById(Integer bookingId) {
+        return bookingRepository.findById(bookingId);
+    }
+
+
+
 }

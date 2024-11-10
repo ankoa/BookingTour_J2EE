@@ -56,11 +56,11 @@ public class Customer {
     @OneToMany(mappedBy = "relatedCustomer", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Customer> customers;
-
+/* lỗi vòng lặp khi lấy list booking
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Booking> bookings;
-
+*/
     @Column(name="customer_type")
     private Integer customerType;
 }
