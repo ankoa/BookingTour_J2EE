@@ -39,13 +39,20 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/account-login")
                         .loginProcessingUrl("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
                         .successHandler((request, response, authentication) -> {
                             response.setStatus(HttpServletResponse.SC_OK);
-                            response.getWriter().write("{\"status\": \"success\", \"role\""+ authentication.getAuthorities().toArray()[0].toString()+ "\"}");
+                            response.setContentType("application/json");
+
+                            String role = authentication.getAuthorities().toArray()[0].toString();
+                            response.getWriter().write("{\"status\": \"success\", \"role\": \"" + role + "\"}");
                             response.getWriter().flush();
                         })
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+
                             response.getWriter().write("{\"status\": \"error\", \"message\": \"Invalid credentials\"}");
                             response.getWriter().flush();
                         })
