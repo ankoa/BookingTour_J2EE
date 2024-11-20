@@ -1,10 +1,11 @@
 package com.tourbooking.controller;
 
+import com.tourbooking.dto.response.BookingResponse;
 import com.tourbooking.dto.response.TourImageResponse;
 import com.tourbooking.dto.response.TourResponse;
 import com.tourbooking.dto.response.TourTimeResponse;
-import com.tourbooking.model.Tour;
 import com.tourbooking.security.CustomUserDetails;
+import com.tourbooking.service.BookingService;
 import com.tourbooking.service.TourService;
 import com.tourbooking.service.TourTimeService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,9 @@ public class HomeController {
 
     @Autowired
     private TourTimeService tourTimeService;
+
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping({"/",""})
     public String index() {
@@ -104,6 +108,19 @@ public class HomeController {
         model.addAttribute("user", user);
         model.addAttribute("tourTimeResponse", tourTimeResponse);
         return "client/order-booking";
+    }
+    @GetMapping("booking/{id}")
+    public String getPaymentBooking(Model model,
+                                    @PathVariable("id") String id,
+                                  @AuthenticationPrincipal CustomUserDetails user) {
+        BookingResponse bookingResponse = bookingService.getBookingResponseById(id,1);
+
+       if(bookingResponse==null)
+           return "redirect:/";
+
+        model.addAttribute("user", user);
+        model.addAttribute("bookingResponse", bookingResponse);
+        return "client/booking";
     }
 
 }
