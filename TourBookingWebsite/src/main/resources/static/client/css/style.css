@@ -131,3 +131,30 @@ select {
     height: 300px;
   }
 }
+
+.payment-method-list >.payment-method>label {
+  display: block;
+  position: relative;
+  padding:10px 10px 10px 35px;
+  cursor: pointer;
+  font-size: 17px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.payment-method-list input:checked ~ .radioBtn {
+  background-color: #2196F3;
+}
+
+.radioBtn {
+  position: absolute;
+  left: 5px;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+.toast{
+  background-color: #ffffff;
+}

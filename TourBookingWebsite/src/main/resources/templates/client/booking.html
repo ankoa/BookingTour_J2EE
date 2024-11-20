@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<th:block th:replace="client/header :: header"></th:block>
+
+<body>
+<div id="wrapper" class="container">
+    <div th:replace="client/navbar :: navbar"></div>
+    <script th:inline="javascript">
+        const bookingResponse = /*[[${bookingResponse}]]*/ {
+            priceAdult: undefined,
+            priceChild: undefined,
+            isDiscount: false,
+            discountValue: undefined,
+            remainPax: 0
+        };
+        console.log(bookingResponse)
+    </script>
+    <main id="main">
+        <div class="booking">
+            <h1 class="text-align-center">Đặt Tour</h1>
+            <form class="row" id="submit-form">
+                <div class="col col-lg-6 col-12">
+                    <div th:if="${user == null}">
+                        <h2>Thông tin liên lạc</h2>
+                        <div class="row">
+                            <div class="col col-md-6 col-12">
+                                <label class="p-2 w-100">
+                                    Họ Tên *
+                                    <input disabled th:value="${bookingResponse.customerRelated.customerName}"
+                                           type="text" name="name" placeholder="Nhập họ tên" required
+                                           class="border-1 rounded p-2 w-100">
+                                </label>
+                                <label class="p-2 w-100">
+                                    Địa chỉ
+                                    <input disabled th:value="${bookingResponse.customerRelated.address}" type="text"
+                                           name="address" placeholder="Nhập Địa chỉ"
+                                           class="border-1 rounded p-2 w-100">
+                                </label>
+                            </div>
+                            <div class="col col-md-6 col-12">
+                                <label  class="p-2 w-100">
+                                    Số điện thoại *
+                                    <input disabled th:value="${bookingResponse.customerRelated.phoneNumber}" type="tel"
+                                           name="phone" placeholder="Nhập họ tên" required
+                                           class="border-1 rounded p-2 w-100">
+                                </label>
+
+                            </div>
+                        </div>
+                    </div>
+                    <input disabled th:if="${user != null}" type="hidden" th:value="${user.account.accountId}"
+                           name="accountId">
+
+                    <h2>Thông tin hành khách</h2>
+                    <div class="items" id="info-customers">
+                        <div id="items-adult">
+                            <div class="item p-3 rounded-2 mt-2 border-secondary border">
+
+                                <ul class="item-list p-0">
+                                    <li class="item d-flex justify-content-between row"
+                                        th:each="item: ${bookingResponse.bookingDetailResponses}">
+                                        <div class="input disabled col-sm-4">
+                                            Họ tên
+                                            <input disabled th:value="${item.customerResponse.customerName}" type="text"
+                                                   name="name-adult-${index}" class="w-100" required>
+                                        </div>
+                                        <div class="input disabled col-sm-4">
+                                            Giới tính
+                                            <select disabled name="sex-adult-${index}" class="w-100" required>
+                                                <option th:value="1" th:selected="${item.customerResponse.sex == 1}">
+                                                    Nam
+                                                </option>
+                                                <option th:value="2" th:selected="${item.customerResponse.sex == 2}">
+                                                    Nữ
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="input disabled col-sm-4">
+                                            Ngày sinh
+                                            <input disabled
+                                                   th:value="${#strings.substring(item.customerResponse.birthday, 0, 10)}"
+                                                   type="date" name="birthday-adult-${index}" class="w-100" required>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="items-child">
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col col-lg-6 col-12">
+                    <div class="position-sticky top-0">
+                        <h4 class="mt-2">Tóm tắt chuyến đi</h4>
+                        <div class="summary p-3 bg-body-secondary rounded-2 ">
+
+                            <div class="row border-1 border-black border-bottom pb-3 ">
+                                <div class="col col-5">
+                                    <img src="/client/img/55.jpg" alt="">
+                                </div>
+                                <div class="col col-7">
+                                    <h5 class="tour-name" th:text="${bookingResponse.tourTimeResponse.tourName}"></h5>
+                                    <div class="tour-code">Mã tour: <span
+                                            th:text="${bookingResponse.tourTimeResponse.tourTimeCode}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="price-list mt-4 ">
+                                <div class="header-list d-flex justify-content-between">
+                                    <h5 class="title">Tổng Khách hàng</h5>
+                                    <h5 class="price text-danger" id="price-customer">
+
+                                    </h5>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="title">Người lớn</p>
+                                    <span class="price text-danger " id="price-adult"
+                                          th:text="${bookingResponse.adultCount}+'*'+${bookingResponse.tourTimeResponse.priceAdult}">
+
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <p class="title">Trẻ em</p>
+                                    <span class="price text-danger " id="price-child"
+                                          th:text="${bookingResponse.childCount}+'*'+${bookingResponse.tourTimeResponse.priceChild}"></span>
+                                </div>
+
+
+                                <div class="d-flex justify-content-between border-top pt-2 flex-wrap">
+
+                                </div>
+                                <div id="box-mess-voucher" class="border-3 rounded-2 mt-2">
+
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <p class="title">Tổng Giá trị </p>
+                                    <span class="price text-danger"><span
+                                            th:text="${bookingResponse.totalPrice}"></span> đ</span>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <p class="title">Tổng Giá trị được giảm </p>
+                                    <span class="price text-danger" id="value-discount">-<span
+                                            th:text="${bookingResponse.totalDiscount}"></span> đ</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <div class="left">Tổng tiền</div>
+                                    <h3 class="text-danger" id="total-price"><span
+                                            th:text="${bookingResponse.totalPrice}-${bookingResponse.totalDiscount}"></span>đ
+                                    </h3>
+                                </div>
+
+                                <div>
+                                    <h3>Thông Tin Booking</h3>
+                                    <div>
+                                        <p>
+                                        Mã đặt chỗ: <b th:text="${bookingResponse.bookingId}"></b>
+                                        </p>
+                                        <p>Ngày tạo đặt chỗ: <b th:text="${bookingResponse.time}"></b></p>
+                                        <p>Hình thức thanh toán: <b th:text="${bookingResponse.paymentMethod=='cash'?'Tiền Mặt':'VNPay'}"></b></p>
+                                        <p>Trạng thái : <b th:text="${bookingResponse.status == 0 ? 'Đơn hàng đã bị hủy' : (bookingResponse.status ==2? 'Đã thanh toán' : 'Chưa thanh toán')}"></b></p>
+                                        <p th:if="${bookingResponse.status == 1}" >Thời hạn thanh toán: 2 ngày sau đặt chỗ</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </main>
+    <!--    <script src="/client/js/scriptOderBooking.js"></script>-->
+
+    <div th:replace="client/footer::footer"></div>
+
+</div>
+
+</body>
+
+</html>
+
+

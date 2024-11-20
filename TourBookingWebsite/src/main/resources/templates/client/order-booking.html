@@ -94,18 +94,38 @@
                     </div>
                     <h2>Thông tin hành khách</h2>
                     <div class="items" id="info-customers">
-                        <div id="items-adult">
-
+                        <div class="item p-3 rounded-2 mt-2 border-secondary border">
+                            <div class="item-title">
+                                <h4>Người lớn</h4>
+                            </div>
+                            <ul class="item-list p-0" id="items-adult">
+                            </ul>
                         </div>
-                        <div id="items-child">
-
-                        </div>
+                            <div class="item p-3 rounded-2 mt-2 border-secondary border">
+                                <div class="item-title">
+                                    <h4>Trẻ em</h4>
+                                </div>
+                                <ul class="item-list p-0" id="items-child">
+                                </ul>
+                            </div>
 
                     </div>
-                    <div class="note">
-                                <textarea name="note" id="" placeholder="Nhập lời nhắn bằng tiếng anh hoặc tiếng việt"
-                                          class="p-2 w-100 mt-2"></textarea>
+                    <h2>Hình thức thanh toán</h2>
+                    <div class="payment-method-list">
+                        <div class="payment-method border border-1 border-black mb-2">
+                            <label class="w-100 ">
+                                <input type="radio" required name="payment-method" value="cash" class="radioBtn" id="cashOption" checked>
+                               <span>Tiền mặt</span>
+                            </label>
+                        </div>
+                        <div class="payment-method border border-1 border-black">
+                            <label class="w-100 ">
+                                <input type="radio" required name="payment-method" value="vn-pay" class="radioBtn" id="vnPayOption">
+                                <span>Thanh toán VNPAY</span>
+                            </label>
+                        </div>
                     </div>
+
 
                 </div>
                 <div class="col col-lg-5 col-12">
@@ -119,8 +139,9 @@
                                 </div>
                                 <div class="col col-7">
                                     <h5 class="tour-name" th:text="${tourTimeResponse.tourName}"></h5>
-                                    <p  th:text="'Số chỗ còn lại: '+${tourTimeResponse.remainPax}"></p>
-                                    <div class="tour-code">Mã tour: <span th:text="${tourTimeResponse.tourTimeCode}"></span>
+                                    <p th:text="'Số chỗ còn lại: '+${tourTimeResponse.remainPax}"></p>
+                                    <div class="tour-code">Mã tour: <span
+                                            th:text="${tourTimeResponse.tourTimeCode}"></span>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +168,8 @@
                                     <input type="text" id="value-code-voucher" name="value-code-voucher"
                                            class="rounded-1 custom-w-33"
                                            value="QWE23D">
-                                    <button type="button" class="btn btn-outline-secondary custom-w-33" id="btn-check-discount">
+                                    <button type="button" class="btn btn-outline-secondary custom-w-33"
+                                            id="btn-check-discount">
                                         Áp dụng
                                     </button>
 
@@ -164,7 +186,8 @@
                                     <h3 class="text-danger" id="total-price">0 ₫</h3>
                                 </div>
                                 <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-danger" id="btn-submit" th:disabled="${tourTimeResponse.remainPax <= 0}">
+                                    <button type="submit" class="btn btn-danger" id="btn-submit"
+                                            th:disabled="${tourTimeResponse.remainPax <= 0}">
                                         Xác nhận đặt hàng
                                     </button>
                                 </div>
