@@ -53,7 +53,7 @@ public class TourTime {
     private Tour tour;
 
     @OneToMany(mappedBy = "tourTime", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonBackReference
     private Set<TransportDetail> transportDetails;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -61,7 +61,7 @@ public class TourTime {
             joinColumns = @JoinColumn(name = "tour_time_id"),
             inverseJoinColumns = @JoinColumn(name = "discount_id")
     )
-    @JsonManagedReference
+    @JsonBackReference
     private Set<Discount> discounts;
 
     @OneToMany(mappedBy = "tourTime", cascade = CascadeType.ALL)

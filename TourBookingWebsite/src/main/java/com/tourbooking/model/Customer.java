@@ -54,7 +54,7 @@ public class Customer {
 
     // Một khách hàng có thể liên kết tới nhiều khách hàng
     @OneToMany(mappedBy = "relatedCustomer", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonBackReference
     private Set<Customer> customers;
 /* lỗi vòng lặp khi lấy list booking
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
