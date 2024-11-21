@@ -1,6 +1,7 @@
 package com.tourbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,7 +47,7 @@ public class Tour {
     private Category category;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private Set<TourImage> tourImages;
 
 

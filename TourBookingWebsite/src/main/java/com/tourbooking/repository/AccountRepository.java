@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tourbooking.model.Account;
 
 public interface AccountRepository extends JpaRepository<Account, Integer> {
-    
+
     @Modifying
     @Transactional
     @Query("UPDATE Account a SET a.status = 0 WHERE a.accountId = :accountId")
@@ -16,4 +16,10 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     @Query("SELECT COUNT(a) > 0 FROM Account a WHERE a.customer.customerId = :customerID")
     boolean checkCustomerIDExists(Integer customerID);
+
+     Account findByAccountName(String accountName);
+     Account findByEmail(String email);
+
+     boolean existsByEmail(String email);
+     boolean existsByAccountName(String accountName);
 }

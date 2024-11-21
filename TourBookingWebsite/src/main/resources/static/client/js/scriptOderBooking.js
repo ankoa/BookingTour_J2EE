@@ -44,18 +44,18 @@ document.addEventListener("DOMContentLoaded", function () {
         <li class="item d-flex justify-content-between row">
           <div class="input col-sm-4">
               Họ tên
-              <input type="text" name="name-child-${index}" class="w-100">
+              <input type="text" name="name-child-${index}" class="w-100" required>
           </div>
           <div class="input col-sm-4">
               Giới tính
-              <select name="sex-child-${index}" class="w-100">
+              <select name="sex-child-${index}" class="w-100" required>
                   <option value="1">Nam</option>
                   <option value="2">Nữ</option>
               </select>
           </div>
           <div class="input col-sm-4">
               Ngày sinh
-              <input type="date" name="birthday-child-${index}" class="w-100">
+              <input type="date" name="birthday-child-${index}" class="w-100" required>
           </div>
         </li>
       </ul>
@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const elementTotalPrice = document.getElementById("total-price");
     const elementValueDiscount = document.getElementById("value-discount");
 
+    const buttonSubmit = document.getElementById("btn-submit");
 
     let countChild = 0;
     let countAdult = 0;
@@ -93,58 +94,79 @@ document.addEventListener("DOMContentLoaded", function () {
     let priceChild = tourTimeResponse.priceChild;
 
     if (tourTimeResponse.isDiscount) {
-        priceAdult = tourTimeResponse.priceAdult-tourTimeResponse.discountValue;
-        priceChild = tourTimeResponse.priceChild-tourTimeResponse.discountValue;
+        priceAdult = tourTimeResponse.priceAdult - tourTimeResponse.discountValue;
+        priceChild = tourTimeResponse.priceChild - tourTimeResponse.discountValue;
     }
 
     // Hàm giảm giá trị
     elementMinusBtnChild.addEventListener("click", () => {
-            handleQuantity("minus", "child");
+            handleChangeQuantity("minus", "child");
         }
     );
     elementPlusBtnChild.addEventListener("click", () => {
-            handleQuantity("plus", "child");
+            handleChangeQuantity("plus", "child");
         }
     );
     elementMinusBtnAdult.addEventListener("click", () => {
-            handleQuantity("minus", "adult");
+            handleChangeQuantity("minus", "adult");
         }
     );
     elementPlusBtnAdult.addEventListener("click", () => {
-            handleQuantity("plus", "adult");
+            handleChangeQuantity("plus", "adult");
         }
     );
 
-    function handleQuantity(action, type) {
-        const elementArray = document.createElement('div');
-        if (type === "child") {
-            if (action == "minus" && countChild > 0) {
-                countChild--;
-            }
-            if (action == "plus") {
-                countChild++;
-            }
-
-            for (let i = 0; i < countChild; i++)
-                elementArray.appendChild(generateItemChild(i));
-            elementItemsChildInfo.innerHTML = elementArray.innerHTML;
-            elementCounterValueChild.value = countChild;
-        } else {
-            if (action == "minus" && countAdult > 0) {
-                countAdult--;
-            }
-            if (action == "plus") {
-                countAdult++;
-            }
-            for (let i = 0; i < countAdult; i++)
-                elementArray.appendChild(generateItemAdult(i));
-            elementItemsAdultInfo.innerHTML = elementArray.innerHTML;
-            elementCounterValueAdult.value = countAdult;
+    function handleChangeQuantity(action, type) {
+        if (action === "minus") {
+            if (type === "child" && countChild > 0)
+                removeLastItem(type)
+            if (type === "adult" && countAdult > 1)
+                removeLastItem(type)
         }
-        ChangedValue();
+        if (action === "plus")
+            if ((countChild + countAdult) < tourTimeResponse.remainPax) {
+                if (type === "child")
+                    addItem(type)
+                if (type === "adult")
+                    addItem(type)
+
+            } else {
+                alert("Da Dat Gioi Han");
+            }
+        ChangedElementsPrice();
     }
 
-    function ChangedValue() {
+    function addItem(type) {
+        if (type === "child") {
+            countChild++;
+            elementItemsChildInfo.appendChild(generateItemChild(countChild));
+            elementCounterValueChild.value = countChild;
+        }
+        if (type === "adult") {
+            countAdult++;
+            elementItemsAdultInfo.appendChild(generateItemAdult(countAdult));
+            elementCounterValueAdult.value = countAdult;
+        }
+    }
+
+    function removeLastItem(type) {
+        if (type === "child") {
+            countChild--;
+            if (elementItemsChildInfo.lastElementChild) {
+                elementItemsChildInfo.removeChild(elementItemsChildInfo.lastElementChild);
+            }
+            elementCounterValueChild.value = countChild;
+        }
+        if (type === "adult") {
+            countAdult--;
+            if (elementItemsAdultInfo.lastElementChild) {
+                elementItemsAdultInfo.removeChild(elementItemsAdultInfo.lastElementChild);
+            }
+            elementCounterValueAdult.value = countAdult;
+        }
+    }
+
+    function ChangedElementsPrice() {
         let priceTotalAdult = priceAdult * countAdult;
         let priceTotalChild = priceChild * countChild;
         const totalPrice = priceTotalAdult + priceTotalChild - discountValue;
@@ -167,11 +189,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 const discount = await response.json();
                 console.log('Discount:', discount);
-                discountValue = discount.discountValue;
-                return true; // Mã giảm giá hợp lệ
+                if(discount.discountValue>0)  return true;
+                return false;
             } else {
                 console.log('Mã giảm giá không tìm thấy');
-                return false; // Mã giảm giá không hợp lệ
+                return false;
             }
         } catch (error) {
             console.error('Error fetching discount:', error);
@@ -182,17 +204,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("btn-check-discount").addEventListener("click", async () => {
         const isValid = await fetchDiscountByCode(document.getElementById("value-code-voucher").value);
-
         if (isValid) {
             document.getElementById("box-mess-voucher").textContent = `Áp dụng mã giảm giá thành công`;
             document.getElementById("box-mess-voucher").classList.remove("border-danger");
             document.getElementById("box-mess-voucher").classList.add("border-success", "p-2", "border");
-            ChangedValue();
+            ChangedElementsPrice();
         } else {
             document.getElementById("box-mess-voucher").textContent = `Áp dụng mã giảm giá không thành công`;
             document.getElementById("box-mess-voucher").classList.remove("border-success");
             document.getElementById("box-mess-voucher").classList.add("border-danger", "p-2", "border");
-            ChangedValue();
+            ChangedElementsPrice();
         }
     });
 
@@ -210,7 +231,8 @@ document.addEventListener("DOMContentLoaded", function () {
             adults: [],
             children: [],
             note: formData.get('note'),
-            tourTimeId: tourTimeResponse.tourTimeId
+            tourTimeId: tourTimeResponse.tourTimeId,
+            accountId: Number(formData.get('accountId'))
         };
         for (let i = 0; i < formData.get('valueAdult'); i++)
             processedData.adults.push({
@@ -237,13 +259,18 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             console.log(processedData)
 
-            if (!response.ok) throw new Error("Có lỗi xảy ra");
+            if (!response.ok) {
+                alert("Gửi dữ liệu thất bại!");
+                return
+            }
 
             const result = await response.json();
-            alert("Gửi dữ liệu thành công!");
+            if (result.status === 200)
+                alert("Đặt tour thành công")
         } catch (error) {
             console.error("Lỗi:", error);
-            alert("Gửi dữ liệu thất bại!");
         }
     });
+
+    handleChangeQuantity("plus", "adult")
 });

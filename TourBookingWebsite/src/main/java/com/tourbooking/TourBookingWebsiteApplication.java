@@ -9,6 +9,5 @@ public class TourBookingWebsiteApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TourBookingWebsiteApplication.class, args);
 	}
-	
 
 }

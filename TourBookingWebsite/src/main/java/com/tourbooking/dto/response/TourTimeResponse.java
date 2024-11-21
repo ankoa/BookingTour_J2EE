@@ -21,15 +21,17 @@ public class TourTimeResponse {
     Integer priceAdult;
     Integer priceChild;
     String note;
+    Integer tourTimeId;
 
     // in tour
     Integer tourId;
     String dayStay;
-    Integer tourTimeId;
+    String tourName;
 
     //
     Integer discountValue;
     Boolean isDiscount;
     Integer remainPax;
+    List<String> listImage;
     List<TransportResponse> transportResponses;
 }

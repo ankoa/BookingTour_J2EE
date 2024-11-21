@@ -7,40 +7,51 @@
 <div id="wrapper" class="container">
     <div th:replace="client/navbar :: navbar"></div>
     <script th:inline="javascript">
-        const tourTimeResponse = /*[[${tourTimeResponse}]]*/ {};
+        const tourTimeResponse = /*[[${tourTimeResponse}]]*/ {
+            priceAdult: undefined,
+            priceChild: undefined,
+            isDiscount: false,
+            discountValue: undefined,
+            remainPax: 0
+        };
     </script>
     <main id="main">
         <div th:class="'order-booking order-booking-'+${tourTimeResponse.tourTimeId}">
             <h1 class="text-align-center">Đặt Tour</h1>
             <form class="row" id="submit-form">
-                <div class="col col-md-7 col-12">
-                    <h2>Thông tin liên lạc</h2>
-                    <div class="row">
-                        <div class="col col-md-6 col-12">
-                            <label for="" class="p-2 w-100">
-                                Họ Tên *
-                                <input type="text" name="name" placeholder="Nhập họ tên" required
-                                       class="border-1 rounded p-2 w-100">
-                            </label>
-                            <label for="" class="p-2 w-100">
-                                Địa chỉ
-                                <input type="text" name="address" placeholder="Nhập Địa chỉ"
-                                       class="border-1 rounded p-2 w-100">
-                            </label>
-                        </div>
-                        <div class="col col-md-6 col-12">
-                            <label for="" class="p-2 w-100">
-                                Số điện thoại *
-                                <input type="tel" name="phone" placeholder="Nhập họ tên" required
-                                       class="border-1 rounded p-2 w-100">
-                            </label>
+                <div class="col col-lg-7 col-12">
+                    <div th:if="${user == null}">
+                        <h2>Thông tin liên lạc</h2>
+                        <div class="row">
+                            <div class="col col-md-6 col-12">
+                                <label for="" class="p-2 w-100">
+                                    Họ Tên *
+                                    <input type="text" name="name" placeholder="Nhập họ tên" required
+                                           class="border-1 rounded p-2 w-100">
+                                </label>
+                                <label for="" class="p-2 w-100">
+                                    Địa chỉ
+                                    <input type="text" name="address" placeholder="Nhập Địa chỉ"
+                                           class="border-1 rounded p-2 w-100">
+                                </label>
+                            </div>
+                            <div class="col col-md-6 col-12">
+                                <label for="" class="p-2 w-100">
+                                    Số điện thoại *
+                                    <input type="tel" name="phone" placeholder="Nhập họ tên" required
+                                           class="border-1 rounded p-2 w-100">
+                                </label>
 
+                            </div>
                         </div>
                     </div>
+                    <input th:if="${user != null}" type="hidden" th:value="${user.getAccount().getAccountId()}"
+                           name="accountId">
+
                     <h2>Hành khách</h2>
                     <div class="row">
-                        <div class="col col-xl-6 col-md-12 col-12">
-                            <div class="border border-2 rounded-2 border-black p-2 m-2">
+                        <div class="col col-xl-6 col-12">
+                            <div class="border border-1 rounded-2 border-black p-2 m-2">
                                 <div class="row">
                                     <div class="col-5 col">Người lớn<br>Từ 12</div>
                                     <div class="col-7 col">
@@ -61,7 +72,7 @@
 
                         </div>
                         <div class="col col-xl-6 col-12">
-                            <div class="border border-2 rounded-2 border-black p-2 m-2">
+                            <div class="border border-1 rounded-2 border-black p-2 m-2">
                                 <div class="row">
                                     <div class="col-5 col">Trẻ em<br>Dưới 12</div>
                                     <div class="col-7 col">
@@ -95,52 +106,48 @@
                                 <textarea name="note" id="" placeholder="Nhập lời nhắn bằng tiếng anh hoặc tiếng việt"
                                           class="p-2 w-100 mt-2"></textarea>
                     </div>
-                    <h3>Điều khoản bắt buộc</h3>
-                    <label>
-                        <input type="checkbox" name="policy" selected required>
-                        Tôi đồng ý với Chính sách bảo vệ dữ liệu cá nhân và các điều khoản trên.
-                    </label>
 
                 </div>
-                <div class="col col-md-5 col-12">
+                <div class="col col-lg-5 col-12">
                     <div class="position-sticky top-0">
                         <h4 class="mt-2">Tóm tắt chuyến đi</h4>
-                        <div class="summary p-4 bg-body-secondary rounded-2 ">
+                        <div class="summary p-3 bg-body-secondary rounded-2 ">
 
                             <div class="row border-1 border-black border-bottom pb-3 ">
                                 <div class="col col-5">
                                     <img src="/client/img/55.jpg" alt="">
                                 </div>
                                 <div class="col col-7">
-                                    <h5 class="tour-name" th:text="${tourName}"></h5>
-                                    <div class="tour-code">Mã tour: <span th:text="${tourTimeResponse.tourTimeCode}">NNSGN1372-009-231024VJ-V-6</span>
+                                    <h5 class="tour-name" th:text="${tourTimeResponse.tourName}"></h5>
+                                    <p  th:text="'Số chỗ còn lại: '+${tourTimeResponse.remainPax}"></p>
+                                    <div class="tour-code">Mã tour: <span th:text="${tourTimeResponse.tourTimeCode}"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="price-list mt-4 ">
                                 <div class="header-list d-flex justify-content-between">
                                     <h5 class="title">Tổng Khách hàng</h5>
-                                    <h5 class="price text-danger" id="price-customer"><b>0 ₫</b></h5>
+                                    <h5 class="price text-danger" id="price-customer">
+
+                                    </h5>
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <p class="title">Người lớn</p>
-                                    <span class="price text-danger " id="price-adult">0 x <b
-                                            th:text="${tourTimeResponse.isDiscount ? tourTimeResponse.priceAdult - tourTimeResponse.discountValue : tourTimeResponse.priceAdult} +' ₫'"></b></span>
+                                    <span class="price text-danger " id="price-adult"></span>
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <p class="title">Trẻ em</p>
-                                    <span class="price text-danger " id="price-child">0 x <b
-                                            th:text="${tourTimeResponse.isDiscount ? tourTimeResponse.priceChild - tourTimeResponse.discountValue : tourTimeResponse.priceChild} +' ₫'"></b></span>
+                                    <span class="price text-danger " id="price-child">
+                                          </span>
                                 </div>
 
 
-                                <div class="d-flex justify-content-between border-top border-2 pt-2">
-
-                                    <p class="title">Mã giảm giá </p>
+                                <div class="d-flex justify-content-between border-top pt-2 flex-wrap">
+                                    <p class="title  custom-w-33">Mã giảm giá</p>
                                     <input type="text" id="value-code-voucher" name="value-code-voucher"
-                                           class="mx-1 btn-add-voucher rounded-2"
+                                           class="rounded-1 custom-w-33"
                                            value="QWE23D">
-                                    <button type="button" class="btn btn-outline-secondary" id="btn-check-discount">
+                                    <button type="button" class="btn btn-outline-secondary custom-w-33" id="btn-check-discount">
                                         Áp dụng
                                     </button>
 
@@ -157,7 +164,7 @@
                                     <h3 class="text-danger" id="total-price">0 ₫</h3>
                                 </div>
                                 <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-danger" id="btn-submit">
+                                    <button type="submit" class="btn btn-danger" id="btn-submit" th:disabled="${tourTimeResponse.remainPax <= 0}">
                                         Xác nhận đặt hàng
                                     </button>
                                 </div>

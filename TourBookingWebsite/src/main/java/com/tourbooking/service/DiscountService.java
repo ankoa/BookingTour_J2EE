@@ -11,7 +11,9 @@ public class DiscountService {
     @Autowired
     public DiscountRepository discountRepository;
 
-    public Discount getDiscountByDiscountCode(String code) {
-        return discountRepository.findByDiscountCode(code);
+    public Discount getDiscountByDiscountCode(String code ,Integer status) {
+        Discount discount = discountRepository.findByDiscountCode(code);
+        if(status!=null && discount.getStatus()!=status) return null;
+        return discount;
     }
 }

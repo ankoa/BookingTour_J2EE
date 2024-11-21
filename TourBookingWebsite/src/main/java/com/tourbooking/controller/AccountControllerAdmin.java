@@ -34,8 +34,6 @@ public class AccountControllerAdmin {
         this.customerService = customerService;
     }
 
-
-
     @GetMapping("/accounts")
     public String getAllAccounts(Model model) {
         List<Account> accounts = accountService.getAllAccounts();

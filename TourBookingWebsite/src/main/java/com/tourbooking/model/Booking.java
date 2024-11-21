@@ -38,10 +38,15 @@ public class Booking {
     private LocalDateTime time;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "tour_time_id", nullable = false)
     private TourTime tourTime;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "customer_id")
     private Customer customer;
+
+    @Column(name="total_discount")
+    private Integer totalDiscount;
 }
