@@ -12,13 +12,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingRequest {
-    private String name;
-    private String phoneNumber;
-    private String address;
+    private CustomerRequest relatedCustomer;
     private String voucherCode;
     private String note;
     private Set<CustomerRequest> adults;
     private Set<CustomerRequest> children;
     private Integer tourTimeId;
     private Integer accountId;
+    private String paymentMethod;
+    private String bankCode;
 }

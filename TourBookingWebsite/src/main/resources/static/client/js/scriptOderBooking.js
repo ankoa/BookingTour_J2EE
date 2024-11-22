@@ -2,11 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function generateItemAdult(index) {
         const html = `
-    <div class="item p-3 rounded-2 mt-2 border-secondary border">
-      <div class="item-title">
-          <h4>Người lớn</h4>
-      </div>
-      <ul class="item-list p-0">
         <li class="item d-flex justify-content-between row">
           <div class="input col-sm-4">
               Họ tên
@@ -24,8 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <input type="date" name="birthday-adult-${index}" class="w-100" required>
           </div>
         </li>
-      </ul>
-    </div>`;
+      `;
         // Tạo một div tạm để chuyển đổi chuỗi HTML thành Node
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
@@ -36,11 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function generateItemChild(index) {
         const html = `
-    <div class="item p-3 rounded-2 mt-2 border-secondary border">
-      <div class="item-title">
-          <h4>Trẻ em</h4>
-      </div>
-      <ul class="item-list p-0">
         <li class="item d-flex justify-content-between row">
           <div class="input col-sm-4">
               Họ tên
@@ -58,8 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <input type="date" name="birthday-child-${index}" class="w-100" required>
           </div>
         </li>
-      </ul>
-    </div>`;
+      `;
         // Tạo một div tạm để chuyển đổi chuỗi HTML thành Node
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
@@ -89,7 +77,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let countChild = 0;
     let countAdult = 0;
+    let totalPrice = 0
     let discountValue = 0;
+    let voucherValue = 0
     let priceAdult = tourTimeResponse.priceAdult;
     let priceChild = tourTimeResponse.priceChild;
 
@@ -125,13 +115,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         if (action === "plus")
             if ((countChild + countAdult) < tourTimeResponse.remainPax) {
-                if (type === "child")
-                    addItem(type)
-                if (type === "adult")
-                    addItem(type)
-
+                addItem(type)
             } else {
-                alert("Da Dat Gioi Han");
+                showToast("Da Dat Gioi Han");
             }
         ChangedElementsPrice();
     }
@@ -139,12 +125,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function addItem(type) {
         if (type === "child") {
             countChild++;
-            elementItemsChildInfo.appendChild(generateItemChild(countChild));
+            elementItemsChildInfo.appendChild(generateItemChild(countChild-1));
             elementCounterValueChild.value = countChild;
         }
         if (type === "adult") {
             countAdult++;
-            elementItemsAdultInfo.appendChild(generateItemAdult(countAdult));
+            elementItemsAdultInfo.appendChild(generateItemAdult(countAdult-1));
             elementCounterValueAdult.value = countAdult;
         }
     }
@@ -169,17 +155,17 @@ document.addEventListener("DOMContentLoaded", function () {
     function ChangedElementsPrice() {
         let priceTotalAdult = priceAdult * countAdult;
         let priceTotalChild = priceChild * countChild;
-        const totalPrice = priceTotalAdult + priceTotalChild - discountValue;
+        totalPrice = priceTotalAdult + priceTotalChild - voucherValue - discountValue;
         elementPriceAdult.innerHTML = `${countAdult} x <b>${priceAdult.toLocaleString('vi-VN')} ₫</b>`;
         elementPriceChild.innerHTML = `${countChild} x <b>${priceChild.toLocaleString('vi-VN')} ₫</b>`;
         elementPriceCustomer.innerHTML = `<b>${(priceTotalAdult + priceTotalChild).toLocaleString('vi-VN')} ₫</b>`;
         elementTotalPrice.innerHTML = `<b>${(totalPrice > 0 ? totalPrice : 0).toLocaleString('vi-VN')} ₫</b>`;
-        elementValueDiscount.innerHTML = `- <b>${discountValue.toLocaleString('vi-VN')} ₫</b>`
+        elementValueDiscount.innerHTML = `- <b>${voucherValue.toLocaleString('vi-VN')} ₫</b>`
     }
 
-    async function fetchDiscountByCode(discountCode) {
+    async function fetchVoucher(voucherCode) {
         try {
-            const response = await fetch(`/api/discount?code=${discountCode}`, {
+            const response = await fetch(`/api/discount?code=${voucherCode}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -187,67 +173,21 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (response.ok) {
-                const discount = await response.json();
-                console.log('Discount:', discount);
-                if(discount.discountValue>0)  return true;
-                return false;
+                const voucher = await response.json();
+                console.log('Voucher:', voucher);
+                if (voucher.discountValue > 0) return voucher.discountValue;
+                return 0;
             } else {
                 console.log('Mã giảm giá không tìm thấy');
-                return false;
+                return 0;
             }
         } catch (error) {
             console.error('Error fetching discount:', error);
-            discountCode = 0;
-            return false;
+            return 0;
         }
     }
 
-    document.getElementById("btn-check-discount").addEventListener("click", async () => {
-        const isValid = await fetchDiscountByCode(document.getElementById("value-code-voucher").value);
-        if (isValid) {
-            document.getElementById("box-mess-voucher").textContent = `Áp dụng mã giảm giá thành công`;
-            document.getElementById("box-mess-voucher").classList.remove("border-danger");
-            document.getElementById("box-mess-voucher").classList.add("border-success", "p-2", "border");
-            ChangedElementsPrice();
-        } else {
-            document.getElementById("box-mess-voucher").textContent = `Áp dụng mã giảm giá không thành công`;
-            document.getElementById("box-mess-voucher").classList.remove("border-success");
-            document.getElementById("box-mess-voucher").classList.add("border-danger", "p-2", "border");
-            ChangedElementsPrice();
-        }
-    });
-
-
-    document.getElementById("submit-form").addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        const formData = new FormData(this);
-
-        const processedData = {
-            name: formData.get('name'),
-            phone: formData.get('phone'),
-            address: formData.get('address'),
-            voucherCode: formData.get("value-code-voucher"),
-            adults: [],
-            children: [],
-            note: formData.get('note'),
-            tourTimeId: tourTimeResponse.tourTimeId,
-            accountId: Number(formData.get('accountId'))
-        };
-        for (let i = 0; i < formData.get('valueAdult'); i++)
-            processedData.adults.push({
-                customerName: formData.get(`name-adult-${i}`),
-                sex: formData.get(`sex-adult-${i}`),
-                birthday: formData.get(`birthday-adult-${i}`)
-            });
-        for (let i = 0; i < formData.get('valueChild'); i++)
-            processedData.children.push({
-                customerName: formData.get(`name-child-${i}`),
-                sex: formData.get(`sex-child-${i}`),
-                birthday: formData.get(`birthday-child-${i}`)
-            });
-
-
+    async function fetchOrderBooking(processedData) {
         try {
             // Gửi dữ liệu qua API
             const response = await fetch("/api/order-booking/submit-form", {
@@ -257,18 +197,73 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 body: JSON.stringify(processedData),
             });
-            console.log(processedData)
-
             if (!response.ok) {
-                alert("Gửi dữ liệu thất bại!");
+                showToast("Gửi dữ liệu thất bại!");
                 return
             }
-
-            const result = await response.json();
-            if (result.status === 200)
-                alert("Đặt tour thành công")
+            return await response.json();
         } catch (error) {
             console.error("Lỗi:", error);
+        }
+    }
+
+    document.getElementById("btn-check-discount").addEventListener("click", async () => {
+        voucherValue = await fetchVoucher(document.getElementById("value-code-voucher").value);
+        const boxMessVoucher=document.getElementById("box-mess-voucher");
+        if (voucherValue > 0) {
+            boxMessVoucher.textContent = `Áp dụng mã giảm giá thành công`;
+            boxMessVoucher.classList.remove("border-danger");
+            boxMessVoucher.classList.add("border-success", "p-2", "border");
+        } else {
+            boxMessVoucher.textContent = `Áp dụng mã giảm giá không thành công`;
+            boxMessVoucher.classList.remove("border-success");
+            boxMessVoucher.classList.add("border-danger", "p-2", "border");
+        }
+        ChangedElementsPrice();
+    });
+
+
+    document.getElementById("submit-form").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+        const processedData = {
+            relatedCustomer:{
+                customerName: formData.get('name'),
+                phoneNumber: formData.get('phone'),
+                address: formData.get('address'),
+            },
+            voucherCode: formData.get("value-code-voucher"),
+            adults: [],
+            children: [],
+            note: formData.get('note'),
+            tourTimeId: tourTimeResponse.tourTimeId,
+            accountId: Number(formData.get('accountId')),
+            paymentMethod: (formData.get('payment-method')),
+        };
+        for (let i = 0; i < formData.get('valueAdult'); i++){
+            processedData.adults.push({
+                customerName: formData.get(`name-adult-${i}`),
+                sex: formData.get(`sex-adult-${i}`),
+                birthday: formData.get(`birthday-adult-${i}`)
+            });
+        }
+        for (let i = 0; i < formData.get('valueChild'); i++){
+            processedData.children.push({
+                customerName:formData.get(`name-child-${i}`),
+                sex:formData.get(`sex-child-${i}`),
+                birthday:formData.get(`birthday-child-${i}`)
+            });
+        }
+
+        const result = await fetchOrderBooking(processedData);
+        if (result.code === 'ok') {
+            showToast("Đặt chỗ thành công")
+            if (result.paymentUrl!=='') {
+                window.location.href = result.paymentUrl;
+            }
+            else window.location.href = '/booking/'+result.bookingId;
+
         }
     });
 
