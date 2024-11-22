@@ -1,7 +1,10 @@
 package com.tourbooking.model;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,16 +40,24 @@ public class Booking {
     @Column(name = "time", nullable = false)
     private LocalDateTime time;
 
+    @Column(name="total_discount")
+    private Integer totalDiscount;
+
+    @Column(name="payment_method")
+    private String paymentMethod;
+
     @ManyToOne
-    @JsonBackReference
+    @JsonManagedReference
     @JoinColumn(name = "tour_time_id", nullable = false)
     private TourTime tourTime;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonManagedReference
     @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "customer_id")
     private Customer customer;
 
-    @Column(name="total_discount")
-    private Integer totalDiscount;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<BookingDetail> bookingDetails;
 }

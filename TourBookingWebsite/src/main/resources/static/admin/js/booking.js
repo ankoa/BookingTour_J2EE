@@ -22,12 +22,14 @@ async function fetchBookings() {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        const jsonData = await response.json(); // Lấy dữ liệu dưới dạng JSON
-        renderBookings(jsonData.bookings); // Hiển thị danh sách bookings
+        const jsonData = await response.json(); // Parse dữ liệu JSON
+        console.log(jsonData.bookings, jsonData.size); // Truy cập thuộc tính trong JSON
+        renderBookings(jsonData.bookings); // Hiển thị danh sách bookings (nếu cần)
     } catch (error) {
         console.error('Có lỗi xảy ra khi thực hiện fetch:', error);
     }
 }
+
 
 // Hàm hiển thị danh sách bookings trong bảng
 function renderBookings(bookings) {

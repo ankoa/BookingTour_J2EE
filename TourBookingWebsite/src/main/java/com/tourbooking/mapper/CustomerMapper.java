@@ -1,6 +1,7 @@
 package com.tourbooking.mapper;
 
 import com.tourbooking.dto.request.CustomerRequest;
+import com.tourbooking.dto.response.CustomerResponse;
 import com.tourbooking.model.Customer;
 import org.mapstruct.Mapper;
 
@@ -8,5 +9,9 @@ import org.mapstruct.Mapper;
 public interface CustomerMapper {
     CustomerRequest toCustomerRequest(Customer customer);
 
-    Customer toCustomer(CustomerRequest CustomerRequest);
+    CustomerResponse toCustomerResponse(Customer customer);
+
+    Customer toCustomer(CustomerRequest customerRequest);
+
+    Customer toCustomer(CustomerResponse customerResponse);
 }

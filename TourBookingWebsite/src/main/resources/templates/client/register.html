@@ -6,7 +6,7 @@
     <div th:replace="client/navbar :: navbar"></div>
     <div class="row h-100 align-items-center justify-content-center">
         <div class="col-12 col-sm-12 col-md-10 col-lg-8 col-xl-8">
-            <form id="registerForm" class="needs-validation" novalidate>
+            <form id="registerForm" novalidate>
                 <div class="rounded p-4 p-sm-5 my-4 mx-3" style="box-shadow: 0 0 10px 0 hsla(0, 0%, 9%, .12);">
                     <div class="d-flex align-items-center justify-content-center mb-3">
                         <h3>Đăng ký</h3>
@@ -14,14 +14,16 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="username" placeholder="Tên đăng nhập" pattern=".{1,15}" required>
+                                <input type="text" class="form-control" id="username" placeholder="Tên đăng nhập"
+                                       pattern=".{1,255}" required>
                                 <label for="username">Tên đăng nhập <span class="text-danger">*</span></label>
-                                <div class="invalid-feedback"></div>
+                                <div class="invalid-feedback">Vui lòng nhập tên đăng nhập.</div>
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="email" placeholder="Email" required>
+                                <input type="email" class="form-control" id="email" placeholder="Email"
+                                       pattern=".{1,255}" required>
                                 <label for="email">Email <span class="text-danger">*</span></label>
                                 <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
                             </div>
@@ -29,22 +31,27 @@
 
                         <div class="col-sm-12 col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="password" placeholder="Mật khẩu" required>
+                                <input type="password" class="form-control" id="password" placeholder="Mật khẩu"
+                                       pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,255}$" required>
                                 <label for="password">Mật khẩu <span class="text-danger">*</span></label>
-                                <div class="invalid-feedback">Vui lòng nhập mật khẩu.</div>
+                                <div class="invalid-feedback">Mật khẩu phải tối thiểu 8 ký tự, ít nhất 1 chữ cái và 1
+                                    số.
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="cf-password" placeholder="Xác nhận mật khẩu" required>
+                                <input type="password" class="form-control" id="cf-password"
+                                       placeholder="Xác nhận mật khẩu" required>
                                 <label for="cf-password">Xác nhận mật khẩu <span class="text-danger">*</span></label>
-                                <div class="invalid-feedback">Vui lòng xác nhận mật khẩu.</div>
+                                <div class="invalid-feedback">Mật khẩu xác nhận không khớp.</div>
                             </div>
                         </div>
 
                         <div class="col-sm-12 col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="full-name" placeholder="Họ tên" required>
+                                <input type="text" class="form-control" id="full-name" placeholder="Họ tên"
+                                       pattern=".{1,15}" required>
                                 <label for="full-name">Họ tên <span class="text-danger">*</span></label>
                                 <div class="invalid-feedback">Vui lòng nhập họ tên.</div>
                             </div>
@@ -52,21 +59,22 @@
 
                         <div class="col-sm-12 col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="phone" placeholder="Số điện thoại" required>
+                                <input type="text" class="form-control" id="phone" placeholder="Số điện thoại"
+                                       pattern="0[0-9]{9}" required>
                                 <label for="phone">Số điện thoại <span class="text-danger">*</span></label>
-                                <div class="invalid-feedback">Vui lòng nhập số điện thoại.</div>
+                                <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ.</div>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="address" placeholder="Địa chỉ" required>
-                                <label for="address">Địa chỉ <span class="text-danger">*</span></label>
-                                <div class="invalid-feedback">Vui lòng nhập địa chỉ.</div>
+                                <input type="text" class="form-control" id="address" placeholder="Địa chỉ" pattern=".{0,255}">
+                                <label for="address">Địa chỉ</label>
+                                <div class="invalid-feedback">Địa chỉ không quá 255 ký tự!</div>
                             </div>
                         </div>
 
-                        <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12">
                             <div class="form-floating mb-4">
                                 <input type="date" class="form-control" id="birthday" placeholder="Ngày sinh" required>
                                 <label for="birthday">Ngày sinh <span class="text-danger">*</span></label>
@@ -74,13 +82,13 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12">
                             <div class="form-group mb-4">
                                 <label for="sex" class="col-sm-2 control-label w-100">Giới tính</label>
                                 <select class="form-select" name="sex" id="sex" required>
                                     <option value="">Chọn giới tính</option>
-                                    <option value="male">Nam</option>
-                                    <option value="female">Nữ</option>
+                                    <option value="1">Nam</option>
+                                    <option value="0">Nữ</option>
                                 </select>
                                 <div class="invalid-feedback">Vui lòng chọn giới tính.</div>
                             </div>

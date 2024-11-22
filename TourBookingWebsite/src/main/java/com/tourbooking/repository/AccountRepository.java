@@ -18,4 +18,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     boolean checkCustomerIDExists(Integer customerID);
 
      Account findByAccountName(String accountName);
+     Account findByEmail(String email);
+
+     boolean existsByEmail(String email);
+     boolean existsByAccountName(String accountName);
 }
