@@ -1,5 +1,5 @@
 
-    function showAlert(type, message) {
+    /*function showAlert(type, message) {
         const alertBox = document.createElement('div');
         alertBox.className = `alert alert-${type}`;
         alertBox.innerText = message;
@@ -12,7 +12,31 @@
                 alertBox.remove();
             }, 600);
         }, 3000);
-    }
+    }*/
+	function showAlert(type, message) {
+	    const alertBox = document.createElement('div');
+	    alertBox.className = `alert alert-${type}`;
+	    alertBox.innerText = message;
+
+	    // Đảm bảo vị trí hiển thị hợp lý
+	    alertBox.style.position = 'fixed';
+	    alertBox.style.top = '20px'; // Hiển thị ở gần đầu trang
+	    alertBox.style.left = '50%';
+	    alertBox.style.transform = 'translateX(-50%)';
+	    alertBox.style.zIndex = '9999'; // Đảm bảo luôn trên cùng
+
+	    document.body.appendChild(alertBox);
+
+	    // Hiệu ứng mờ dần
+	    setTimeout(() => {
+	        alertBox.style.opacity = '0';
+	        alertBox.style.transform = 'translateX(-50%) translateY(-10px)'; // Nhẹ nhàng di chuyển lên trên
+	        setTimeout(() => {
+	            alertBox.remove();
+	        }, 600); // Đảm bảo alert đã biến mất hoàn toàn trước khi xóa
+	    }, 3000);
+	}
+
     
     function loadAccounts() {
         fetch('/admin/accounts/listAccount') 

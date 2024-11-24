@@ -1,12 +1,15 @@
 package com.tourbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
@@ -40,9 +43,24 @@ public class Discount {
 
     @Column(name = "note",columnDefinition = "TEXT")
     private String note;
-
+    @JsonIgnore
 	@ManyToMany(mappedBy = "discounts")
 	@JsonBackReference
 	private Set<TourTime> tourTimes;
+    public String getStartDateAsString() {
+        if (startDate != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+            return sdf.format(startDate);
+        }
+        return "";
+    }
+
+    public String getEndDateAsString() {
+        if (endDate != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+            return sdf.format(endDate);
+        }
+        return "";
+    }
 }
 
