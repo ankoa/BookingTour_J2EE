@@ -3,17 +3,24 @@ body {
 }
 
 h1 {
-    margin-bottom: 30px;
+    /*margin-bottom: 30px;*/
     color: #343a40;
     font-family: 'Roboto', sans-serif;
-}
+	}
 
 .container {
     margin-top: 25px;
+    max-width: 100%;
+    margin: 10px 0;
 }
 
 .filter-section {
-    margin-bottom: 20px;
+   /* margin-bottom: 20px;*/
+    padding: 5px;
+    background-color: #ffffff; /* Nền trắng */
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    /*box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);*/
 }
 
 .filter-section input,
@@ -28,7 +35,7 @@ h1 {
 }
 
 .table-container {
-    max-height: 400px; /* Thiết lập chiều cao tối đa cho bảng */
+    max-height: 390px; /* Thiết lập chiều cao tối đa cho bảng */
     overflow-y: auto;  /* Cho phép cuộn theo chiều dọc */
     border: 1px solid #dee2e6; /* Thêm viền cho bảng */
     border-radius: 0.5rem; /* Bo góc cho bảng */
@@ -96,7 +103,7 @@ td a {
 }
 
 .tab-content {
-    margin-top: 20px;
+    margin-top: 5px;
 }
 
 .selected-row {
@@ -130,5 +137,107 @@ td a {
     color: #721c24;
 }
 tnadd-tour-time{
+	width: 100%;
+}
+ .modal-lg {
+    max-width: 90%;
+  }
+
+ .tour-image-container {
+  position: relative;
+  margin: 10px;
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.tour-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tour-image-container .zoom-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tour-image-container:hover .zoom-icon {
+  opacity: 1;
+}
+
+.tour-image-container input[type="checkbox"] {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  transform: scale(1.2);
+}
+
+#mainImages, #otherImages {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#deleteSelectedButton {
+  margin-top: 15px;
+}
+/* Modal ảnh - đảm bảo modal hiển thị ở trên cùng */
+#imageModal {
+  z-index: 1050; /* Đặt modal ở trên cùng */
+}
+
+.modal-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Đảm bảo các nút có kích thước đồng đều và căn chỉnh hợp lý */
+.text-center .row .col-6 {
+    padding: 0 5px; /* Thêm khoảng cách giữa các cột */
+}
+
+/* Đảm bảo các nút có chiều cao và chiều rộng đều */
+.text-center button {
+    width: 100%; /* Mỗi nút chiếm toàn bộ chiều rộng của cột */
+    height: 25px; /* Chiều cao đồng đều cho các nút */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px; /* Kích thước chữ */
+    font-weight: bold; /* Làm chữ đậm để dễ đọc */
+    border-radius: 5px; /* Bo tròn các góc của nút */
+}
+
+/* Sử dụng màu sắc mặc định của Bootstrap */
+.text-center .btnadd-tour-time {
+    color: white;
+}
+
+.text-center .btn-primary {
+    color: white;
+}
+
+.text-center .btn-warning {
+    color: white;
+}
+
+.text-center .btn-danger {
+    color: white;
+}
+
+/* Thêm hiệu ứng hover */
+.text-center button:hover {
+    opacity: 0.9;
+    cursor: pointer;
+}
+.filtertourtime{
 	width: 100%;
 }

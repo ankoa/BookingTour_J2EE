@@ -34,28 +34,21 @@ i {
 	list-style-type: none;
 	float: left;
 }
-#navbarSupportedContent ul li a {
-    color: rgba(255, 255, 255, 0.5);
+#navbarSupportedContent ul li a{
+	color: rgba(255,255,255,0.5);
     text-decoration: none;
     font-size: 15px;
     display: block;
     padding: 20px 20px;
-    transition-duration: 0.6s;
-    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition-duration:0.6s;
+	transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
     position: relative;
 }
-
-#navbarSupportedContent > ul > li.active > a {
-    color: orange; /* Màu cho mục active */
-    background-color: transparent;
-    transition: all 0.7s;
+#navbarSupportedContent>ul>li.active>a{
+	color: #5161ce;
+	background-color: transparent;
+	transition: all 0.7s;
 }
-#navbarSupportedContent > ul > li:not(.active) > a {
-    color: rgba(255, 255, 255, 0.5); /* Màu cho các mục không active */
-    background-color: transparent;
-    transition: all 0.7s;
-}
-
 #navbarSupportedContent a:not(:only-child):after {
 	content: "\f105";
 	position: absolute;

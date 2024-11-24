@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
 @Entity
 @Getter
 @Setter
@@ -41,19 +41,22 @@ public class TourTime {
     @Column(name = "price_child", nullable = false)
     private int priceChild;
 
-    @Column(name="note",columnDefinition = "TEXT")
+    @Column(name = "note", columnDefinition = "TEXT")
     private String note;
 
     @Column(name = "status", nullable = false)
     private int status;
 
-    @ManyToOne
+    @Column(name = "tour_id", insertable = false, updatable = false)
+    private Integer tourId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tour_id")
-    @JsonBackReference
+    @JsonManagedReference
     private Tour tour;
 
     @OneToMany(mappedBy = "tourTime", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonIgnore // Nếu không cần phản hồi
     private Set<TransportDetail> transportDetails;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -61,13 +64,10 @@ public class TourTime {
             joinColumns = @JoinColumn(name = "tour_time_id"),
             inverseJoinColumns = @JoinColumn(name = "discount_id")
     )
-    @JsonBackReference
+    @JsonIgnore // Nếu không cần phản hồi
     private Set<Discount> discounts;
 
     @OneToMany(mappedBy = "tourTime", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonIgnore // Nếu không cần phản hồi
     private Set<Booking> bookings;
-
-    // Getters and Setters
-
 }
