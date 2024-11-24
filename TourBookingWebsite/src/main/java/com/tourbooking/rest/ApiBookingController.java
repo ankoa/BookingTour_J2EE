@@ -5,6 +5,8 @@ import com.tourbooking.service.payment.PaymentDTO;
 import com.tourbooking.dto.request.BookingRequest;
 import com.tourbooking.model.Booking;
 import com.tourbooking.service.BookingService;
+import com.tourbooking.service.payment.PaymentVNPayService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +23,16 @@ public class ApiBookingController {
 
     @Autowired
     PaymentMomoService paymentMomoService;
+    @Autowired
+    private PaymentVNPayService paymentVNPayService;
 
     @PostMapping("/submit-form")
-    public PaymentDTO.PaymentResponse submitForm( @RequestBody BookingRequest bookingRequest) {
+    public PaymentDTO.PaymentResponse submitForm( @RequestBody BookingRequest bookingRequest, HttpServletRequest request) {
         Booking booking = bookingService.submitForm(bookingRequest, 1);
         if (booking != null) {
             if (!bookingRequest.getPaymentMethod().equals("cash")) {
               if( bookingRequest.getPaymentMethod().equals("vn-pay")){
-                PaymentDTO.PaymentResponse pay = paymentMomoService.createMomoPayment(booking.getBookingId());
+                PaymentDTO.PaymentResponse pay = paymentVNPayService.createVnPayPayment(request,booking.getBookingId());
                 return PaymentDTO.PaymentResponse.builder()
                         .code("ok")
                         .message("success")
