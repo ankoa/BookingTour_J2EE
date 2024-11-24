@@ -91,6 +91,7 @@ public class AccountService {
             account.setAccountName(request.getUsername());
             account.setPassword(passwordEncoder.encode(request.getPassword()));
             account.setEmail(request.getEmail());
+            account.setStatus(1);
             account.setRole("ROLE_USER");
             accountRepository.save(account);
             return accountMapper.toAccountResponse(account);

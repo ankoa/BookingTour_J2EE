@@ -6,6 +6,7 @@ import com.tourbooking.dto.response.TourResponse;
 import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.security.CustomUserDetails;
 import com.tourbooking.service.BookingService;
+import com.tourbooking.service.CategoryService;
 import com.tourbooking.service.TourService;
 import com.tourbooking.service.TourTimeService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,9 @@ public class HomeController {
 
     @Autowired
     private TourTimeService tourTimeService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @Autowired
     private BookingService bookingService;
@@ -69,8 +74,8 @@ public class HomeController {
 
     @GetMapping("/find-tour")
     public String getFindTour(Model model, @AuthenticationPrincipal CustomUserDetails user) {
-        model.addAttribute("user", user);
-
+        model.addAttribute("minDate", LocalDate.now());
+        model.addAttribute("categories", categoryService.getCategories());
         return "client/find-tour";
     }
 
