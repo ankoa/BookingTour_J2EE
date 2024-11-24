@@ -123,4 +123,9 @@ public class HomeController {
         return "client/booking";
     }
 
+    @GetMapping("/payment-failure")
+    public String paymentFail(){
+        return "client/payment-fail.html";
+    }
+
 }

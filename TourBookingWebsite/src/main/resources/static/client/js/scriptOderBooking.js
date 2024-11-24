@@ -236,7 +236,6 @@ document.addEventListener("DOMContentLoaded", function () {
             voucherCode: formData.get("value-code-voucher"),
             adults: [],
             children: [],
-            note: formData.get('note'),
             tourTimeId: tourTimeResponse.tourTimeId,
             accountId: Number(formData.get('accountId')),
             paymentMethod: (formData.get('payment-method')),
