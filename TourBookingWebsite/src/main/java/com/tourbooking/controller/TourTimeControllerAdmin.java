@@ -18,9 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-@Controller
 @RequestMapping("/admin")
+@Controller
 public class TourTimeControllerAdmin {
     private static final Logger logger = LoggerFactory.getLogger(TourTimeControllerAdmin.class);
 
@@ -135,4 +134,23 @@ public class TourTimeControllerAdmin {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tour time không tồn tại.");
         }
     }
+
+    @GetMapping("/gettourtimesbytourID/{tourId}")
+    public ResponseEntity<List<TourTime>> getTourTimesByTourId(@PathVariable int tourId) {
+        List<TourTime> tourTimes = tourTimeService.getTourTimesByTourId(tourId);
+        return ResponseEntity.ok(tourTimes);
+    }
+    @GetMapping("/gettourtimesbyidadmin/{id}")
+    public ResponseEntity<TourTime> getTourTimeByIdAdmin(@PathVariable String id) {
+        // Gọi phương thức service đã được chỉnh sửa
+        Optional<TourTime> tourTimeOptional = tourTimeService.getTourTimeByIdAdmin(id);
+        
+        if (tourTimeOptional.isPresent()) {
+            return ResponseEntity.ok(tourTimeOptional.get()); // Trả về dữ liệu nếu tìm thấy
+        } else {
+            return ResponseEntity.notFound().build(); // Trả về lỗi 404 nếu không tìm thấy
+        }
+    }
+
+
 }

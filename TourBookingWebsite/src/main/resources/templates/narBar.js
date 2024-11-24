@@ -1,12 +1,20 @@
+// Responsive-navbar-active-animation
 function test() {
     var tabsNewAnim = $('#navbarSupportedContent');
     var activeItemNewAnim = tabsNewAnim.find('.active');
+    
+    // Xuất thông tin về mục đang hoạt động
+    console.log("Active item:", activeItemNewAnim);
 
-    // Thiết lập vị trí cho selector của mục đang active
     var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
     var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
     var itemPosNewAnimTop = activeItemNewAnim.position();
     var itemPosNewAnimLeft = activeItemNewAnim.position();
+
+    // Xuất thông tin kích thước và vị trí
+    console.log("Active item height:", activeWidthNewAnimHeight);
+    console.log("Active item width:", activeWidthNewAnimWidth);
+    console.log("Active item position:", itemPosNewAnimTop, itemPosNewAnimLeft);
 
     $(".hori-selector").css({
         "top": itemPosNewAnimTop.top + "px",
@@ -15,18 +23,22 @@ function test() {
         "width": activeWidthNewAnimWidth + "px"
     });
 
-    // Khi click vào mục khác, cập nhật vị trí của mục đang active
-    $("#navbarSupportedContent").on("click", "li", function () {
-        // Xóa lớp 'active' từ tất cả các mục
+    $("#navbarSupportedContent").on("click", "li", function (e) {
         $('#navbarSupportedContent ul li').removeClass("active");
-        
-        // Thêm lớp 'active' cho mục được click
         $(this).addClass('active');
         
+        // Xuất thông tin về mục được nhấn
+        console.log("Clicked item:", $(this));
+
         var activeWidthNewAnimHeight = $(this).innerHeight();
         var activeWidthNewAnimWidth = $(this).innerWidth();
         var itemPosNewAnimTop = $(this).position();
         var itemPosNewAnimLeft = $(this).position();
+        
+        // Xuất thông tin kích thước và vị trí của mục được nhấn
+        console.log("Clicked item height:", activeWidthNewAnimHeight);
+        console.log("Clicked item width:", activeWidthNewAnimWidth);
+        console.log("Clicked item position:", itemPosNewAnimTop, itemPosNewAnimLeft);
 
         $(".hori-selector").css({
             "top": itemPosNewAnimTop.top + "px",
@@ -38,7 +50,7 @@ function test() {
 }
 
 $(document).ready(function () {
-    setTimeout(function () { test(); }, 200);
+    setTimeout(function () { test(); });
 });
 
 $(window).on('resize', function () {
@@ -49,31 +61,26 @@ $(window).on('resize', function () {
 $(".navbar-toggler").click(function () {
     $(".navbar-collapse").slideToggle(200);
     console.log("Navbar toggled");
-    setTimeout(function () { test(); }, 200);
+    setTimeout(function () { test(); });
 });
 
-// Add active class based on the current page
+// Add active class-on another-page move
 jQuery(document).ready(function ($) {
     // Get current path and find target link
     var path = window.location.pathname.replace("localhost:8080/", "");
     
-    // Account for home page with empty path or "/" path
-    if (path === '' || path === '/') {
-        path = 'index.html';  // Hoặc tên tệp của trang chủ
+    // Account for home page with empty path
+    if (path === '') {
+        path = 'index.html';
     }
 
-    // Remove 'active' class from all links
-    $('#navbarSupportedContent ul li').removeClass('active');
+    console.log("Current path:", path);
 
-    // Add active class to target link
     var target = $('#navbarSupportedContent ul li a[href="' + path + '"]');
 
-    // Nếu không tìm thấy mục nào, chọn mục trang chủ
-    if (target.length === 0) {
-        target = $('#navbarSupportedContent ul li a[href="index.html"]');
-    }
-
-    target.parent().addClass('active');  // Gán 'active' cho mục được chọn
+    // Add active class to target link
+    target.parent().addClass('active');
+    console.log("Target link activated:", target);
 });
 
 // Add active class on another page linked
