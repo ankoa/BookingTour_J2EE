@@ -1,10 +1,11 @@
 package com.tourbooking.service;
+
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -12,11 +13,19 @@ import java.util.Map;
 public class CloudinaryService {
 
     @Autowired
-    private Cloudinary cloudinary;
+    private Cloudinary cloudinary;  // Cloudinary đã cấu hình trong ứng dụng
 
-    // Phương thức tải ảnh lên Cloudinary và trả về URL
-    public String uploadImage(File file) throws IOException {
-        Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.asMap("resource_type", "auto"));
-        return (String) uploadResult.get("secure_url"); // Trả về URL của hình ảnh đã được tải lên
+    /**
+     * Upload file lên Cloudinary và trả về URL
+     * 
+     * @param file MultipartFile từ người dùng
+     * @return URL của ảnh
+     * @throws IOException nếu upload thất bại
+     */
+    public String uploadImage(MultipartFile file) throws IOException {
+        // Upload file lên Cloudinary
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), 
+                ObjectUtils.asMap("folder", "tour_images")); // Lưu ảnh vào thư mục "tour_images"
+        return uploadResult.get("secure_url").toString(); // Trả về URL ảnh
     }
 }

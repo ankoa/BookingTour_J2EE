@@ -39,7 +39,10 @@ public class HomeController {
     public String getDemoSampleClient(Model model) {
         return "client/sample";
     }
-
+    @GetMapping("/admin")
+    public String getHomepage(Model model) {
+        return "admin/homepage";
+    }
     @GetMapping("/home")
     public String getHome(Model model) {
         return "index";

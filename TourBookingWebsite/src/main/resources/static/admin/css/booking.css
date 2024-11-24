@@ -8,6 +8,7 @@ body {
 /* Container chính */
 .container {
     margin-top: 30px;
+    max-width: 100%;
 }
 
 /* Tiêu đề */
@@ -22,6 +23,10 @@ h1 {
 /* Phần tìm kiếm */
 .filter-section {
     margin-bottom: 20px;
+    padding: 5px;
+    background-color: #ffffff; /* Nền trắng */
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
 }
 
 .table-responsive {
