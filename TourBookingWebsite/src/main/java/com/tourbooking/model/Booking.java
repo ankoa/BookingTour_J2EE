@@ -47,17 +47,17 @@ public class Booking {
     private String paymentMethod;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonManagedReference
     @JoinColumn(name = "tour_time_id", nullable = false)
     private TourTime tourTime;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonManagedReference
     @JoinColumn(name = "customer_id", nullable = false, referencedColumnName = "customer_id")
     private Customer customer;
 
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonBackReference
     private Set<BookingDetail> bookingDetails;
 }
