@@ -1,5 +1,6 @@
 package com.tourbooking.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
@@ -65,4 +66,12 @@ public class Customer {
 */
     @Column(name="customer_type")
     private Integer customerType;
+ // Chuyển Date thành chuỗi theo định dạng yyyy-MM-dd để gửi lên frontend
+    public String getBirthdayAsString() {
+        if (birthday != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            return sdf.format(birthday);
+        }
+        return "";
+    }
 }
