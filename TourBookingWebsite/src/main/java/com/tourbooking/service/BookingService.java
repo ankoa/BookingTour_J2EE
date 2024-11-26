@@ -6,11 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.tourbooking.dto.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import com.tourbooking.dto.request.BookingRequest;
@@ -114,16 +116,25 @@ public class BookingService {
         accountRepository.deleteById(Integer.parseInt(accountId));
     }
 
-    public Booking submitForm(BookingRequest bookingRequest, Integer status) {
+    public ResponseObject<Booking> createBooking(BookingRequest bookingRequest,
+                                                 Integer status) {
         // lay tour time da dat
         TourTime tourTime = tourTimeService.findById(bookingRequest.getTourTimeId(), status)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + bookingRequest.getTourTimeId()));
 
-        if (status != null && tourTime.getStatus() != status) return null;
+        if (status != null && tourTime.getStatus() != status)
+            return ResponseObject.<Booking>builder()
+                .code(HttpStatusCode.valueOf(400))
+                .message("tour time status mismatch")
+                .data(null).build();
 
         //check remainPax
         if (tourTimeService.calculateRemainPax(tourTime) <
-                (bookingRequest.getAdults().size() + bookingRequest.getChildren().size())) return null;
+                (bookingRequest.getAdults().size() + bookingRequest.getChildren().size()))
+            return ResponseObject.<Booking>builder()
+                .code(HttpStatusCode.valueOf(400))
+                .message("slot out")
+                .data(null).build();
 
         int voucherValue = 0;
         if (bookingRequest.getVoucherCode() != null) {
@@ -145,10 +156,16 @@ public class BookingService {
             Account account = getAccountById(bookingRequest.getAccountId());
             //
             if (status != null && account.getStatus() != status) {
-                return null;
+                return ResponseObject.<Booking>builder()
+                        .code(HttpStatusCode.valueOf(400))
+                        .message("account error")
+                        .data(null).build();
             }
             if (status != null && account.getCustomer().getStatus() != status) {
-                return null;
+                return ResponseObject.<Booking>builder()
+                        .code(HttpStatusCode.valueOf(400))
+                        .message("customer error")
+                        .data(null).build();
             }
             relatedCustomer = account.getCustomer();
         }
@@ -226,7 +243,10 @@ public class BookingService {
             bookingDetailRepository.save(bookingDetail);
         }
 
-        return bookingSaved;
+        return ResponseObject.<Booking>builder()
+                .code(HttpStatusCode.valueOf(200))
+                .message("success")
+                .data(bookingSaved).build();
     }
 
     public List<Booking> getBookingWithPage(int page, int size) {

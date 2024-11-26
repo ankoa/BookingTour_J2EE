@@ -21,8 +21,7 @@ public class PaymentVNPayService {
 
     private final VNPAYConfig vnPayConfig;
 
-    public PaymentDTO.PaymentResponse createVnPayPayment(HttpServletRequest request, int orderInfo) {
-        Booking booking = bookingService.findById(orderInfo);
+    public PaymentDTO.PaymentResponse createVnPayPayment(HttpServletRequest request, Booking booking) {
         if(booking==null) 
             return PaymentDTO.PaymentResponse.builder()
                 .code("error")
@@ -30,7 +29,7 @@ public class PaymentVNPayService {
                 .build();
         long amount = (booking.getTotalPrice()-booking.getTotalDiscount()) * 100L;
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
-        vnpParamsMap.put("vnp_OrderInfo", orderInfo+"");
+        vnpParamsMap.put("vnp_OrderInfo", booking.getBookingId()+"");
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         vnpParamsMap.put("vnp_IpAddr", PaymentUtils.getIpAddress(request));
         //build query url

@@ -69,9 +69,7 @@ public class PaymentMomoService {
         }
     }
 
-    public PaymentDTO.PaymentResponse createMomoPayment(int orderId) {
-        // Lấy thông tin booking
-        Booking booking = bookingService.findById(orderId);
+    public PaymentDTO.PaymentResponse createMomoPayment(Booking booking){
         if (booking == null) {
             return PaymentDTO.PaymentResponse.builder()
                     .code("error")
@@ -83,9 +81,9 @@ public class PaymentMomoService {
         long amount = booking.getTotalPrice() - booking.getTotalDiscount();
 
         // Tạo payload request body
-        Map<String, String> requestBody = momoConfig.getMomoConfig(orderId);
+        Map<String, String> requestBody = momoConfig.getMomoConfig(booking.getBookingId());
         requestBody.put("amount", String.valueOf(amount));
-        requestBody.put("orderInfo", "Payment for order " + orderId);
+        requestBody.put("orderInfo", "Payment for order " + booking.getBookingId());
         requestBody.put("requestId", String.valueOf(System.currentTimeMillis()));
 
         //sắp xếp theo aphab
