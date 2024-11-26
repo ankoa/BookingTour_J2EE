@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TourImageService {
@@ -79,4 +80,22 @@ public class TourImageService {
             return false;
         }
     }
+    public boolean hasActiveImages(int tourId) {
+        List<TourImage> tourImages = tourImageRepository.findByTourId(tourId);
+        // Lọc các ảnh có status = 1
+        List<TourImage> activeImages = tourImages.stream()
+                                                 .filter(image -> image.getStatus() == 1)
+                                                 .collect(Collectors.toList());
+        // Nếu danh sách activeImages rỗng, trả về false, nếu không thì trả về true
+        return !activeImages.isEmpty();
+    }
+
+    public boolean checkActiveImageId(int tourId, int imageId) {
+        List<TourImage> activeImages = tourImageRepository.findByTourId(tourId).stream()
+            .filter(image -> image.getStatus() == 1)
+            .collect(Collectors.toList());
+        return activeImages.stream().anyMatch(image -> image.getImageId() == imageId);
+    }
+
+
 }
