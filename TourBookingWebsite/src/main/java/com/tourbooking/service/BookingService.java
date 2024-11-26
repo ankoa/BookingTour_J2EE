@@ -328,7 +328,7 @@ public class BookingService {
         return bookingRepository.findRevenueForSpecificDay(specificDate);
     }
 
-    public BookingResponse function(String Id,Integer status) {
+    public BookingResponse getBookingResponseById(String Id,Integer status) {
         BookingResponse bookingResponse = new BookingResponse();
         Optional<Booking> bookingOptional = bookingRepository.findById(Integer.parseInt(Id));
         if (bookingOptional.isPresent()) {
