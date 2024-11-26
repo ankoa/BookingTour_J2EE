@@ -24,7 +24,7 @@
 
     <!-- Custom CSS -->
     <link type="text/css" href="/css/navBar.css" rel="stylesheet" />
-    <link type="text/css" href="/admin/css/account.css" rel="stylesheet" />
+    <link type="text/css" href="/admin/css/transport.css" rel="stylesheet" />
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -85,7 +85,9 @@
 		</div>
 		<div class="alert-container"></div>
 		<!-- Tìm kiếm và Thêm Phương Tiện -->
-		<div class="filter-section mb-3">
+		<div class="main-filter-section mb-3">
+		
+		<div class="filter-section mb-3 pt-3 ps-3">
 			<form class="row g-2" id="searchForm" onsubmit="return false;">
 				<div class="col-md-8">
 					<div class="input-group">
@@ -100,22 +102,22 @@
 		</div>
 
 		<!-- Bộ Lọc Trạng Thái -->
-		<div class="filter-section mb-3">
-    <div class="row g-2 align-items-center">
-        <div class="col-md-8">
-            <select class="form-select" id="statusFilter" onchange="filterTransports()">
-                <option value="">Tất cả</option>
-                <option value="1">Hoạt động</option>
-                <option value="0">Ngưng hoạt động</option>
-            </select>
-        </div>
-        <div class="col-md-4 text-end">
-            <button type="button" class="btn btn-success" onclick="showAddModal()">Thêm</button> <!-- Nút Thêm -->
-        </div>
-    </div>
-</div>
+		<div class="filter-section mb-3 ps-3">
+		    <div class="row g-2 align-items-center me-2">
+		        <div class="col-md-8">
+		            <select class="form-select" id="statusFilter" onchange="filterTransports()">
+		                <option value="">Tất cả</option>
+		                <option value="1">Hoạt động</option>
+		                <option value="0">Ngưng hoạt động</option>
+		            </select>
+		        </div>
+		        <div class="col-md-4 text-end">
+		            <button type="button" class="btn btn-success" onclick="showAddModal()">Thêm</button> <!-- Nút Thêm -->
+		        </div>
+		    </div>
+		</div>
 		
-		
+		</div>
 		<!-- Bảng Danh Sách Phương Tiện -->
 		<div class="table-responsive">
 			<table class="table table-bordered table-hover text-center">

@@ -1,8 +1,8 @@
 /* Định dạng chung cho toàn bộ trang */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
+        background-color: #fef5e7;
+
 }
 
 /* Container chính */
@@ -18,7 +18,7 @@ h1 {
     text-align: center;
 }
 .input-group{
-	width: 400px;
+	width: 450px;
 }
 /* Phần tìm kiếm */
 .filter-section {
@@ -28,7 +28,14 @@ h1 {
     border: 1px solid #dee2e6;
     border-radius: 8px;
 }
-
+.btnSearchbooking{
+		border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+	
+}
+.btnClearbooking{
+	border-radius: 8px !important;
+}
 .table-responsive {
     max-height: 400px;
     overflow-y: auto;
@@ -154,13 +161,19 @@ tbody td {
 /* Kiểu cho các select box */
 .form-select {
     border-radius: 8px;
+        border: 1px solid; 
+    
+}
+.form-control{
+	    border: 1px solid; 
+	
 }
 /* Alert container for notifications */
 .alert {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 9999;
+    z-index: 99999;
     padding: 15px;
     border-radius: 5px;
     transition: opacity 0.6s ease;

@@ -56,7 +56,7 @@ public class TourTime {
     private Tour tour;
 
     @OneToMany(mappedBy = "tourTime", cascade = CascadeType.ALL)
-    @JsonIgnore // Nếu không cần phản hồi
+    @JsonManagedReference
     private Set<TransportDetail> transportDetails;
 
     @ManyToMany(cascade = CascadeType.ALL)

@@ -165,7 +165,42 @@ public class BookingControllerAdmin {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-    
+ // API chỉnh sửa booking
+    @PutMapping("/bookings/edit/{bookingId}")
+    public ResponseEntity<Map<String, String>> editBooking(@PathVariable Integer bookingId, @RequestBody Map<String, Object> bookingData) {
+        Map<String, String> response = new HashMap<>();
+
+        // Kiểm tra thông tin trong yêu cầu
+        String status = (String) bookingData.get("status");
+        String paymentMethod = (String) bookingData.get("paymentMethod");
+
+        if (status == null || paymentMethod == null) {
+            response.put("message", "Vui lòng chọn đầy đủ thông tin!");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // Lấy thông tin booking từ cơ sở dữ liệu
+        Optional<Booking> bookingOptional = bookingService.getBookingById(bookingId);
+        if (!bookingOptional.isPresent()) {
+            response.put("message", "Booking không tồn tại!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Cập nhật thông tin booking
+        Booking booking = bookingOptional.get();
+        booking.setStatus(Integer.parseInt(status)); // Cập nhật trạng thái
+        booking.setPaymentMethod(paymentMethod); // Cập nhật phương thức thanh toán
+
+        // Lưu thay đổi vào cơ sở dữ liệu
+        boolean updated = bookingService.updateBooking(booking);
+        if (updated) {
+            response.put("message", "Chỉnh sửa booking thành công!");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "Chỉnh sửa booking thất bại!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
      
     @GetMapping("/chart")
     public String showChart() {

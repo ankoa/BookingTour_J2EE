@@ -1,6 +1,7 @@
 body {
-    background-color: #f8f9fa; /* Nền sáng nhẹ nhàng */
-    font-family: 'Roboto', sans-serif; /* Font hiện đại */
+        background-color: #fef5e7;
+        font-family: 'Roboto', sans-serif; /* Font hiện đại */
+    
 }
 
 h3 {
@@ -10,19 +11,25 @@ h3 {
 }
 
 .filterCategory-section {
-    padding: 5px;
     background-color: #ffffff; /* Nền trắng */
     border: 1px solid #dee2e6;
     border-radius: 8px;
+        margin: 0 10px;
+    
 }
 
 .filter-section input,
 .filter-section select {
     border-radius: 5px;
-    border: 1px solid #ced4da;
+	border: solid 1px;
     padding: 8px;
+        border: 1px solid; 
+    
 }
-
+.statusFilter{
+	    border: 1px solid !important; 
+	
+}
 .filter-section .btn-primary {
     border-radius: 5px;
     padding: 8px 16px;

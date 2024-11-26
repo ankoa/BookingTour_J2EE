@@ -1,25 +1,41 @@
 body {
-    background-color: #f8f9fa;
+        background-color: #fef5e7;
+        font-family: 'Roboto', sans-serif; /* Font hiện đại */
+    
 }
 h1 {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     color: #343a40;
     font-family: 'Roboto', sans-serif;
 }
 .container {
-    margin-top: 25px;
+    margin-top: 20px;
+    max-width: 100%;
 }
 .filter-section {
     margin-bottom: 20px;
+    
 }
 .filter-section input {
+		border: solid 1px;
+	
     width: 50%;
 }
 .filter-section select {
     width: 200px;
+    	border: solid 1px;
+    
 }
 .input-group {
     width: 400px;
+}
+
+.main-filter-section{
+	padding: 5px;
+    background-color: #ffffff; /* Nền trắng */
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding-bottom: 2px;
 }
 .table-responsive {
     max-height: 400px; 

@@ -1,5 +1,7 @@
 body {
-    background-color: #f8f9fa;
+        background-color: #fef5e7;
+        font-family: 'Roboto', sans-serif; /* Font hiện đại */
+    
 }
 h1 {
     margin-bottom: 30px;
@@ -8,15 +10,23 @@ h1 {
 }
 .container {
     margin-top: 25px;
+    max-width: 100%;
 }
-.filter-section {
-    margin-bottom: 20px;
+.main-filter-section{
+	padding: 5px;
+    background-color: #ffffff; /* Nền trắng */
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding-bottom: 2px;
 }
 .filter-section input {
     width: 50%;
+    border: 1px solid; 
 }
 .filter-section select {
     width: 200px;
+        border: 1px solid; 
+    
 }
 .input-group {
     width: 400px;

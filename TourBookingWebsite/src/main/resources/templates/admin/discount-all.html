@@ -84,6 +84,7 @@
 			<h1>Danh Sách Mã Giảm Giá</h1>
 		</div>
 		<div class="alert-container"></div>
+	<div class="main-filter-section mb-2">
 		<!-- Tìm kiếm và Thêm Mã Giảm Giá -->
 		<div class="filter-section mb-3">
 			<form class="row g-2" id="searchForm" onsubmit="return false;">
@@ -99,21 +100,21 @@
 		</div>
 
 		<!-- Bộ Lọc Trạng Thái -->
-		<div class="filter-section mb-3">
-    <div class="row g-2 align-items-center">
-        <div class="col-md-8">
-            <select class="form-select" id="statusFilter" onchange="filterDiscounts()">
-                <option value="">Tất cả</option>
-                <option value="1">Hoạt động</option>
-                <option value="0">Ngưng hoạt động</option>
-            </select>
-        </div>
-        <div class="col-md-4 text-end">
-            <button type="button" class="btn btn-success" onclick="showAddModal()">Thêm</button> <!-- Nút Thêm -->
-        </div>
-    </div>
+		<div class="filter-section mb-3 me-3">
+		    <div class="row g-2 align-items-center">
+		        <div class="col-md-8">
+		            <select class="form-select" id="statusFilter" onchange="filterDiscounts()">
+		                <option value="">Tất cả</option>
+		                <option value="1">Hoạt động</option>
+		                <option value="0">Ngưng hoạt động</option>
+		            </select>
+		        </div>
+		        <div class="col-md-4 text-end">
+		            <button type="button" class="btn btn-success" onclick="showAddModal()">Thêm</button> <!-- Nút Thêm -->
+		        </div>
+		    </div>
+		</div>
 </div>
-
 		<!-- Bảng Danh Sách Mã Giảm Giá -->
 		<div class="table-responsive">
 			<table class="table table-bordered table-hover text-center">
