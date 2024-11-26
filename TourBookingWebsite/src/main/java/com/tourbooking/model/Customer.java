@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -45,7 +46,8 @@ public class Customer {
 
     @Column(name = "status")
     private int status;
-
+    
+    @JsonIgnore
     // Quan hệ nhiều khách hàng có thể liên kết tới một khách hàng liên quan
     @ManyToOne
     @JoinColumn(name ="customer_rel_id", referencedColumnName = "customer_id")

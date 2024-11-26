@@ -1,9 +1,13 @@
 package com.tourbooking.controller;
 
 import com.tourbooking.model.Tour;
+import com.tourbooking.model.TourTime;
 import com.tourbooking.model.Category;
 import com.tourbooking.service.TourService;
+import com.tourbooking.service.TourTimeService;
+
 import com.tourbooking.service.CategoryService;
+import com.tourbooking.service.TourImageService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +33,8 @@ public class TourControllerAdmin {
 
     @Autowired
     private CategoryService categoryService;
-
+    @Autowired
+    private TourTimeService tourTimeService;
     @GetMapping("/tour-all")
     public String getTourList(Model model) {
         return "admin/tour-all";
@@ -223,8 +228,6 @@ public class TourControllerAdmin {
 
 
 
-
-
     @DeleteMapping("/tours/delete-tour/{id}")
     public ResponseEntity<String> deleteTour(@PathVariable String id) {
         boolean isDeleted = tourService.deleteTour(Integer.parseInt(id));
@@ -234,5 +237,6 @@ public class TourControllerAdmin {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tour không tồn tại."); // Không tìm thấy tour
         }
     }
+    
 
 }

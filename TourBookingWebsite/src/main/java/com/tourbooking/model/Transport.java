@@ -1,5 +1,6 @@
 package com.tourbooking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,8 +38,9 @@ public class Transport {
     @Column(name = "status", nullable = false)
     private int status;
 
-    @JsonManagedReference
+    //@JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "transport", cascade = CascadeType.ALL)
     private Set<TransportDetail> transportDetails;
-
+    
 }

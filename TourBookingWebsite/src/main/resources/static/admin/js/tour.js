@@ -104,18 +104,34 @@
 		            ${tour.category ? tour.category.categoryName : 'N/A'}
 		        </td>
 		        <td>
-		            <div class="text-center">
-		                <button onclick="window.location.href='/admin/tour-schedule/${tour.tourId}'" class="btnadd-tour-time btn btn-info btn-sm mb-2">Lịch Tour</button>
-		                <div class="d-flex justify-content-center">
-		                    <button data-id="${tour.tourId}" class="edit-btn btn btn-warning btn-sm me-1">Sửa</button>
-		                    <button class="delete-btn btn btn-danger btn-sm ms-1" data-id="${tour.tourId}" ${tour.status == 0 ? 'disabled' : ''}>Xóa</button>
-		                </div>
-		                <div class="d-flex justify-content-center mt-2">
-		                    <button class="btn btn-primary btn-sm" onclick="viewTourImage(${tour.tourId})">
-		                        <i class="fas fa-image"></i> Xem hình ảnh
-		                    </button>
-		                </div>
-		            </div>
+				<div class="text-center">
+				    <div class="row mb-2">
+				        <!-- Ô 1: Tour Time -->
+				        <div class="col-6">
+				            <button class="btnadd-tour-time btn btn-info btn-sm w-100" onclick="showTourTimes(${tour.tourId})">Lịch Tour</button>
+				        </div>
+				        <!-- Ô 2: Ảnh Tour -->
+				        <div class="col-6">
+				            <button class="btn btn-primary btn-sm w-100" onclick="viewTourImage(${tour.tourId})">
+				                <i class="fas fa-image"></i> Ảnh
+				            </button>
+				        </div>
+				    </div>
+
+				    <div class="row mb-2">
+				        <!-- Ô 3: Sửa -->
+				        <div class="col-6">
+				            <button data-id="${tour.tourId}" class="edit-btn btn btn-warning btn-sm w-100">Sửa</button>
+				        </div>
+				        <!-- Ô 4: Xóa -->
+				        <div class="col-6">
+				            <button class="delete-btn btn btn-danger btn-sm w-100" data-id="${tour.tourId}" ${tour.status == 0 ? 'disabled' : ''}>Xóa</button>
+				        </div>
+				    </div>
+				</div>
+
+
+
 		        </td>
 		    `;
 		    tourTableBody.appendChild(row);
@@ -135,6 +151,40 @@
 	        });
 	    });
 	}
+	function viewTourImage(tourId) {
+	    // Gọi API để lấy hình ảnh từ backend
+	    fetch(`/api/tour-images/${tourId}`)
+	        .then(response => response.json())  // Chuyển đổi phản hồi thành JSON
+	        .then(images => {
+	            // In ra dữ liệu JSON
+	            console.log('Images Data:', images);
+
+	            // Lấy đối tượng gallery để chèn hình ảnh
+	            let gallery = document.getElementById('tourImageGallery');
+	            gallery.innerHTML = '';  // Xóa các hình ảnh cũ trước khi thêm mới
+
+	            // Duyệt qua danh sách hình ảnh và thêm vào modal
+	            images.forEach(image => {
+	                // Tạo thẻ img cho mỗi hình ảnh
+	                let imgElement = document.createElement('img');
+	                imgElement.src = image.imageUrl;  // Đường dẫn hình ảnh
+	                imgElement.alt = `Hình ảnh tour ${tourId}`;
+	                imgElement.classList.add('img-fluid', 'mb-2');  // Thêm các lớp để hình ảnh hiển thị đẹp
+
+	                // Thêm thẻ img vào gallery
+	                gallery.appendChild(imgElement);
+	            });
+
+	            // Hiển thị modal
+	            $('#tourImageModal').modal('show');
+	        })
+	        .catch(error => {
+	            console.error('Error fetching tour images:', error);
+	        });
+	}
+
+
+
 	function filterTours() {
 	    const searchInput = document.getElementById('searchInput').value.toLowerCase();
 	    const categoryFilter = document.getElementById('categorySelect').textContent;
