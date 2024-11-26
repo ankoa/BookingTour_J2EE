@@ -1,11 +1,10 @@
 body {
-    background-color: #f8f9fa; /* Nền sáng nhẹ nhàng */
+        background-color: #fef5e7;
     font-family: 'Roboto', sans-serif; /* Font hiện đại */
 }
 
-h3 {
+h1 {
     color: #343a40;
-    font-weight: bold;
     margin-bottom: 20px;
 }
 
@@ -21,8 +20,17 @@ h3 {
     border-radius: 5px;
     border: 1px solid #ced4da;
     padding: 8px;
+        border: 1px solid;
+    
 }
-
+.form-select{
+	    border: 1px solid;
+	
+}
+.form-control{
+		    border: 1px solid !important;
+	
+}
 .filter-section .btn-primary {
     border-radius: 5px;
     padding: 8px 16px;
@@ -37,7 +45,15 @@ h3 {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
 }
-
+.btnsearchtourTime{
+	border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+	
+}
+#btnClearTourTime{
+	    border-radius: 8px;
+	
+}
 table {
     width: 100%;
     border-collapse: collapse;
@@ -110,28 +126,26 @@ button:hover {
 
 /* Chỉ định độ rộng cho các cột */
 .tbTourTime th:nth-child(1) {
-    width: 5%; /* Cột ID Tour nhỏ lại */
+    width: 6%; /* Cột ID Tour nhỏ lại */
 }
 
 .tbTourTime th:nth-child(2) {
-    width: 12%; /* Cột Tên Tour */
+    width: 18%; /* Cột Tên Tour */
 }
 
 .tbTourTime th:nth-child(3) {
-    width: 10%; /* Cột Chi Tiết Tour to ra */
+    width: 6%; /* Cột Chi Tiết Tour to ra */
 }
 
 .tbTourTime th:nth-child(4),
 th:nth-child(5),
 th:nth-child(6){
-    width: 12%; /* Các cột còn lại có kích thước bằng nhau */
+    width: 14%; /* Các cột còn lại có kích thước bằng nhau */
 }
 .tbTourTime th:nth-child(7){
 	 width: 12%;
 }
-.tbTourTime th:nth-child(8){
-	 width: 12%;
-}
+
 .tbTourTime-container{
 	height: 350px;
 }

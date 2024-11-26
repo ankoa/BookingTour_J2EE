@@ -119,6 +119,11 @@ public class TourTimeService {
     public Optional<TourTime> getTourTimeById(String id) {
         return tourTimeRepository.findById(Integer.parseInt(id));
     }
+    // Lấy TourTime theo ID
+    public TourTime getTourTimeByIdINT(int id) {
+        return tourTimeRepository.findById(id).orElse(null);
+    }
+
     public List<TourTime> getTourTimesByTourId(int tourId) {
         return tourTimeRepository.findByTourId(tourId);
     }

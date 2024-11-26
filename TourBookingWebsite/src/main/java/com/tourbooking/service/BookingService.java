@@ -258,6 +258,14 @@ public class BookingService {
             return false;
         }
     }
+    public boolean updateBooking(Booking booking) {
+        try {
+            bookingRepository.save(booking); // Cập nhật thông tin booking
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
     public Optional<Booking> getBookingById(Integer bookingId) {
         return bookingRepository.findById(bookingId);
     }

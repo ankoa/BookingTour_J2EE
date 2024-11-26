@@ -445,3 +445,10 @@ function clearFormSearch() {
     document.getElementById('searchInput').value = '';
     document.getElementById('statusFilter').selectedIndex = 0;
 }
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+
+    document.getElementById('statusFilter').value = '';
+
+    loadCustomers();
+}

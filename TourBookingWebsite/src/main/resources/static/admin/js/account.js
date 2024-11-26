@@ -51,7 +51,6 @@
                     row.innerHTML = `
                         <td>${account.accountId}</td>
                         <td>${account.accountName}</td>
-                        <td>${account.password}</td>
                         <td>${account.email}</td>
                         <td>${account.customer.customerId}</td>                
                         <td>
@@ -186,69 +185,91 @@ function filterAccounts() {
         const addModal = new bootstrap.Modal(document.getElementById('addModal'));
         addModal.show();
     }
-    function addAccount() {
-        const accountName = document.getElementById('newAccountName').value;
-        const email = document.getElementById('newEmail').value;
-        const status = document.getElementById('newStatus').value;
-        const customerID = document.getElementById('newCustomerID').value;
-        const customerNameInput = document.getElementById('newCustomerName').value;
-        const password = document.getElementById('newPassword').value; // Lấy giá trị mật khẩu
+	function addAccount() {
+	    const accountName = document.getElementById('newAccountName').value;
+	    const email = document.getElementById('newEmail').value;
+	    const status = document.getElementById('newStatus').value;
+	    const customerID = document.getElementById('newCustomerID').value;
+	    const customerNameInput = document.getElementById('newCustomerName').value;
+	    const password = document.getElementById('newPassword').value; // Lấy giá trị mật khẩu
 
-        // Kiểm tra dữ liệu đầu vào
-        if (!accountName || !email || !customerID || !password) {
-            showAlert('danger', 'Vui lòng điền đầy đủ thông tin!');
-            return;
-        }
-        if (!isValidEmail(email)) {
-            showAlert('danger', 'Vui lòng nhập địa chỉ email hợp lệ!');
-            return;
-        }
-        if (customerNameInput === "Khách hàng không tồn tại") {
-            showAlert('danger', 'Chưa có thông tin khách hàng');
-            return;
-        }
+	    // Kiểm tra dữ liệu đầu vào
+	    if (!accountName || !email || !customerID || !password) {
+	        showAlert('danger', 'Vui lòng điền đầy đủ thông tin!');
+	        return;
+	    }
+	    if (!isValidEmail(email)) {
+	        showAlert('danger', 'Vui lòng nhập địa chỉ email hợp lệ!');
+	        return;
+	    }
+	    if (!isValidPassword(password)) {
+	        showAlert('danger', 'Mật khẩu phải tối thiểu 8 ký tự, bao gồm ít nhất 1 chữ cái và 1 số!');
+	        return;
+	    }
+	    if (customerNameInput === "Khách hàng không tồn tại") {
+	        showAlert('danger', 'Chưa có thông tin khách hàng');
+	        return;
+	    }
 
-        // Hiển thị alert xác nhận
-        const confirmation = confirm("Bạn có chắc chắn muốn thêm tài khoản này không?");
-        if (!confirmation) {
-            // Nếu người dùng không xác nhận, dừng thao tác
-            return;
-        }
+	    // Hiển thị alert xác nhận
+	    const confirmation = confirm("Bạn có chắc chắn muốn thêm tài khoản này không?");
+	    if (!confirmation) {
+	        // Nếu người dùng không xác nhận, dừng thao tác
+	        return;
+	    }
 
-        // Thêm tài khoản
-        const accountData = {
-            accountName,
-            email,
-            status,
-            customerID,
-            password // Thêm mật khẩu vào dữ liệu gửi
-        };
+	    // Thêm tài khoản
+	    const accountData = {
+	        accountName,
+	        email,
+	        status,
+	        customerID,
+	        password
+	    };
 
-        fetch('/admin/accounts/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(accountData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    showAlert('danger', errorData.message || 'Thêm tài khoản thất bại!');
-                });
-            }
-            showAlert('success', 'Thêm tài khoản thành công!');
-            loadAccounts();
-			clearFormSearch();
-            document.getElementById('addForm').reset();
-            const addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
-            addModal.hide();
-        })
-        .catch(error => {
-            console.error('Lỗi khi thêm tài khoản:', error);
-        });
-    }
+	    fetch('/admin/accounts/add', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/json'
+	        },
+	        body: JSON.stringify(accountData)
+	    })
+	        .then(response => {
+	            if (!response.ok) {
+	                return response.json().then(errorData => {
+	                    showAlert('danger', errorData.message || 'Thêm tài khoản thất bại!');
+	                });
+	            }
+	            showAlert('success', 'Thêm tài khoản thành công!');
+	            loadAccounts();
+	            clearFormSearch();
+	            document.getElementById('addForm').reset();
+	            const addModal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
+	            addModal.hide();
+	        })
+	        .catch(error => {
+	            console.error('Lỗi khi thêm tài khoản:', error);
+	        });
+	}
 
+	// Hàm kiểm tra mật khẩu hợp lệ
+	function isValidPassword(password) {
+	    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+	    return passwordRegex.test(password);
+	}
+
+	//
+
+	function clearFilters() {
+	  // Xóa giá trị trong ô tìm kiếm
+	  document.getElementById("searchInput").value = "";
+
+	  // Đặt lại giá trị mặc định cho bộ lọc trạng thái
+	  document.getElementById("statusFilter").value = "";
+
+	  // Gọi lại hàm filter để áp dụng thay đổi
+	  filterAccounts();
+	}
 
 
 
@@ -365,108 +386,119 @@ function filterAccounts() {
         confirmDeleteModal.show();
     }
 
-    function editAccount(button) {
-        const accountId = button.getAttribute('data-id');
-        fetch(`/admin/accounts/${accountId}`)
-            .then(response => response.json())
-            .then(account => {
-                document.getElementById('accountId').value = account.accountId;
-                document.getElementById('accountName').value = account.accountName;
-                document.getElementById('email').value = account.email;
-                document.getElementById('status').value = account.status;
-                document.getElementById('password').value = account.password;
+	let oldPassword = ''; // Biến lưu mật khẩu cũ
 
-                if (account.customer) {
-                    document.getElementById('customerID').value = account.customer.customerId;
-                    fetchCustomerName(account.customer.customerId, true);
-                } else {
-                    document.getElementById('customerID').value = '';
-                    document.getElementById('customerName').value = '';
-                }
+	function editAccount(button) {
+	    const accountId = button.getAttribute('data-id');
+	    fetch(`/admin/accounts/${accountId}`)
+	        .then(response => response.json())
+	        .then(account => {
+	            document.getElementById('accountId').value = account.accountId;
+	            document.getElementById('accountName').value = account.accountName;
+	            document.getElementById('email').value = account.email;
+	            document.getElementById('status').value = account.status;
+	            
+	            // Lưu mật khẩu cũ vào biến
+	            oldPassword = account.password;
 
-                const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-                editModal.show();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('danger', 'Có lỗi xảy ra khi lấy thông tin tài khoản!');
-            });
-    }
+	            if (account.customer) {
+	                document.getElementById('customerID').value = account.customer.customerId;
+	                fetchCustomerName(account.customer.customerId, true);
+	            } else {
+	                document.getElementById('customerID').value = '';
+	                document.getElementById('customerName').value = '';
+	            }
 
-    
+	            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+	            editModal.show();
+	        })
+	        .catch(error => {
+	            console.error('Error:', error);
+	            showAlert('danger', 'Có lỗi xảy ra khi lấy thông tin tài khoản!');
+	        });
+	}
+
+
 
     function closeModal() {
         const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
         if (modal) modal.hide();
     }
 
-    function saveChanges() {
-        const accountId = document.getElementById('accountId').value;
-        const accountName = document.getElementById('accountName').value;
-        const email = document.getElementById('email').value;
-        const status = document.getElementById('status').value;
-		const customerID = document.getElementById('customerID').value;
-		const customerName = document.getElementById('customerName').value;
-		const password = document.getElementById('password').value;
+	function saveChanges() {
+	    const accountId = document.getElementById('accountId').value;
+	    const accountName = document.getElementById('accountName').value;
+	    const email = document.getElementById('email').value;
+	    const status = document.getElementById('status').value;
+	    const customerID = document.getElementById('customerID').value;
+	    const customerName = document.getElementById('customerName').value;
+	    let password = document.getElementById('password').value;
 
-		if (!accountName || !email || !customerID || !password) {
-            showAlert('danger', 'Vui lòng điền đầy đủ thông tin!');
-            return;
-        }
-        if (!isValidEmail(email)) {
-            showAlert('danger', 'Vui lòng nhập địa chỉ email hợp lệ!');
-            return;
-        }
-        if (customerName === "Khách hàng không tồn tại") {
-            showAlert('danger', 'Chưa có thông tin khách hàng');
-            return;
-        }
-/*
-        // Hiển thị alert xác nhận
-        const confirmation = confirm("Bạn có chắc chắn muốn thêm tài khoản này không?");
-        if (!confirmation) {
-            // Nếu người dùng không xác nhận, dừng thao tác
-            return;
-        }
-*/
-        // Hiển thị modal xác nhận
-        const confirmSaveButton = document.getElementById('confirmSaveButton');
-        confirmSaveButton.onclick = function() {
-            fetch(`/admin/accounts/update/${accountId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    accountId: accountId,
-                    accountName: accountName,
-                    email: email,
-                    status: status,
-                    password: password
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    showAlert('success', 'Lưu thay đổi thành công!');
-                    loadAccounts();
-					clearFormSearch();
-                    closeModal(); // Đóng modal sau khi lưu thành công
-                } else {
-                    showAlert('danger', 'Lưu thay đổi thất bại!');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('danger', 'Có lỗi xảy ra khi lưu thay đổi!');
-            });
+	    if (!accountName || !email || !customerID) {
+	        showAlert('danger', 'Vui lòng điền đầy đủ thông tin!');
+	        return;
+	    }
+	    if (!isValidEmail(email)) {
+	        showAlert('danger', 'Vui lòng nhập địa chỉ email hợp lệ!');
+	        return;
+	    }
+	    if (customerName === "Khách hàng không tồn tại") {
+	        showAlert('danger', 'Chưa có thông tin khách hàng');
+	        return;
+	    }
 
-            // Đóng modal sau khi xác nhận lưu
-            $('#confirmSaveModal').modal('hide');
-        };
+	    // Kiểm tra nếu mật khẩu trống thì dùng mật khẩu cũ (old-pass)
+	    if (!password) {
+	        password = oldPassword;
+	    } else {
+	        // Kiểm tra mật khẩu nếu không trống
+	        if (!isValidPassword(password)) {
+	            showAlert('danger', 'Mật khẩu phải tối thiểu 8 ký tự, bao gồm ít nhất 1 chữ cái và 1 số!');
+	            return;
+	        }
+	    }
 
-        // Mở modal xác nhận
-        $('#confirmSaveModal').modal('show');
-    }
+	    // Hiển thị modal xác nhận
+	    const confirmSaveButton = document.getElementById('confirmSaveButton');
+	    confirmSaveButton.onclick = function() {
+	        fetch(`/admin/accounts/update/${accountId}`, {
+	            method: 'PUT',
+	            headers: {
+	                'Content-Type': 'application/json',
+	            },
+	            body: JSON.stringify({
+	                accountId: accountId,
+	                accountName: accountName,
+	                email: email,
+	                status: status,
+	                password: password
+	            })
+	        })
+	        .then(response => {
+	            if (response.ok) {
+	                showAlert('success', 'Lưu thay đổi thành công!');
+	                loadAccounts();
+	                clearFormSearch();
+	                closeModal(); // Đóng modal sau khi lưu thành công
+	            } else {
+	                showAlert('danger', 'Lưu thay đổi thất bại!');
+	            }
+	        })
+	        .catch(error => {
+	            console.error('Error:', error);
+	            showAlert('danger', 'Có lỗi xảy ra khi lưu thay đổi!');
+	        });
+
+	        // Đóng modal sau khi xác nhận lưu
+	        $('#confirmSaveModal').modal('hide');
+	    };
+
+	    // Mở modal xác nhận
+	    $('#confirmSaveModal').modal('show');
+	}
+
+
+
 	function clearFormSearch() {
 	    // Xóa nội dung ô input tìm kiếm
 	    document.getElementById('searchInput').value = '';

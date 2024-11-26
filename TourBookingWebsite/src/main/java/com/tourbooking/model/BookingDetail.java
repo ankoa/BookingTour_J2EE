@@ -1,6 +1,7 @@
 package com.tourbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,12 +25,12 @@ public class BookingDetail {
 
     @ManyToOne
     @JoinColumn(name = "booking_id")
-    @JsonBackReference
+    @JsonManagedReference
     private Booking booking;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonBackReference
+    @JsonManagedReference
     private Customer customer;
 
     @Column(name = "price", nullable = false)
