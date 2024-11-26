@@ -58,6 +58,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -74,7 +75,10 @@ public class CustomerService {
     public Customer getCustomerById(int customerId) {
         return customerRepository.findById(customerId).orElse(null);
     }
-
+    // Lấy khách hàng theo ID
+    public Optional<Customer> getCustomerByIdAdmin(int id) { // Thay đổi kiểu trả về thành Optional<Customer>
+        return customerRepository.findById(id); // Trả về Optional<Customer>
+    }
     // Cập nhật khách hàng
     public boolean updateCustomer(Customer customerDetails) {
         Customer customer = customerRepository.findById(customerDetails.getCustomerId()).orElse(null);

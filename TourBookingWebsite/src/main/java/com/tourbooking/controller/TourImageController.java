@@ -133,6 +133,21 @@ public class TourImageController {
         }
     }
 
+    @GetMapping("/active-images/{tourId}")
+    public ResponseEntity<?> getActiveImages(@PathVariable int tourId) {
+        // Kiểm tra xem có ảnh nào có status = 1 không
+        boolean hasActiveImages = tourImageService.hasActiveImages(tourId);
+        
+        // Trả về true nếu có ảnh với status = 1, false nếu không có
+        return ResponseEntity.ok(hasActiveImages);
+    }
+
+
+    @GetMapping("/active-images/{tourId}/{imageId}")
+    public ResponseEntity<Boolean> checkActiveImage(@PathVariable int tourId, @PathVariable int imageId) {
+        boolean isMatching = tourImageService.checkActiveImageId(tourId, imageId);
+        return ResponseEntity.ok(isMatching);
+    }
 
 
 

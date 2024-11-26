@@ -110,7 +110,7 @@ public class AccountControllerAdmin {
             }
 
             // Lấy Customer từ ID
-            Optional<Customer> optionalCustomer = customerService.getCustomerById(customerID);
+            Optional<Customer> optionalCustomer = customerService.getCustomerByIdAdmin(customerID);
             if (!optionalCustomer.isPresent()) {
                 response.put("message", "Khách hàng không tồn tại!");
                 return ResponseEntity.badRequest().body(response);

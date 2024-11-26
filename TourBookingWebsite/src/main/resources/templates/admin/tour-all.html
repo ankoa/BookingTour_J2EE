@@ -44,6 +44,7 @@
     <!-- Custom CSS -->
     <link type="text/css" href="/css/navBar.css" rel="stylesheet" />
     <link type="text/css" href="/admin/css/tour.css" rel="stylesheet" />
+
         <link type="text/css" href="/admin/css/tourTime.css" rel="stylesheet" />
         <link type="text/css" href="/admin/css/category.css" rel="stylesheet" />
     
@@ -56,14 +57,11 @@
 
     <!-- Custom JS -->
     <script src="/js/narBar.js"></script>
-        <script src="/admin/js/tour.js"></script>
-    <script src="/admin/js/imageModal.js"></script>
-        <script src="/admin/js/tourTime.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
-    <div th:replace="/MenuAdmin :: navbar"></div>
+    <div th:replace="MenuAdmin :: navbar"></div>
 
     <!-- Thông báo -->
     <div
@@ -914,6 +912,61 @@
 </div>
 </div>
 
+<!-- Modal Khuyến Mãi -->
+<div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="discountModalLabel" style="font-size: 1.2rem;">Thêm Khuyến Mãi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form chọn loại khuyến mãi -->
+        <form id="addDiscountForm" onsubmit="addDiscount(); return false;">
+          <!-- Thêm trường ẩn cho tourId -->
+          <input type="hidden" id="tourId" name="tourId" value="">
+
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <label for="discountType" class="form-label">Chọn Loại Khuyến Mãi</label>
+              <select id="discountType" class="form-select" required>
+                <option value="" disabled selected>-- Chọn loại khuyến mãi --</option>
+                <!-- Các khuyến mãi sẽ được thêm vào đây bằng JavaScript -->
+              </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <button type="submit" class="btn btn-primary w-100">Thêm</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Bảng các khuyến mãi đã chọn -->
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Mã Giảm Giá</th>
+                <th scope="col">Giảm Giá</th>
+                <th scope="col">Ngày Bắt Đầu</th>
+                <th scope="col">Ngày Kết Thúc</th>
+                <th scope="col">Mô Tả</th>
+                <th scope="col">Trạng Thái</th>
+                <th scope="col">Hành Động</th>
+              </tr>
+            </thead>
+            <tbody id="selectedDiscounts">
+              <!-- Dòng khuyến mãi được thêm sẽ hiển thị ở đây -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!-- Modal Thêm Tour Time -->
@@ -1298,6 +1351,9 @@ function checkPriceRange(price, priceFilter) {
         });
       }
     </script>
+    <script src="/admin/js/tour.js"></script>
+    <script src="/admin/js/imageModal.js"></script>
+    <script src="/admin/js/tourTime.js"></script>
     <!------------------------ category -->
     <script>
     function loadCategories() {

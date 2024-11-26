@@ -120,7 +120,7 @@ public class BookingControllerAdmin {
 
 
             // Kiểm tra xem Customer và TourTime có tồn tại không
-            Optional<Customer> customerOptional = customerService.getCustomerById(customerId);
+            Optional<Customer> customerOptional = customerService.getCustomerByIdAdmin(customerId);
             if (!customerOptional.isPresent()) {
                 response.put("message", "Khách hàng không tồn tại!");
                 return ResponseEntity.badRequest().body(response);
@@ -165,8 +165,51 @@ public class BookingControllerAdmin {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+    
+     
+    @GetMapping("/chart")
+    public String showChart() {
+        return "/admin/chart"; 
+    }
+    
+   /*
+    @GetMapping("/api/revenue/range")
+    public List<Map<String, Object>> getRevenueInRange(@RequestParam String startDate, @RequestParam String endDate) {
+        return bookingService.getRevenueInRange(startDate, endDate);
+    }
 
 
+    @GetMapping("/chart")
+    public String showChart(Model model) {
+        model.addAttribute("dataPointsList", bookingService.getMonthlyRevenueData());
+        return "admin/chart";
+    }*/
+    /*@GetMapping("/chart")
+    public String showChart(Model model) {
+        // Dữ liệu mẫu cho biểu đồ
+        model.addAttribute("labels", new String[]{"January", "February", "March", "April", "May", "June"});
+        model.addAttribute("data", new int[]{65, 59, 80, 81, 56, 55});
+        return "/admin/chart";
+    }
+    @GetMapping("/chart")
+    public String showChart(Model model) {
+        // Lấy dữ liệu doanh thu hàng tháng từ service
+        List<Map<String, Object>> revenueData = bookingService.getMonthlyRevenue();
 
+        // Tạo danh sách tháng và doanh thu từ kết quả truy vấn
+        String[] months = new String[revenueData.size()];
+        int[] revenue = new int[revenueData.size()];
+
+        for (int i = 0; i < revenueData.size(); i++) {
+            months[i] = (String) revenueData.get(i).get("month");
+            revenue[i] = ((Number) revenueData.get(i).get("revenue")).intValue();
+        }
+
+        // Truyền dữ liệu vào model để hiển thị trên frontend
+        model.addAttribute("months", months);
+        model.addAttribute("revenue", revenue);
+
+        return "/admin/chart"; // Trả về trang chart.html
+    }*/
 
 }

@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import com.tourbooking.model.TourTime;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,4 +28,108 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
 
     Page<Booking> findAll(Pageable pageable);
+    
+    
+    
+    
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m') AS month, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE YEAR(b.time) = :year " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m')", nativeQuery = true)
+   List<Map<String, Object>> findRevenueByYear(@Param("year") int year);
+
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m-%d') AS day, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE YEAR(b.time) = :year AND MONTH(b.time) = :month " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m-%d') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m-%d')", nativeQuery = true)
+   List<Map<String, Object>> findDailyRevenue(@Param("year") int year, @Param("month") int month);
+
+    @Query(value = "SELECT YEAR(b.time) AS year, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE YEAR(b.time) BETWEEN :startYear AND :endYear " +
+            "GROUP BY YEAR(b.time) " +
+            "ORDER BY YEAR(b.time) DESC", nativeQuery = true)
+   List<Map<String, Object>> findRevenueOfLastFourYears(@Param("startYear") int startYear, @Param("endYear") int endYear);
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m-%d') AS day, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE b.time BETWEEN :startDate AND :endDate " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m-%d') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m-%d')", nativeQuery = true)
+    List<Map<String, Object>> findRevenueFor30Days(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m-%d') AS day, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE DATE(b.time) = :specificDate " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m-%d')", nativeQuery = true)
+    List<Map<String, Object>> findRevenueForSpecificDay(@Param("specificDate") String specificDate);
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /*@Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m') AS month, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m')", nativeQuery = true)
+    List<Map<String, Object>> findMonthlyRevenue();
+
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m-%d') AS day, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE DATE_FORMAT(b.time, '%Y-%m') = :month " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m-%d') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m-%d')", nativeQuery = true)
+    List<Map<String, Object>> findDailyRevenue(@Param("month") String month);
+
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m-%d') AS day, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE b.time BETWEEN :startDate AND :endDate " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m-%d') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m-%d')", nativeQuery = true)
+    List<Map<String, Object>> findRevenueInRange(@Param("startDate") String startDate, @Param("endDate") String endDate);
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m') AS month, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE YEAR(b.time) = :year AND MONTH(b.time) = :month " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m')", nativeQuery = true)
+	List<Map<String, Object>> findMonthlyRevenue(@Param("year") int year, @Param("month") int month);
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m') AS month, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE YEAR(b.time) = :year " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m')", nativeQuery = true)
+    List<Map<String, Object>> findAnnualRevenue(@Param("year") int year);
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m-%d') AS day, SUM(d.price) AS revenue " +
+            "FROM booking_detail d " +
+            "JOIN booking b ON d.booking_id = b.booking_id " +
+            "WHERE YEAR(b.time) = :year AND MONTH(b.time) = :month " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m-%d') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m-%d')", nativeQuery = true)
+    List<Map<String, Object>> findDailyRevenue(@Param("year") int year, @Param("month") int month);*/
+
 }

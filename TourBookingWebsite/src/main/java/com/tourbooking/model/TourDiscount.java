@@ -3,8 +3,8 @@ package com.tourbooking.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "tour_discount")
 @IdClass(TourDiscountId.class)
+@Table(name = "tour_discount")
 public class TourDiscount {
 
     @Id
@@ -15,11 +15,11 @@ public class TourDiscount {
     @Column(name = "discount_id", nullable = false)
     private int discountId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "tour_time_id", insertable = false, updatable = false)
     private TourTime tourTime;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "discount_id", insertable = false, updatable = false)
     private Discount discount;
 
