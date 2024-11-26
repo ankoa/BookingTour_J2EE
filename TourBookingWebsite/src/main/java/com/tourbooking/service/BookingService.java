@@ -328,4 +328,23 @@ public class BookingService {
         return bookingRepository.findRevenueForSpecificDay(specificDate);
     }
 
+    public BookingResponse function(String Id,Integer status) {
+        BookingResponse bookingResponse = new BookingResponse();
+        Optional<Booking> bookingOptional = bookingRepository.findById(Integer.parseInt(Id));
+        if (bookingOptional.isPresent()) {
+            Booking booking = bookingOptional.get();
+
+            bookingResponse = bookingMapper.toBookingResponse(booking);
+            bookingResponse.setTourTimeResponse(
+                    tourTimeService
+                            .toTourTimeResponse(booking.getTourTime(), status)
+            );
+            List<BookingDetailResponse> bookingDetailResponses = new ArrayList<>();
+            for (BookingDetail bookingDetail : booking.getBookingDetails()) {
+                bookingDetailResponses.add(bookingDetailService.toBookingDetailResponse(bookingDetail));
+            }
+            bookingResponse.setBookingDetailResponses(bookingDetailResponses);
+        }
+        return bookingResponse;
+    }
 }
