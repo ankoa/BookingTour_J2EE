@@ -44,7 +44,9 @@
     <!-- Custom CSS -->
     <link type="text/css" href="/css/navBar.css" rel="stylesheet" />
     <link type="text/css" href="/admin/css/tour.css" rel="stylesheet" />
+
         <link type="text/css" href="/admin/css/tourTime.css" rel="stylesheet" />
+        <link type="text/css" href="/admin/css/category.css" rel="stylesheet" />
     
 
     <!-- jQuery -->
@@ -55,14 +57,11 @@
 
     <!-- Custom JS -->
     <script src="/js/narBar.js"></script>
-        <script src="/admin/js/tour.js"></script>
-    <script src="/admin/js/imageModal.js"></script>
-        <script src="/admin/js/tourTime.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
-    <div th:replace="/MenuAdmin :: navbar"></div>
+    <div th:replace="MenuAdmin :: navbar"></div>
 
     <!-- Thông báo -->
     <div
@@ -573,28 +572,232 @@
 
 <!-- -------------------------------------------------------- LOẠI TOUR------------------------------------------------------------------ -->
 
-        <!-- Loại Tour Tab -->
-        <div
-          class="tab-pane fade"
-          id="loai-tour"
-          role="tabpanel"
-          aria-labelledby="loai-tour-tab"
-        >
-          <h3>Loại Tour</h3>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>ID Loại Tour</th>
-                <th>Tên Loại Tour</th>
-              </tr>
-            </thead>
-            <tbody id="categoryTableBody">
-              <!-- Nội dung sẽ được tải động bởi Ajax -->
-            </tbody>
-          </table>
-      
+<!-- Loại Tour Tab -->
+<div
+  class="tab-pane fade"
+  id="loai-tour"
+  role="tabpanel"
+  aria-labelledby="loai-tour-tab"
+>
+  <div class="row filterCategory-section mb-3 pt-1">
+    <!-- Hàng 1: Tìm kiếm -->
+    <div class="row g-2">
+      <div class="col-md-8">
+        <div class="input-group">
+          <input
+            type="text"
+            id="searchInputCategory"
+            class="form-control border border-secondary"
+            placeholder="Tìm kiếm theo ID, Tên Loại Tour"
+            aria-label="Search"
+            oninput="filterCategories()"
+          />
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="filterCategories()"
+          >
+            Tìm kiếm
+          </button>
         </div>
       </div>
+    </div>
+
+    <!-- Hàng 2: Nút Thêm và Lọc -->
+<div class="row g-2 mb-2 align-items-center">
+  <!-- Bộ lọc trạng thái và nút thêm -->
+  <div class="d-flex justify-content-between">
+    <!-- Bộ lọc trạng thái -->
+    <div class="col-md-2">
+      <select id="statusFilter" class="form-select" onchange="filterCategories()">
+        <option value="">Tất cả</option>
+        <option value="1">Kích hoạt</option>
+        <option value="0">Ngưng hoạt động</option>
+      </select>
+    </div>
+
+    <!-- Nút thêm -->
+    <div>
+      <button
+        class="btn btn-success"
+        data-bs-toggle="modal"
+        data-bs-target="#addCategoryModal"
+      >
+        Thêm Loại Tour Mới
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Bảng Loại Tour -->
+  <div class="tbCategory-container table-container">
+    <table class="table tbCategory table-bordered text-center">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tên Loại Tour</th>
+          <th>Chi Tiết</th>
+          <th>Trạng Thái</th>
+          <th>Thao Tác</th>
+        </tr>
+      </thead>
+      <tbody id="categoryTableBody">
+    <tr>
+      <td>1</td>
+      <td>Tour Biển</td>
+      <td>Thăm quan các bãi biển nổi tiếng</td>
+      <td>1</td> <!-- Trạng thái: 1 = Kích hoạt, 0 = Ngưng hoạt động -->
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Tour Núi</td>
+      <td>Khám phá vùng núi hùng vĩ</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+        <!-- Dữ liệu sẽ được tải động qua Ajax -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Thêm Loại Tour -->
+<div
+  class="modal fade"
+  id="addCategoryModal"
+  tabindex="-1"
+  aria-labelledby="addCategoryModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCategoryModalLabel">Thêm Loại Tour</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="addCategoryForm" onsubmit="addCategory(); return false;">
+          <!-- Tên Loại Tour -->
+          <div class="mb-3">
+            <label for="categoryName" class="form-label">Tên Loại Tour</label>
+            <input type="text" class="form-control" id="categoryName" required />
+          </div>
+
+          <!-- Chi Tiết -->
+          <div class="mb-3">
+            <label for="categoryDetail" class="form-label">Chi Tiết</label>
+            <textarea
+              class="form-control"
+              id="categoryDetail"
+              rows="2"
+            ></textarea>
+          </div>
+
+          <!-- Trạng Thái -->
+          <div class="mb-3">
+            <label for="categoryStatus" class="form-label">Trạng Thái</label>
+            <select class="form-select" id="categoryStatus" required>
+              <option value="1">Kích hoạt</option>
+              <option value="0">Ngưng hoạt động</option>
+            </select>
+          </div>
+
+          <!-- Nút -->
+          <div class="d-flex justify-content-center mt-3">
+            <button type="submit" class="btn btn-primary mx-2">Thêm</button>
+            <button
+              type="button"
+              class="btn btn-secondary mx-2"
+              data-bs-dismiss="modal"
+            >
+              Đóng
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Chỉnh Sửa Loại Tour -->
+<div
+  class="modal fade"
+  id="editCategoryModal"
+  tabindex="-1"
+  aria-labelledby="editCategoryModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCategoryModalLabel">Chỉnh Sửa Loại Tour</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="editCategoryForm" onsubmit="editCategory(); return false;">
+          <!-- Trường ẩn để lưu ID -->
+          <input type="hidden" id="editCategoryId" />
+          <!-- Tên Loại Tour -->
+          <div class="mb-3">
+            <label for="editCategoryName" class="form-label">Tên Loại Tour</label>
+            <input
+              type="text"
+              class="form-control"
+              id="editCategoryName"
+              required
+            />
+          </div>
+
+          <!-- Chi Tiết -->
+          <div class="mb-3">
+            <label for="editCategoryDetail" class="form-label">Chi Tiết</label>
+            <textarea
+              class="form-control"
+              id="editCategoryDetail"
+              rows="2"
+            ></textarea>
+          </div>
+
+          <!-- Trạng Thái -->
+          <div class="mb-3">
+            <label for="editCategoryStatus" class="form-label">Trạng Thái</label>
+            <select class="form-select" id="editCategoryStatus" required>
+              <option value="1">Kích hoạt</option>
+              <option value="0">Ngưng hoạt động</option>
+            </select>
+          </div>
+
+          <!-- Nút -->
+          <div class="d-flex justify-content-center mt-3">
+            <button type="submit" class="btn btn-primary mx-2">Lưu</button>
+            <button
+              type="button"
+              class="btn btn-secondary mx-2"
+              data-bs-dismiss="modal"
+            >
+              Đóng
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
     
 
 <!-- -------------------------------------------------------- tour time------------------------------------------------------------------ -->
@@ -709,6 +912,61 @@
 </div>
 </div>
 
+<!-- Modal Khuyến Mãi -->
+<div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="discountModalLabel" style="font-size: 1.2rem;">Thêm Khuyến Mãi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form chọn loại khuyến mãi -->
+        <form id="addDiscountForm" onsubmit="addDiscount(); return false;">
+          <!-- Thêm trường ẩn cho tourId -->
+          <input type="hidden" id="tourId" name="tourId" value="">
+
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <label for="discountType" class="form-label">Chọn Loại Khuyến Mãi</label>
+              <select id="discountType" class="form-select" required>
+                <option value="" disabled selected>-- Chọn loại khuyến mãi --</option>
+                <!-- Các khuyến mãi sẽ được thêm vào đây bằng JavaScript -->
+              </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <button type="submit" class="btn btn-primary w-100">Thêm</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Bảng các khuyến mãi đã chọn -->
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Mã Giảm Giá</th>
+                <th scope="col">Giảm Giá</th>
+                <th scope="col">Ngày Bắt Đầu</th>
+                <th scope="col">Ngày Kết Thúc</th>
+                <th scope="col">Mô Tả</th>
+                <th scope="col">Trạng Thái</th>
+                <th scope="col">Hành Động</th>
+              </tr>
+            </thead>
+            <tbody id="selectedDiscounts">
+              <!-- Dòng khuyến mãi được thêm sẽ hiển thị ở đây -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!-- Modal Thêm Tour Time -->
@@ -1093,5 +1351,231 @@ function checkPriceRange(price, priceFilter) {
         });
       }
     </script>
+    <script src="/admin/js/tour.js"></script>
+    <script src="/admin/js/imageModal.js"></script>
+    <script src="/admin/js/tourTime.js"></script>
+    <!------------------------ category -->
+    <script>
+    function loadCategories() {
+        fetch('/admin/categories/list')
+            .then(response => response.json())
+            .then(data => {
+                // Sắp xếp danh sách theo ID tăng dần
+                data.sort((a, b) => a.categoryId - b.categoryId);
+
+                const tableBody = document.getElementById('categoryTableBody');
+                tableBody.innerHTML = data
+                    .map(
+                        category => `
+                            <tr>
+                                <td>${category.categoryId}</td>
+                                <td>${category.categoryName}</td>
+                                <td>${category.categoryDetail || 'Không có'}</td>
+                                <td>${category.status === 1 ? 'Kích hoạt' : 'Ngưng hoạt động'}</td>
+                                <td>
+                                <button class="btn btn-sm btn-primary" onclick="showEditModal(${category.categoryId})">Chỉnh sửa</button>
+                                    <button 
+                                        class="btn btn-sm btn-danger" 
+                                        ${category.status === 0 ? 'disabled' : ''}
+                                        onclick="confirmDeleteCategory(${category.categoryId})">
+                                        ${category.status === 0 ? 'Đã xóa' : 'Xóa'}
+                                    </button>
+                                </td>
+                            </tr>
+                        `
+                    )
+                    .join('');
+            })
+            .catch(error => console.error('Error loading categories:', error));
+    }
+ // Gọi hàm load khi trang được tải
+    document.addEventListener('DOMContentLoaded', loadCategories);
+ // Hàm lọc danh sách loại tour theo ID hoặc Tên
+    function filterCategories() {
+	  const searchInput = document.getElementById('searchInputCategory').value.toLowerCase();
+	  const statusFilter = document.getElementById('statusFilter').value; // Lấy giá trị trạng thái
+	  const tableRows = document.querySelectorAll('#categoryTableBody tr');
+	
+	  tableRows.forEach(row => {
+	    const id = row.children[0].innerText.toLowerCase();
+	    const name = row.children[1].innerText.toLowerCase();
+	    const status = row.children[3].innerText.trim(); // Giả sử cột trạng thái là cột thứ 4
+		
+	 // Định dạng so sánh trạng thái
+	    const isStatusMatch = 
+	      statusFilter === '' || // Tất cả
+	      (statusFilter === '1' && status === 'Kích hoạt') ||
+	      (statusFilter === '0' && status === 'Ngưng hoạt động');
+	    // Kiểm tra từ khóa và trạng thái
+	    const matchesSearch = id.includes(searchInput) || name.includes(searchInput);
+	    //const matchesStatus = statusFilter === '' || status === statusFilter;
+	
+	    // Hiển thị hàng nếu cả hai điều kiện đều đúng
+	    row.style.display = matchesSearch && isStatusMatch ? '' : 'none';
+	  });
+	}
+
+
+    function addCategory() {
+        const name = document.getElementById('categoryName').value;
+        const detail = document.getElementById('categoryDetail').value;
+        const status = document.getElementById('categoryStatus').value;
+
+        const data = { categoryName: name, categoryDetail: detail, status: parseInt(status) };
+
+        fetch('/admin/categories/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(() => {
+            loadCategories();
+            clearFormSearch();
+            hideModal('addCategoryModal');
+            showAlert('success', 'Thêm loại tour thành công!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'Có lỗi xảy ra khi thêm loại tour!');
+        });
+    }
+    
+ 
+
+ // Biến để lưu ID của loại tour cần xóa
+    let categoryIdToDelete = null;
+
+    // Hàm để hiển thị modal xác nhận xóa
+    function confirmDeleteCategory(categoryId) {
+      categoryIdToDelete = categoryId; // Lưu ID của loại tour cần xóa
+      // Mở modal xác nhận xóa
+      const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      modal.show();
+    }
+
+    // Hàm để thực hiện xóa khi người dùng xác nhận
+    document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+      // Gửi yêu cầu xóa
+      fetch(`/admin/categories/delete/${categoryIdToDelete}`, {
+        method: 'DELETE',
+      })
+        .then(response => {
+          if (response.ok) {
+        	  showAlert('success', 'Xóa loại tour thành công!');
+            loadCategories(); // Tải lại danh sách loại tour
+            clearFormSearch();
+          } else {
+        	  showAlert('danger', 'Có lỗi xảy ra khi xóa loại tour!');
+          }
+        })
+        .catch(error => {
+          console.error('Error deleting category:', error);
+          alert('Có lỗi xảy ra khi xóa loại tour!');
+        })
+        .finally(() => {
+          // Đóng modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
+          modal.hide();
+        });
+    });
+    //hàm 
+    function hideModal(modalId) {
+        const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+        modal.hide();
+
+        // Xóa thủ công lớp `modal-backdrop` nếu còn
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+
+        // Xóa lớp `modal-open` trên body nếu còn
+        document.body.classList.remove('modal-open');
+        document.body.style = ''; // Reset overflow và padding
+    }
+
+
+ // Hàm hiển thị modal chỉnh sửa
+    function showEditModal(categoryId) {
+      // Lấy dữ liệu loại tour theo ID
+      fetch(`/admin/categories/${categoryId}`)
+        .then(response => response.json())
+        .then(category => {
+          // Điền dữ liệu vào modal
+          document.getElementById('editCategoryId').value = category.categoryId;
+          document.getElementById('editCategoryName').value = category.categoryName;
+          document.getElementById('editCategoryDetail').value = category.categoryDetail || '';
+          document.getElementById('editCategoryStatus').value = category.status;
+
+          // Mở modal
+          new bootstrap.Modal(document.getElementById('editCategoryModal')).show();
+        })
+        .catch(error => console.error('Error fetching category details:', error));
+    }
+
+    // Hàm chỉnh sửa loại tour
+    function editCategory() {
+      const categoryId = document.getElementById('editCategoryId').value;
+      const categoryName = document.getElementById('editCategoryName').value;
+      const categoryDetail = document.getElementById('editCategoryDetail').value;
+      const categoryStatus = document.getElementById('editCategoryStatus').value;
+
+      fetch(`/admin/categories/update/${categoryId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          categoryName,
+          categoryDetail,
+          status: categoryStatus,
+        }),
+      })
+        .then(response => response.json())
+        .then(updatedCategory => {
+          //alert('Chỉnh sửa thành công!');
+          loadCategories(); // Tải lại danh sách loại tour
+          clearFormSearch();
+          // Đóng modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('editCategoryModal'));
+          modal.hide();
+          showAlert('success', 'Chỉnh sửa thành công!');
+        })
+        .catch(error => console.error('Error updating category:', error));
+      	//showAlert('danger', 'Có lỗi xảy ra khi chỉnh sửa loại tour!');
+    }
+    function showAlert(type, message) {
+        const alertContainer = document.getElementById('alert-container');
+        if (alertContainer) {
+            const alertBox = document.createElement('div');
+            alertBox.className = `alert alert-${type}`;
+            alertBox.innerText = message;
+            alertContainer.appendChild(alertBox);
+            alertBox.style.display = 'block';
+            alertBox.style.opacity = 1; // Bắt đầu với độ mờ đầy đủ
+            
+            // Thêm hiệu ứng mờ dần và xóa alert sau 3 giây
+            setTimeout(() => {
+                alertBox.style.opacity = 0; // Bắt đầu mờ dần
+                setTimeout(() => {
+                    alertBox.remove(); // Xóa alert khỏi DOM sau khi đã mờ
+                }, 600); // Thời gian để mờ
+            }, 3000); // Thời gian để hiển thị alert
+        } else {
+            console.error('Phần tử alert-container không tồn tại.');
+        }
+    }
+
+    function clearFormSearch() {
+	    // Xóa nội dung ô input tìm kiếm
+	    document.getElementById('searchInputCategory').value = '';
+
+	    // Đặt lại các ô select về giá trị mặc định
+	    //document.getElementById('statusFilter').selectedIndex = 0;
+	}
+    </script>
+    
+    
   </body>
 </html>

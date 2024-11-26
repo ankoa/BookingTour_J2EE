@@ -371,7 +371,7 @@ function editCustomer(button) {
             document.getElementById('customerName').value = customer.customerName;
             document.getElementById('phoneNumber').value = customer.phoneNumber;
             document.getElementById('address').value = customer.address;
-            document.getElementById('birthday').value = customer.birthday;
+            document.getElementById('birthday').value = customer.birthdayAsString || '';
 			document.getElementById('sex').value = customer.sex;
             document.getElementById('status').value = customer.status;
 

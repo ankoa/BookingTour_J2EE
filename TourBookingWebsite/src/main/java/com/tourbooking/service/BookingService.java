@@ -1,9 +1,12 @@
 package com.tourbooking.service;
 
+import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.tourbooking.dto.response.ResponseObject;
@@ -292,28 +295,37 @@ public class BookingService {
         bookingRepository.save(booking);
         return true;
     }
+/*
+    // Phương thức lấy dữ liệu doanh thu hàng tháng từ repository
+    public List<Map<String, Object>> getMonthlyRevenue() {
+        return bookingRepository.findMonthlyRevenue();
+    }
+    public List<Map<String, Object>> getDailyRevenue(String month) {
+        return bookingRepository.findDailyRevenue(month);
+    }*/
 
-    public BookingResponse getBookingResponseById(String Id,Integer status){
-        BookingResponse bookingResponse = new BookingResponse();
-        Optional<Booking> bookingOptional = bookingRepository.findById(Integer.parseInt(Id));
-        if (bookingOptional.isPresent()) {
-            Booking booking = bookingOptional.get();
 
-            bookingResponse = bookingMapper.toBookingResponse(booking);
-            bookingResponse.setTourTimeResponse(
-                    tourTimeService
-                            .toTourTimeResponse(booking.getTourTime(),status)
-            );
-
-            List<BookingDetailResponse> bookingDetailResponses = new ArrayList<>();
-            for(BookingDetail bookingDetail:booking.getBookingDetails()){
-                bookingDetailResponses.add(bookingDetailService.toBookingDetailResponse(bookingDetail));
-            }
-
-            bookingResponse.setBookingDetailResponses(bookingDetailResponses);
-        }
-        return bookingResponse;
+    // Tính doanh thu theo năm
+    public List<Map<String, Object>> getRevenueByYear(int year) {
+        return bookingRepository.findRevenueByYear(year);
     }
 
+    // Tính doanh thu theo ngày trong tháng
+    public List<Map<String, Object>> getDailyRevenue(int year, int month) {
+        return bookingRepository.findDailyRevenue(year, month);
+    }
+
+    // Tính doanh thu của 4 năm gần nhất
+    public List<Map<String, Object>> getRevenueOfLastFourYears(int startYear, int endYear) {
+        return bookingRepository.findRevenueOfLastFourYears(startYear, endYear);
+    }
+
+    // Tính doanh thu trong 30 ngày
+    public List<Map<String, Object>> getRevenueFor30Days(String startDate, String endDate) {
+        return bookingRepository.findRevenueFor30Days(startDate, endDate);
+    }
+    public List<Map<String, Object>> getRevenueForDay(String specificDate) {
+        return bookingRepository.findRevenueForSpecificDay(specificDate);
+    }
 
 }
