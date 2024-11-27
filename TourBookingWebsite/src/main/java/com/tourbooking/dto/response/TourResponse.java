@@ -29,5 +29,7 @@ public class TourResponse {
 
     private List<TourTimeResponse> tourTimesResponse;
 
-    private List<TourImageResponse> tourImages;
+    private List<TourImageResponse> tourImageResponses;
+
+    private TourImageResponse tourImageResponse;
 }

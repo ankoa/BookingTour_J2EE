@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="card-content">
                             <div class="card-content-info">
                                 <div class="content-header">
-                                    <a href="" title="" class=""
+                                    <a href="/tour/${t.tourId}" title="" class=""
                                     >
                                     ${t.tourName}
                                     </a>

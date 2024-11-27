@@ -18,13 +18,13 @@ public class PaymentVNPayController {
     private final PaymentVNPayService paymentService;
 
     // chua dung
-//    @GetMapping("/vn-pay")
-//    public ResponseObject<PaymentDTO.PaymentResponse> pay(HttpServletRequest request,
-//                                                             @RequestParam String orderInfo) {
-//        PaymentDTO.PaymentResponse pay =paymentService.createVnPayPayment(request,booking);
-//        if(pay==null) return new ResponseObject<>(HttpStatus.NOT_FOUND, "Fail",null);
-//        return new ResponseObject<>(HttpStatus.OK, "Success",pay );
-//    }
+    @GetMapping("/vn-pay")
+    public ResponseObject<PaymentDTO.PaymentResponse> pay(HttpServletRequest request,
+                                                             @RequestParam String orderInfo) {
+        PaymentDTO.PaymentResponse pay =paymentService.createVnPayPayment(request,orderInfo);
+        if(pay==null) return new ResponseObject<>(HttpStatus.NOT_FOUND, "Fail",null);
+        return new ResponseObject<>(HttpStatus.OK, "Success",pay );
+    }
 
     @GetMapping("/callback/vn-pay")
     public void payCallbackHandler(HttpServletRequest request,
