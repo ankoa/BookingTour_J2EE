@@ -42,16 +42,20 @@ function renderBookings(bookings) {
                 <td>${booking.bookingId}</td>
                 <td>${booking.customer.customerId}</td>
                 <td>${booking.tourTime.tourTimeId}</td>
-                <td>${booking.totalPrice}</td>
+                <td>${booking.totalPrice.toLocaleString()} VNĐ</td>
                 <td>${booking.adultCount}</td>
                 <td>${booking.childCount}</td>
-                <td>${booking.status === 1 ? "Đã thanh toán" : "Chưa thanh toán"}</td>
+				<td>
+				    ${booking.status == 2 ? "Đã thanh toán" : (booking.status == 1 ? "Chưa thanh toán" : "Cancel Booking")}
+				</td>
                 <td>${new Date(booking.time).toLocaleString()}</td>
+                <td>${booking.totalDiscount ? booking.totalDiscount.toLocaleString() + " VNĐ" : "Không có"}</td>
+                <td>${booking.paymentMethod || "Chưa cập nhật"}</td>
                 <td>
                     <div class="text-center">
                         <button data-id="${booking.bookingId}" class="detail-btn btn btn-info btn-sm mb-2" onclick="viewDetails(this)">Chi tiết booking</button>
                         <div class="d-flex justify-content-center">
-                            <button data-id="${booking.bookingId}" class="edit-btn btn btn-warning btn-sm me-1" onclick="showEditModal()">Sửa</button>
+							<button data-id="${booking.bookingId}" class="edit-btn btn btn-warning btn-sm me-1" onclick="showEditModal(event)">Sửa</button>
                             <button data-id="${booking.bookingId}" class="delete-btn btn btn-danger btn-sm ms-1" onclick="deleteBooking(this)" ${booking.status === 0 ? 'disabled' :'' }>Xóa</button>
                         </div>
                     </div>
@@ -61,6 +65,7 @@ function renderBookings(bookings) {
         tableContent.innerHTML += row; // Thêm hàng vào bảng
     });
 }
+
 
 // Hàm lấy tên khách hàng
 function fetchCustomerName(customerID, isEdit = false) { 
@@ -88,6 +93,21 @@ function fetchTourTimeName(tourTimeID, isEdit = false) {
     } else {
         tourNameInput.value = '';
     }
+}
+function clearFilters() {
+    // Xóa giá trị trong ô tìm kiếm
+    document.getElementById('searchInput').value = '';
+
+    // Đặt lại giá trị mặc định cho các bộ lọc select
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('priceFilter').value = '';
+
+    // Đặt lại giá trị cho các trường date
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+
+    // Gọi lại hàm lọc để cập nhật danh sách booking (nếu cần)
+    filterBookings();
 }
 function filterBookings() {
     // Lấy giá trị từ các phần tử trên form
@@ -271,7 +291,7 @@ function addBooking() {
         console.error('Lỗi khi thêm booking:', error);
     });
 }
-function showEditModal() {
+function showEditModal(event) {
     // Lấy thông tin của booking được chọn từ các button "Sửa"
     const bookingId = event.target.getAttribute('data-id');
     
@@ -280,18 +300,21 @@ function showEditModal() {
         .then(response => response.json())
         .then(data => {
             if (data) {
-				console.log(data);
+                console.log(data);
                 // Điền các giá trị của booking vào trong modal
-				document.getElementById('bookingId').value = data.booking.bookingId;
+                document.getElementById('bookingId').value = data.booking.bookingId;
                 document.getElementById('editCustomerID').value = data.booking.customer.customerId;
-				fetchCustomerName(data.booking.customer.customerId, true);
+                fetchCustomerName(data.booking.customer.customerId, true);
                 document.getElementById('editTourTimeID').value = data.booking.tourTime.tourTimeId;
-				fetchTourTimeName(data.booking.tourTime.tourTimeId, true);
+                fetchTourTimeName(data.booking.tourTime.tourTimeId, true);
                 document.getElementById('editAdultCount').value = data.booking.adultCount;
                 document.getElementById('editChildCount').value = data.booking.childCount;
                 document.getElementById('editTotalPrice').value = data.booking.totalPrice;
+                document.getElementById('editVoucherPrice').value = data.booking.voucherPrice || 0;  // Thêm voucherPrice vào đây
                 document.getElementById('editStatus').value = data.booking.status;
-                //document.getElementById('editBookingDate').value = new Date(data.time).toLocaleDateString();
+                document.getElementById('editBookingDate').value = new Date(data.booking.time).toISOString().slice(0, 16); // Định dạng datetime-local
+                document.getElementById('editTotalDiscount').value = data.booking.totalDiscount || 0;
+                document.getElementById('editPaymentMethod').value = data.booking.paymentMethod || '';
 
                 // Mở modal chỉnh sửa booking
                 const editModal = new bootstrap.Modal(document.getElementById('editModal'));
@@ -305,21 +328,15 @@ function showEditModal() {
             showAlert('danger', 'Lỗi khi tải thông tin booking!');
         });
 }
+
 function editBooking() {
-    // Lấy giá trị từ các trường trong form chỉnh sửa
-    const customerId = document.getElementById('editCustomerID').value;
-    const customerName = document.getElementById('editCustomerName').value;
-    const tourTimeId = document.getElementById('editTourTimeID').value;
-    const tourName = document.getElementById('editTourName').value;
-    const totalPrice = document.getElementById('editTotalPrice').value;
-    const adultCount = document.getElementById('editAdultCount').value;
-    const childCount = document.getElementById('editChildCount').value;
+    // Lấy giá trị chỉ từ các trường có thể chỉnh sửa
     const status = document.getElementById('editStatus').value;
-    //const bookingDate = document.getElementById('editBookingDate').value;
+    const paymentMethod = document.getElementById('editPaymentMethod').value;
 
     // Kiểm tra các trường bắt buộc
-    if (!customerId || !tourTimeId || !totalPrice || !adultCount || !childCount || !status) {
-        showAlert('danger', 'Vui lòng điền đầy đủ thông tin!');
+    if (!status || !paymentMethod) {
+        showAlert('danger', 'Vui lòng chọn đầy đủ thông tin!');
         return;
     }
 
@@ -331,17 +348,13 @@ function editBooking() {
 
     // Dữ liệu booking cần cập nhật
     const bookingData = {
-        customerId,
-        tourTimeId,
-        totalPrice,
-        adultCount,
-        childCount,
         status,
-        /*bookingDate*/
+        paymentMethod
     };
-	console.log(bookingData);
+    console.log(bookingData);
+
     // Gửi dữ liệu booking đã chỉnh sửa lên server
-    fetch(`/admin/bookings/edit/${bookingId}`, {
+    fetch(`/admin/bookings/edit/${document.getElementById('bookingId').value}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -364,6 +377,8 @@ function editBooking() {
         showAlert('danger', 'Lỗi khi chỉnh sửa booking!');
     });
 }
+
+
 
 // Hàm xem chi tiết booking
 function viewDetails(button) {
@@ -403,3 +418,52 @@ function deleteBooking(button) {
 
 // Khi DOM đã sẵn sàng, tải danh sách bookings
 document.addEventListener("DOMContentLoaded", fetchBookings);
+
+//----------------------------------------------------------------Detail----------------------------------------------------
+function viewDetails(button) {
+    // Lấy bookingId từ button
+    const bookingId = button.getAttribute('data-id');
+
+    // Gửi yêu cầu đến API
+    fetch(`/admin/booking-details/by-booking/${bookingId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                // Xóa nội dung cũ trong bảng
+                const tableBody = document.getElementById('bookingDetailTableBody');
+                tableBody.innerHTML = '';
+
+                // Thêm các hàng mới vào bảng
+                data.forEach((detail, index) => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${detail.bookingDetailId}</td>
+                        <td>${detail.detail}</td>
+                        <td>${detail.price.toLocaleString()} VNĐ</td>
+                        <td>${detail.status === 1 ? 'Đã xác nhận' : 'Chưa xác nhận'}</td>
+                        <td>${detail.booking.bookingId}</td>
+                        <td>${detail.customer.customerId}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+
+                // Hiển thị modal
+                const bookingDetailModal = new bootstrap.Modal(document.getElementById('bookingDetailModal'));
+                bookingDetailModal.show();
+            } else {
+                alert('Không tìm thấy chi tiết booking!');
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi khi tải chi tiết booking:', error);
+            alert('Đã xảy ra lỗi khi tải dữ liệu.');
+        });
+}
+
+
+
+
+

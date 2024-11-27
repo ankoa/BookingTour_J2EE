@@ -1,6 +1,8 @@
 package com.tourbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +42,7 @@ public class TransportDetail {
 
     @ManyToOne
     @JoinColumn(name = "transport_id", nullable = false, referencedColumnName = "transport_id")
+    @JsonManagedReference
     private Transport transport;
 }
 

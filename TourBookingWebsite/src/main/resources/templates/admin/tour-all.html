@@ -66,7 +66,7 @@
     <!-- Thông báo -->
     <div
       id="alert-container"
-      style="position: fixed; top: 20px; right: 20px; z-index: 1000"
+      style="position: fixed; top: 20px; right: 20px; z-index: 1000000"
     ></div>
 
     <div
@@ -174,70 +174,81 @@
           aria-labelledby="quan-ly-tour-tab"
         >
           <!-- Thanh Tìm Kiếm và Các Ô Select -->
-          <div class="filter-section mb-2">
-            <form id="searchForm" onsubmit="return false;">
-              <!-- Hàng chứa ô input tìm kiếm -->
-              <div class="row g-2 mb-2">
-                <div class="col-md-8 pt-1">
-                  <div class="input-group">
+<div class="filter-section mb-2">
+    <form id="searchForm" onsubmit="return false;">
+        <!-- Hàng chứa ô input tìm kiếm -->
+        <div class="row g-2 mb-2">
+            <div class="col-md-8 pt-1">
+                <div class="input-group">
                     <input
-                      type="text"
-                      id="searchInput"
-                      class="form-control border border-secondary"
-                      placeholder="Tìm kiếm theo ID, Tên, Mã Tour"
-                      aria-label="Search"
-                      oninput="filterTours()"
+                        type="text"
+                        id="searchInput"
+                        class="form-control border border-secondary"
+                        placeholder="Tìm kiếm theo ID, Tên, Mã Tour"
+                        aria-label="Search"
+                        oninput="filterTours()"
                     />
                     <button
-                      type="button"
-                      class="btn btn-primary"
-                      onclick="filterTours()"
+                        type="button"
+                        class="btn btn-primary btnsearchtour"
+                        onclick="filterTours()"
                     >
-                      Tìm kiếm
+                        Tìm kiếm
                     </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Hàng chứa các ô select và nút Thêm Tour Mới -->
-              <div class="row g-2 align-items-center">
-                <div class="col-md-5 d-flex">
-                  <div class="col-md-4">
-                    <select
-                      id="statusSelect"
-                      class="form-select"
-                      onchange="filterTours()"
-                    >
-                      <option value="">Chọn Trạng Thái</option>
-                      <option value="1">Kích hoạt</option>
-                      <option value="0">Ngưng hoạt động</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6 ms-2">
-                    <select
-                      id="categorySelect"
-                      class="form-select"
-                      onchange="filterTours()"
-                    >
-                      <option value="">Chọn Loại Tour</option>
-                      <!-- Dữ liệu sẽ được tải động từ API -->
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-7 text-end">
-                  <div class="add-tour-btn text-end">
+                    <!-- Nút Clear bên cạnh nút Tìm kiếm -->
                     <button
-                      class="btn btn-success"
-                      data-bs-toggle="modal"
-                      data-bs-target="#addTourModal"
+                        type="button"
+                        id="clearbtnTour"
+                        class="btn btn-secondary ms-2"
+                        onclick="clearFormSearch()"
                     >
-                      Thêm Tour Mới
+                        Clear
                     </button>
-                  </div>
                 </div>
-              </div>
-            </form>
-          </div>
+            </div>
+        </div>
+
+        <!-- Hàng chứa các ô select và nút Thêm Tour Mới -->
+        <div class="row g-2 align-items-center">
+            <div class="col-md-5 d-flex">
+                <div class="col-md-4">
+                    <select
+                        id="statusSelect"
+                        class="form-select"
+                        onchange="filterTours()"
+                    >
+                        <option value="">Chọn Trạng Thái</option>
+                        <option value="1">Kích hoạt</option>
+                        <option value="0">Ngưng hoạt động</option>
+                    </select>
+                </div>
+                <div class="col-md-6 ms-2">
+                    <select
+                        id="categorySelect"
+                        class="form-select"
+                        onchange="filterTours()"
+                    >
+                        <option value="">Chọn Loại Tour</option>
+                        <!-- Dữ liệu sẽ được tải động từ API -->
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-7 text-end">
+                <div class="add-tour-btn text-end">
+                    <button
+                        class="btn btn-success"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addTourModal"
+                    >
+                        Thêm Tour Mới
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
 
           <!-- Bảng hiển thị danh sách Tour -->
           <div class="table-container">
@@ -579,55 +590,64 @@
   role="tabpanel"
   aria-labelledby="loai-tour-tab"
 >
-  <div class="row filterCategory-section mb-3 pt-1">
-    <!-- Hàng 1: Tìm kiếm -->
-    <div class="row g-2">
-      <div class="col-md-8">
-        <div class="input-group">
-          <input
-            type="text"
-            id="searchInputCategory"
-            class="form-control border border-secondary"
-            placeholder="Tìm kiếm theo ID, Tên Loại Tour"
-            aria-label="Search"
-            oninput="filterCategories()"
-          />
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="filterCategories()"
-          >
-            Tìm kiếm
-          </button>
-        </div>
+<div class="row filterCategory-section mb-3 pt-1 px-5"> 
+  <!-- Hàng 1: Tìm kiếm -->
+  <div class="row g-2">
+    <div class="col-md-8">
+      <div class="input-group">
+        <input
+          type="text"
+          id="searchInputCategory"
+          class="form-control border border-secondary"
+          placeholder="Tìm kiếm theo ID, Tên Loại Tour"
+          aria-label="Search"
+          oninput="filterCategories()"
+        />
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="filterCategories()"
+        >
+          Tìm kiếm
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Hàng 2: Nút Thêm và Lọc -->
-<div class="row g-2 mb-2 align-items-center">
-  <!-- Bộ lọc trạng thái và nút thêm -->
-  <div class="d-flex justify-content-between">
-    <!-- Bộ lọc trạng thái -->
-    <div class="col-md-2">
-      <select id="statusFilter" class="form-select" onchange="filterCategories()">
-        <option value="">Tất cả</option>
-        <option value="1">Kích hoạt</option>
-        <option value="0">Ngưng hoạt động</option>
-      </select>
-    </div>
+  <!-- Hàng 2: Nút Thêm và Lọc -->
+  <div class="row g-2 mb-2 align-items-center">
+    <!-- Bộ lọc trạng thái và nút thêm -->
+    <div class="d-flex justify-content-between align-items-center">
+      <!-- Bộ lọc trạng thái -->
+      <div class="d-flex">
+        <select id="statusFilter" class="form-select me-2" onchange="filterCategories()">
+          <option value="">Tất cả</option>
+          <option value="1">Kích hoạt</option>
+          <option value="0">Ngưng hoạt động</option>
+        </select>
+        <button
+          type="button"
+          id="btnClearStatusFilter"
+          class="btn btn-secondary"
+        >
+          Clear
+        </button>
+      </div>
 
-    <!-- Nút thêm -->
-    <div>
-      <button
-        class="btn btn-success"
-        data-bs-toggle="modal"
-        data-bs-target="#addCategoryModal"
-      >
-        Thêm Loại Tour Mới
-      </button>
+      <!-- Nút thêm -->
+      <div>
+        <button
+          class="btn btn-success"
+          data-bs-toggle="modal"
+          data-bs-target="#addCategoryModal"
+        >
+          Thêm Loại Tour Mới
+        </button>
+      </div>
     </div>
   </div>
 </div>
+
 
 
 
@@ -808,84 +828,96 @@
   role="tabpanel"
   aria-labelledby="lich-trinh-tour-tab"
 >
-  <div class="row filterTourTime-section mb-3 pt-1">
-    <!-- Hàng 1: Tìm kiếm -->
-    <div class="row g-2">
-      <div class="col-md-8">
-        <div class="input-group">
-          <input
-            type="text"
-            id="searchInputTourTime"
-            class="form-control border border-secondary"
-            placeholder="Tìm kiếm theo ID, Tên, Mã Tour Time"
-            aria-label="Search"
-            oninput="filterTourTimes()"
-          />
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="filterTourTimes()"
-          >
-            Tìm kiếm
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Hàng 2: Các bộ lọc và nút Thêm -->
-    <div class="row g-2 mb-2 filtertourtime align-items-center">
-      <!-- ComboBox TourID -->
-		<div class="col-md-2">
-		    <select id="tourIdSelect" class="form-select" onchange="filterTourTimes()">
-		        <option value="">Chọn Tour ID</option>
-		    </select>
-		</div>
-
-      <!-- ComboBox Trạng thái -->
-      <div class="col-md-2">
-        <select id="statusSelectTourTime" class="form-select" onchange="filterTourTimes()">
-          <option value="">Chọn Trạng Thái</option>
-          <option value="1">Hoạt động</option>
-          <option value="0">Ngưng hoạt động</option>
-        </select>
-      </div>
-
-      <!-- ComboBox Khoảng giá -->
-      <div class="col-md-3">
-        <select id="priceFilter" class="form-select" onchange="filterTourTimes()">
-          <option value="">Chọn khoảng giá</option>
-          <option value="100000">Dưới 100,000 VNĐ</option>
-          <option value="100000-500000">Từ 100,000 đến 500,000 VNĐ</option>
-          <option value="500000-1000000">Từ 500,000 đến 1,000,000 VNĐ</option>
-          <option value="1000000-5000000">Từ 1,000,000 đến 5,000,000 VNĐ</option>
-          <option value="5000000+">Trên 5,000,000 VNĐ</option>
-        </select>
-      </div>
-
-      <!-- Ô nhập Ngày đi -->
-      <div class="col-md-2">
+<div class="row filterTourTime-section mb-3 pt-1">
+  <!-- Hàng 1: Tìm kiếm -->
+  <div class="row g-2">
+    <div class="col-md-10">
+      <div class="input-group">
         <input
-          type="date"
-          id="startDate"
-          class="form-control"
-          onchange="filterTourTimes()"
+          type="text"
+          id="searchInputTourTime"
+          class="form-control border border-secondary"
+          placeholder="Tìm kiếm theo ID, Tên, Mã Tour Time"
+          aria-label="Search"
+          oninput="filterTourTimes()"
         />
-      </div>
-
-      <div class="col-md-1"></div>
-
-      <!-- Nút Thêm -->
-      <div class="col-md-2 text-end">
         <button
-          class="btn btn-success w-100"
-          data-bs-toggle="modal"
-          data-bs-target="#addTourTimeModal"
+          type="button"
+          class="btn btn-primary btnsearchtourTime"
+          onclick="filterTourTimes()"
         >
-          Thêm Tour Time Mới
+          Tìm kiếm
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary ms-2"
+          id="btnClearTourTime"
+        >
+          Clear
         </button>
       </div>
     </div>
   </div>
+
+  <!-- Hàng 2: Các bộ lọc và nút Thêm -->
+  <div class="row g-2 mb-2 filtertourtime align-items-center">
+    <!-- ComboBox TourID -->
+    <div class="col-md-2">
+      <select id="tourIdSelect" class="form-select" onchange="filterTourTimes()">
+        <option value="">Chọn Tour ID</option>
+      </select>
+    </div>
+
+    <!-- ComboBox Trạng thái -->
+    <div class="col-md-2">
+      <select
+        id="statusSelectTourTime"
+        class="form-select"
+        onchange="filterTourTimes()"
+      >
+        <option value="">Chọn Trạng Thái</option>
+        <option value="1">Hoạt động</option>
+        <option value="0">Ngưng hoạt động</option>
+      </select>
+    </div>
+
+    <!-- ComboBox Khoảng giá -->
+    <div class="col-md-3">
+      <select id="priceFilter" class="form-select" onchange="filterTourTimes()">
+        <option value="">Chọn khoảng giá</option>
+        <option value="100000">Dưới 100,000 VNĐ</option>
+        <option value="100000-500000">Từ 100,000 đến 500,000 VNĐ</option>
+        <option value="500000-1000000">Từ 500,000 đến 1,000,000 VNĐ</option>
+        <option value="1000000-5000000">Từ 1,000,000 đến 5,000,000 VNĐ</option>
+        <option value="5000000+">Trên 5,000,000 VNĐ</option>
+      </select>
+    </div>
+
+    <!-- Ô nhập Ngày đi -->
+    <div class="col-md-2">
+      <input
+        type="date"
+        id="startDate"
+        class="form-control"
+        onchange="filterTourTimes()"
+      />
+    </div>
+
+    <div class="col-md-1"></div>
+
+    <!-- Nút Thêm -->
+    <div class="col-md-2 text-end">
+      <button
+        class="btn btn-success w-100"
+        data-bs-toggle="modal"
+        data-bs-target="#addTourTimeModal"
+      >
+        Thêm Tour Time Mới
+      </button>
+    </div>
+  </div>
+</div>
+
   <!-- Hàng 3: Nút Thêm -->
 
 
@@ -967,6 +999,173 @@
     </div>
   </div>
 </div>
+<!-- Modal Thêm Phương Tiện -->
+<div class="modal fade" id="transportModal" tabindex="-1" aria-labelledby="transportModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="transportModalLabel" style="font-size: 1.2rem;">Thêm Phương Tiện Cho Tour</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form chọn mã phương tiện -->
+        <form id="addTransportForm" onsubmit="addTransport(); return false;">
+          <input type="hidden" id="tourTimeId" name="tourTimeId" value=""> <!-- Thêm trường tourTimeId ẩn -->
+
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label for="transportId" class="form-label">Chọn Mã Phương Tiện</label>
+              <select id="transportId" class="form-select" required>
+                <option value="" disabled selected>-- Chọn phương tiện --</option>
+                <!-- Các phương tiện sẽ được thêm vào đây bằng JavaScript -->
+              </select>
+            </div>
+          </div>
+
+          
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="departureDate" class="form-label">Ngày khởi hành</label>
+              <input type="date" id="departureDate" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label for="departureHour" class="form-label">Giờ khởi hành</label>
+              <select id="departureHour" class="form-select" required>
+                <option value="" disabled selected>-- Chọn giờ --</option>
+                <!-- Thêm các giờ vào đây bằng JavaScript -->
+                <option value="00">00</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="departureMinute" class="form-label">Phút khởi hành</label>
+              <select id="departureMinute" class="form-select" required>
+                <option value="" disabled selected>-- Chọn phút --</option>
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+              </select>
+            </div>
+          </div>
+<div class="row mb-3">
+            <div class="col-md-6">
+              <label for="arrivalDate" class="form-label">Ngày đến</label>
+              <input type="date" id="arrivalDate" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label for="arrivalHour" class="form-label">Giờ đến</label>
+              <select id="arrivalHour" class="form-select" required>
+                <option value="" disabled selected>-- Chọn giờ --</option>
+                <!-- Thêm các giờ vào đây bằng JavaScript -->
+                <option value="00">00</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="arrivalMinute" class="form-label">Phút đến</label>
+              <select id="arrivalMinute" class="form-select" required>
+                <option value="" disabled selected>-- Chọn phút --</option>
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+              </select>
+            </div>
+          </div>
+          <!-- Trạng thái -->
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label for="status" class="form-label">Trạng thái</label>
+              <select id="status" class="form-select" required>
+                <option value="" disabled selected>-- Chọn trạng thái --</option>
+                <option value="1">Hoạt động</option>
+                <option value="0">Không hoạt động</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Nút Thêm Phương Tiện -->
+          <div class="row mb-3">
+            <div class="col-md-12 text-end">
+              <button type="button" id="addtransport" class="btn btn-primary w-100">Thêm Phương Tiện</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Bảng các phương tiện đã chọn -->
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Mã Phương Tiện</th>
+                <th scope="col">Tên Phương Tiện</th>
+                <th scope="col">Thời gian đến</th>
+                <th scope="col">Thời gian khởi hành</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Hành Động</th>
+              </tr>
+            </thead>
+            <tbody id="selectedTransports">
+              <!-- Các phương tiện đã chọn sẽ được thêm vào đây bằng JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 
 <!-- Modal Thêm Tour Time -->
@@ -1145,6 +1344,7 @@
   </div>
 </div>
 
+</div>
 
     
     
@@ -1241,7 +1441,7 @@ function showTourTimes(tourId) {
 	      console.error('Error fetching tour times:', error);
 	    });
 	}
-function filterTourTimes() { 
+function filterTourTimes() {
     const searchInput = document.getElementById("searchInputTourTime").value.toLowerCase(); // Lấy giá trị tìm kiếm
     const tourIdFilter = document.getElementById("tourIdSelect").value; // Lọc theo Tour ID
     const statusFilter = document.getElementById("statusSelectTourTime").value; // Lọc theo trạng thái
@@ -1249,14 +1449,25 @@ function filterTourTimes() {
     const startDateFilter = document.getElementById("startDate").value; // Lọc theo ngày đi
     const tableRows = document.querySelectorAll("#tourTimeTableBodyMain tr"); // Lấy tất cả các dòng của bảng
 
-    console.log("Tìm kiếm: ", searchInput);  // Kiểm tra giá trị tìm kiếm
+    // Hàm chuyển đổi định dạng ngày từ "1/2/2024, 9:49:32 PM" thành "yyyy-mm-dd"
+    function formatDateToYYYYMMDD(dateString) {
+        const date = new Date(dateString); // Chuyển đổi chuỗi thành đối tượng Date
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng trong JavaScript bắt đầu từ 0
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`; // Trả về định dạng yyyy-mm-dd
+    }
+
     tableRows.forEach((row) => {
         const tourTimeID = row.cells[0].innerText.toLowerCase(); // Cột ID Tour Time
         const tourTimeName = row.cells[1].innerText.toLowerCase(); // Cột Tên Tour Time
         const tourID = row.cells[2].innerText.toLowerCase(); // Cột ID Tour
-        const departureTime = row.cells[3].innerText.toLowerCase(); // Cột Ngày đi
+        const departureTime = row.cells[3].innerText.toLowerCase(); // Cột Ngày đi (ví dụ: "1/2/2024, 9:49:32 PM")
         const price = row.cells[4].innerText.toLowerCase(); // Cột Giá
         const status = row.cells[6].innerText.toLowerCase().trim(); // Cột Trạng Thái
+
+        // Chuyển đổi departureTime thành định dạng yyyy-mm-dd
+        const formattedDepartureTime = formatDateToYYYYMMDD(departureTime);
 
         // Kiểm tra các điều kiện tìm kiếm
         const matchesSearch =
@@ -1269,7 +1480,7 @@ function filterTourTimes() {
             (statusFilter === "0" && status === "ngưng hoạt động");
 
         const matchesPrice = !priceFilter || checkPriceRange(price, priceFilter);  // Hàm checkPriceRange chưa được cung cấp, cần phải xác định thêm
-        const matchesStartDate = !startDateFilter || departureTime.includes(startDateFilter);
+        const matchesStartDate = !startDateFilter || formattedDepartureTime.includes(startDateFilter); // So sánh ngày sau khi chuyển đổi
 
         // Kiểm tra điều kiện lọc và ẩn/hiện các dòng tương ứng
         if (
@@ -1285,6 +1496,7 @@ function filterTourTimes() {
         }
     });
 }
+
 
 
 
@@ -1351,9 +1563,7 @@ function checkPriceRange(price, priceFilter) {
         });
       }
     </script>
-    <script src="/admin/js/tour.js"></script>
-    <script src="/admin/js/imageModal.js"></script>
-    <script src="/admin/js/tourTime.js"></script>
+
     <!------------------------ category -->
     <script>
     function loadCategories() {
@@ -1566,6 +1776,16 @@ function checkPriceRange(price, priceFilter) {
             console.error('Phần tử alert-container không tồn tại.');
         }
     }
+    document.getElementById('btnClearStatusFilter').addEventListener('click', function () {
+    	  // Clear input tìm kiếm
+    	  document.getElementById('searchInputCategory').value = '';
+
+    	  // Reset giá trị của select trạng thái
+    	  document.getElementById('statusFilter').value = '';
+
+    	  // Gọi lại hàm lọc để hiển thị tất cả danh mục
+    	  loadCategories();
+    	});
 
     function clearFormSearch() {
 	    // Xóa nội dung ô input tìm kiếm
@@ -1576,6 +1796,8 @@ function checkPriceRange(price, priceFilter) {
 	}
     </script>
     
-    
+        <script src="/admin/js/tour.js"></script>
+    <script src="/admin/js/imageModal.js"></script>
+    <script src="/admin/js/tourTime.js"></script>
   </body>
 </html>

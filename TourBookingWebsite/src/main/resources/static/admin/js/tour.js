@@ -113,7 +113,7 @@
 				        <!-- Ô 2: Ảnh Tour -->
 				        <div class="col-6">
 				            <button class="btn btn-primary btn-sm w-100" onclick="viewTourImage(${tour.tourId})">
-				                <i class="fas fa-image"></i> Ảnh
+				                <i class="fas fa-image"></i>Ảnh
 				            </button>
 				        </div>
 				    </div>
@@ -151,6 +151,18 @@
 	        });
 	    });
 	}
+	function clearFilters() {
+	    // Đặt lại giá trị ô tìm kiếm
+	    document.getElementById("searchInput").value = "";
+
+	    // Đặt lại giá trị của các ô select
+	    document.getElementById("statusSelect").value = "";
+	    document.getElementById("categorySelect").value = "";
+
+	    // Gọi lại hàm lọc để cập nhật bảng khi các bộ lọc được làm sạch
+	    filterTours();
+	}
+
 	function viewTourImage(tourId) {
 	    // Gọi API để lấy hình ảnh từ backend
 	    fetch(`/api/tour-images/${tourId}`)
@@ -452,7 +464,12 @@
 	        showAlert('danger', 'Có lỗi xảy ra. Vui lòng thử lại.'); // Hiển thị thông báo lỗi
 	    });
 	};
-	
+
+	document.getElementById('clearbtnTour').addEventListener('click', function () {
+	    clearFormSearch(); // Gọi hàm clearFormSearch
+		fetchTours();
+	});
+
 	function clearFormSearch() {
 	    // Xóa nội dung ô input tìm kiếm
 	    document.getElementById('searchInput').value = '';

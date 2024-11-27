@@ -124,7 +124,7 @@ public class AccountControllerAdmin {
             newAccount.setEmail(email);
             newAccount.setStatus(status);
             newAccount.setCustomer(customer); // Gán khách hàng vào tài khoản
-
+            newAccount.setRole("ROLE_USER");
             // Mã hóa mật khẩu trước khi lưu
             //String encodedPassword = passwordEncoder.encode(password); // Sử dụng PasswordEncoder để mã hóa
             newAccount.setPassword(password); // Thiết lập mật khẩu đã mã hóa

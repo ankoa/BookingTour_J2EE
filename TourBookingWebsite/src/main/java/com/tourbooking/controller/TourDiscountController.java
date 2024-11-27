@@ -72,7 +72,7 @@ public class TourDiscountController {
     }
 
     // Xóa mã giảm giá
-    @DeleteMapping("/{tourTimeId}/{discountId}")
+    @DeleteMapping("/deleteTuorDiscount/{tourTimeId}/{discountId}")
     public ResponseEntity<Void> deleteTourDiscount(@PathVariable int tourTimeId, @PathVariable int discountId) {
         tourDiscountService.deleteTourDiscount(tourTimeId, discountId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

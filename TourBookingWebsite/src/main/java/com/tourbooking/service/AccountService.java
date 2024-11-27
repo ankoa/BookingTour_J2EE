@@ -102,30 +102,53 @@ public class AccountService {
     }
 
 
-    // Thêm tài khoản mới
     public boolean addAccount(Account account) {
         try {
-            accountRepository.save(account); // Lưu tài khoản mới
+            // Kiểm tra nếu mật khẩu chưa được mã hóa
+            if (!account.getPassword().startsWith("$2a$")) { // Kiểm tra định dạng của BCrypt
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                account.setPassword(passwordEncoder.encode(account.getPassword())); // Mã hóa mật khẩu
+            }
+
+            // Lưu tài khoản mới
+            accountRepository.save(account);
             return true; // Trả về true nếu thêm thành công
         } catch (Exception e) {
             // Ghi log lỗi nếu cần
+            e.printStackTrace();
             return false; // Trả về false nếu có lỗi xảy ra
         }
     }
 
-    // Cập nhật tài khoản
     public boolean updateAccount(Account account) {
-        // Tìm tài khoản theo ID
-        Account existingAccount = accountRepository.findById(account.getAccountId()).orElse(null);
-        if (existingAccount != null) {
-            // Cập nhật thông tin tài khoản
-            existingAccount.setAccountName(account.getAccountName());
-            existingAccount.setEmail(account.getEmail());
-            existingAccount.setStatus(account.getStatus());
-            accountRepository.save(existingAccount);
-            return true;
+        try {
+            // Tìm tài khoản theo ID
+            Account existingAccount = accountRepository.findById(account.getAccountId()).orElse(null);
+            if (existingAccount != null) {
+                // Cập nhật các thông tin khác
+                existingAccount.setAccountName(account.getAccountName());
+                existingAccount.setEmail(account.getEmail());
+                existingAccount.setStatus(account.getStatus());
+                
+                // Kiểm tra nếu mật khẩu được thay đổi
+                if (account.getPassword() != null && !account.getPassword().isEmpty()) {
+                    // Nếu mật khẩu chưa mã hóa, thực hiện mã hóa
+                    if (!account.getPassword().startsWith("$2a$")) { // Kiểm tra định dạng của BCrypt
+                        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                        existingAccount.setPassword(passwordEncoder.encode(account.getPassword())); // Mã hóa mật khẩu
+                    }
+                }
+
+                // Lưu thông tin cập nhật
+                accountRepository.save(existingAccount);
+                return true;
+            }
+            return false; // Tài khoản không tồn tại
+        } catch (Exception e) {
+            // Ghi log lỗi nếu cần
+            e.printStackTrace();
+            return false; // Xảy ra lỗi
         }
-        return false; // Tài khoản không tồn tại
     }
 
     // Vô hiệu hóa tài khoản bằng cách cập nhật status thành 0
