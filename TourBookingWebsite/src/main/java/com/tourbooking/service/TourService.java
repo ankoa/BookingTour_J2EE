@@ -130,7 +130,7 @@ public class TourService {
         List<TourImage> tourImages =tourImageRepository.findByTour_TourIdAndStatus(
                 tour.getTourId(),
                 status,
-                Sort.by(Sort.Direction.ASC, "id"));
+                Sort.by(Sort.Direction.ASC, "imageId"));
         List<TourImageResponse> tourImageResponses = tourImages.stream()
                 .map(tourImage ->new TourImageResponse(
                         tourImage.getImageId(),
@@ -143,7 +143,7 @@ public class TourService {
         List<TourTime> tourTimes=tourTimeRepository.findByTour_TourIdAndStatus(
                 tour.getTourId(),
                 status,
-                Sort.by(Sort.Direction.ASC, "id")
+                Sort.by(Sort.Direction.ASC, "tourTimeId")
                 );
 
         List<TourTimeResponse> tourTimeResponses = tourTimes.stream()

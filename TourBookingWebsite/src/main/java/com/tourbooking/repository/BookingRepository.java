@@ -27,11 +27,12 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     int deactivateBooking(@Param("bookingId") Integer id);
 
 
-    Page<Booking> findAll(Pageable pageable);
-    
-    
-    
-    
+    Page<Booking> findByCustomer_CustomerIdAndStatus(int customerId,int status,Pageable pageable);
+
+    Page<Booking> findByCustomer_CustomerId(int customerId,Pageable pageable);
+
+    List<Booking> findByCustomer_CustomerId(int customerId);
+
     @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m') AS month, SUM(d.price) AS revenue " +
             "FROM booking_detail d " +
             "JOIN booking b ON d.booking_id = b.booking_id " +

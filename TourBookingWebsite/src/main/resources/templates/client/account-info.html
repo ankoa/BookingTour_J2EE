@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<th:block th:replace="client/header :: header"></th:block>
+
+<body>
+<div id="wrapper" class="container">
+    <div th:replace="client/navbar :: navbar"></div>
+
+    <script th:inline="javascript">
+        const tourTimes = /*[[${bookingResponses}]]*/ {};
+        console.log(tourTimes)
+    </script>
+    <main id="main">
+        <div class="rounded p-4 p-sm-5 my-4 mx-3" style="box-shadow: 0 0 10px 0 hsla(0, 0%, 9%, .12);">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-floating mb-3">
+                        <input disabled type="text" class="form-control" id="username" placeholder="Tên đăng nhập"
+                               pattern=".{1,255}" th:value="${user.account.accountName}">
+                        <label for="username">Tên đăng nhập <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Vui lòng nhập tên đăng nhập.</div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-floating mb-3">
+                        <input disabled type="email" class="form-control" id="email" placeholder="Email" pattern=".{1,255}"
+                               th:value="${user.account.email}">
+                        <label for="email">Email <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="password" placeholder="Mật khẩu"
+                               pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,255}$" required>
+                        <label for="password">Mật khẩu <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Mật khẩu phải tối thiểu 8 ký tự, ít nhất 1 chữ cái và 1 số.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-floating mb-3">
+                        <input  type="password" class="form-control" id="cf-password" placeholder="Xác nhận mật khẩu"
+                               required="">
+                        <label for="cf-password">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Mật khẩu xác nhận không khớp.</div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-floating mb-3">
+                        <input  type="text" class="form-control" id="full-name" placeholder="Họ tên" pattern=".{1,15}"
+                               th:value="${user.account.customer.customerName}">
+                        <label for="full-name">Họ tên <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Vui lòng nhập họ tên.</div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-floating mb-3">
+                        <input  type="text" class="form-control" id="phone" placeholder="Số điện thoại"
+                               pattern="0[0-9]{9}" th:value="${user.account.customer.phoneNumber}">
+                        <label for="phone">Số điện thoại <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ.</div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input  type="text" class="form-control" id="address" placeholder="Địa chỉ" pattern=".{0,255}"
+                               th:value="${user.account.customer.address}">
+                        <label for="address">Địa chỉ</label>
+                        <div class="invalid-feedback">Địa chỉ không quá 255 ký tự!</div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-floating mb-4">
+                        <input type="date" class="form-control" id="birthday" placeholder="Ngày sinh" required=""
+                               max="2024-11-27" th:value="${#dates.format(user.account.customer.birthday, 'yyyy-MM-dd')}">
+                        <label for="birthday">Ngày sinh <span class="text-danger">*</span></label>
+                        <div class="invalid-feedback">Vui lòng nhập ngày sinh.</div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-group mb-4">
+                        <label for="sex" class="col-sm-2 control-label w-100">Giới tính</label>
+                        <select class="form-select" name="sex" id="sex" required="">
+                            <option value="">Chọn giới tính</option>
+                            <option value="1" th:selected="${user.account.customer.sex == 1}">Nam</option>
+                            <option value="0" th:selected="${user.account.customer.sex == 0}">Nữ</option>
+                        </select>
+                        <div class="invalid-feedback">Vui lòng chọn giới tính.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary py-3 w-25 justify-content-end ">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+        <h3 class="justify-content-center">Chương trình tour đã đặt</h3>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Mã đặt tour</th>
+                <th>Mã Lịch trình</th>
+                <th>SL</th>
+                <th>Ngày đặt tour</th>
+                <th>Phương thức thanh toán</th>
+                <th>Trạng thái</th>
+                <th>..</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="bookingResponse : ${bookingResponses}">
+                <td th:text="${bookingResponse.bookingId}"></td>
+                <td th:text="${bookingResponse.tourTimeResponse.tourTimeCode}"></td>
+                <td th:text="${bookingResponse.adultCount+bookingResponse.childCount}"></td>
+                <td th:text="${bookingResponse.time}"></td>
+                <td th:text="${bookingResponse.paymentMethod}"></td>
+                <td th:text="${bookingResponse.status==0?'Đã hủy':(bookingResponse.status==1?'Chưa thanh toán':'Đã thanh toán')}"></td>
+                <td><a th:href="@{/booking/{bookingId}(bookingId=${bookingResponse.bookingId})}">Chi Tiết</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <div th:replace="client/footer::footer"></div>
+
+</div>
+
+</body>
+
+</html>
