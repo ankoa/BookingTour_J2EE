@@ -31,13 +31,14 @@ public class MomoConfig {
 
 
     public Map<String, String> getMomoConfig(int orderId) {
+        Date currentDate = new Date();
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("accessKey",this.accessKey);
         paramsMap.put("partnerCode",this.partnerCode);
         paramsMap.put("redirectUrl",this.redirectUrl);
         paramsMap.put("requestType",this.requestType);
-        paramsMap.put("requestId",this.partnerCode+ (new Date()).getTime());
-        paramsMap.put("orderInfo", orderId+( new Date()).getTime()+"");
+        paramsMap.put("requestId",this.partnerCode+ currentDate.getTime()+orderId);
+        paramsMap.put("orderInfo", orderId+currentDate.getTime()+"");
         paramsMap.put("orderId", orderId+"");
         paramsMap.put("ipnUrl", this.ipnUrl);
         paramsMap.put("extraData", this.extraData);

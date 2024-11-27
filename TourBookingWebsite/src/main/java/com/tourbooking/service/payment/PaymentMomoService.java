@@ -82,7 +82,12 @@ public class PaymentMomoService {
 
         // Tạo payload request body
         Map<String, String> requestBody = momoConfig.getMomoConfig(booking.getBookingId());
-        requestBody.put("amount", String.valueOf(amount));
+
+        // if the value is greater than 50  then decrease 
+        while (amount>50000000) {
+            amount=amount/10;
+        }
+        requestBody.put("amount", amount+"");
         requestBody.put("orderInfo", "Payment for order " + booking.getBookingId());
         requestBody.put("requestId", String.valueOf(System.currentTimeMillis()));
 
