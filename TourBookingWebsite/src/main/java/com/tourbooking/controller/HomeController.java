@@ -136,14 +136,14 @@ public class HomeController {
         return "client/payment-fail.html";
     }
 
+    @GetMapping("/account-info")
+    public  String getMyInfo(Model model,
+                            @AuthenticationPrincipal CustomUserDetails user) {
+        if (user == null) return "redirect:/account-login";
+        List<BookingResponse> bookingResponses = bookingService.getBookingResponses(user.getAccount(), null, 0, 5);
+        model.addAttribute("user", user);
+        model.addAttribute("bookingResponses", bookingResponses);
+    
+        return "client/account-info";
 }
-@GetMapping("/account-info")
-public String getMyInfo(Model model,
-                        @AuthenticationPrincipal CustomUserDetails user) {
-    if (user == null) return "redirect:/account-login";
-    List<BookingResponse> bookingResponses = bookingService.getBookingResponses(user.getAccount(), null, 0, 5);
-    model.addAttribute("user", user);
-    model.addAttribute("bookingResponses", bookingResponses);
-
-    return "client/account-info";
 }
