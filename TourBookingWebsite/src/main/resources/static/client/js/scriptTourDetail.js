@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <p>Mã Tour: ${tourTime.tourTimeCode}</p>
         <p>Khởi hành tại: ${tourTime.transportResponses[0] ? tourTime.transportResponses[0].departureLocation : "Đang cập nhật"}</p>
         <p>Ngày Khởi hành: ${(new Date(tourTime.departureTime)).toLocaleString('vn-VN', {  timeZone: 'UTC',})}</p>
-        <p>Thời gian: ${tourTime.dayStay}</p>
+        <p>Thời gian: ${tourTime.dayStay}N${tourTime.dayStay-1}D</p>
         <p>Số chỗ còn lại: ${tourTime.remainPax<=0?"Hết ":tourTime.remainPax} chỗ</p>
         <div class="book">
             <p>Giá bán: `;

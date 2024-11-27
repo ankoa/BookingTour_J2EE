@@ -1,4 +1,4 @@
-package com.tourbooking.VNPay.util;
+package com.tourbooking.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class VNPayUtil {
+public class PaymentUtils {
     public static String hmacSHA512(final String key, final String data) {
         try {
             if (key == null || data == null) {
@@ -31,6 +31,34 @@ public class VNPayUtil {
         } catch (Exception ex) {
             return "";
         }
+    }
+
+    public static String hmacSHA256(String secretKey, String data) {
+        try {
+            Mac mac = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+            mac.init(secretKeySpec);
+            byte[] hash = mac.doFinal(data.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to calculate HMAC-SHA256", e);
+        }
+    }
+
+    public static String buildRawSignature(Map<String, String> params) {
+        StringBuilder rawSignature = new StringBuilder();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            rawSignature.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+        return rawSignature.substring(0, rawSignature.length() - 1);
     }
 
     public static String getIpAddress(HttpServletRequest request) {
@@ -65,7 +93,7 @@ public class VNPayUtil {
                                 StandardCharsets.US_ASCII)
                                 : entry.getKey()) + "=" +
                                 URLEncoder.encode(entry.getValue()
-                                , StandardCharsets.US_ASCII))
+                                        , StandardCharsets.US_ASCII))
                 .collect(Collectors.joining("&"));
     }
 }

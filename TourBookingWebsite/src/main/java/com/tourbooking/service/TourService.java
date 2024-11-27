@@ -1,6 +1,9 @@
 package com.tourbooking.service;
+
+import com.tourbooking.dto.response.FindTourResponse;
 import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.dto.response.TourResponse;
+import com.tourbooking.mapper.FindTourMapper;
 import com.tourbooking.model.Tour;
 import com.tourbooking.model.TourImage;
 import com.tourbooking.model.TourTime;
@@ -11,12 +14,17 @@ import com.tourbooking.mapper.TransportMapper;
 import com.tourbooking.model.*;
 import com.tourbooking.repository.TourRepository;
 import com.tourbooking.repository.TourTimeRepository;
+import com.tourbooking.specification.TourSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -35,6 +43,9 @@ public class TourService {
     TourMapper tourMapper;
 
     @Autowired
+    FindTourMapper findTourMapper;
+
+    @Autowired
     TransportMapper transportMapper;
 
     @Autowired
@@ -50,6 +61,7 @@ public class TourService {
     public Tour getTourById(String id) {
         return tourRepository.findById(Integer.parseInt(id)).orElse(null);
     }
+
     public Optional<Tour> getTourByIdInt(int id) {
         return tourRepository.findById(id);
     }
@@ -100,25 +112,50 @@ public class TourService {
     }
 
 
-    public TourResponse getTourResponse(String id,Integer status) {
+    public TourResponse getTourResponse(String id, Integer status) {
         Tour tour = tourRepository.findById(
                 Integer.parseInt(id)).orElseThrow(() -> new IllegalArgumentException(
                 "Không tìm thấy tour với ID: " + id
         ));
 
-        if (status != null && tour.getStatus() !=status)  return null;
+        if (status != null && tour.getStatus() != status) return null;
         TourResponse tourResponse = tourMapper.toTourResponse(tour);
 
         List<TourTimeResponse> tourTimeResponses = new ArrayList<>();
         for (TourTime tourTime : tour.getTourTimes()) {
             if (status != null && tourTime.getStatus() != status) continue;
 
-            TourTimeResponse tourTimeResponse = tourTimeService.toTourTimeResponse(tourTime,status);
+            TourTimeResponse tourTimeResponse = tourTimeService.toTourTimeResponse(tourTime, status);
 
             tourTimeResponses.add(tourTimeResponse);
         }
         tourTimeResponses.sort((t1, t2) -> t1.getDepartureTime().compareTo(t2.getDepartureTime()));
         tourResponse.setTourTimesResponse(tourTimeResponses);
         return tourResponse;
+    }
+
+    public Page<FindTourResponse> findTours(Integer minPrice, Integer maxPrice, String search, Integer categoryId, Date departureDate, Pageable pageable, String sort) {
+        Specification<Tour> spec = Specification.where(TourSpecification.hasPriceBetween(minPrice, maxPrice,sort))
+                .and(TourSpecification.hasCategoryId(categoryId))
+                .and(TourSpecification.hasDepartureDate(departureDate))
+                .and(TourSpecification.hasSearchKeyword(search))
+                .and(TourSpecification.hasStatus(1));
+        Page<Tour> tours = tourRepository.findAll(spec, pageable);
+        return tours.map(tour -> {
+            FindTourResponse response = findTourMapper.toFindTourResponse(tour);
+
+            // Lấy giá của tour với TourTime có departureTime gần nhất
+            TourTime latestTourTime = tour.getTourTimes().stream()
+                    .sorted(Comparator.comparing(TourTime::getDepartureTime).reversed())
+                    .findFirst()
+                    .orElse(null);
+
+            if (latestTourTime != null) {
+                response.setTourPrice(latestTourTime.getPriceAdult()); // Giá của TourTime gần nhất
+            }else{
+                response.setTourPrice(0);
+            }
+            return response;
+        });
     }
 }

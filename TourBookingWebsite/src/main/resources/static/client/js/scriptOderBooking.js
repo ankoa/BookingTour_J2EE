@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
           <div class="input col-sm-4">
               Ngày sinh
-              <input type="date" name="birthday-adult-${index}" class="w-100" required>
+              <input type="date" name="birthday-adult-${index}" class="w-100" required  min="1900-01-01" max="2025-01-31">
           </div>
         </li>
       `;
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
           <div class="input col-sm-4">
               Ngày sinh
-              <input type="date" name="birthday-child-${index}" class="w-100" required>
+              <input type="date" name="birthday-child-${index}" class="w-100" required min="1900-01-01" max="2025-01-31">
           </div>
         </li>
       `;
@@ -236,7 +236,6 @@ document.addEventListener("DOMContentLoaded", function () {
             voucherCode: formData.get("value-code-voucher"),
             adults: [],
             children: [],
-            note: formData.get('note'),
             tourTimeId: tourTimeResponse.tourTimeId,
             accountId: Number(formData.get('accountId')),
             paymentMethod: (formData.get('payment-method')),
@@ -265,6 +264,7 @@ document.addEventListener("DOMContentLoaded", function () {
             else window.location.href = '/booking/'+result.bookingId;
 
         }
+        else showToast(result.message)
     });
 
     handleChangeQuantity("plus", "adult")

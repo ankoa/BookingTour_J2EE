@@ -21,23 +21,19 @@ document.addEventListener("DOMContentLoaded", function () {
             }),
             // credentials: 'include',
         })
-            .then((response) => {
-                console.log(response)
+            .then(async (response) => {
+                // console.log(response)
                 if (response.ok) {
                     window.location.href = "/login-success"
-                    return response.json();
-                } else {
-                    errorMessageEle.classList.remove("d-none");
-                    errorMessageEle.innerText = "Tài khoản hoặc mật khẩu không chính xác";
-                    throw new Error('Login failed');
                 }
+                    return response.json();
             })
             .then((data) => {
-                console.log('Response data:', data);
+                if(data.status === "error") {
+                    errorMessageEle.classList.remove("d-none");
+                    errorMessageEle.innerText = data.message;
+                }
             })
-            .catch((error) => {
-                console.log('Error: ' + error);
-            });
     });
 
     document.getElementById("birthday")?.setAttribute("max", new Date().toISOString().split("T")[0])
@@ -74,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         const input = document.getElementById(error?.field)
                         input.classList.add("is-invalid");
                         input.classList.remove("is-valid");
-                        document.querySelector(`#${error.field} ~ .invalid-feedback`).innerText = error.message
+                        document.querySelector(`#${error?.field} ~ .invalid-feedback`).innerText = error?.message
                     })
                     return;
                 } else {
@@ -105,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const validatePasswordMatch = () => {
         const password = passwordInput.value;
-        const confirmPassword = confirmPasswordInput.value;
+        const confirmPassword = confirmPasswordInput?.value;
         if (password === "" || confirmPassword === "") return
         if (password && confirmPassword && password === confirmPassword) {
             confirmPasswordInput.classList.add("is-valid");

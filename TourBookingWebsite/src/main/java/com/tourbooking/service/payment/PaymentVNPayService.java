@@ -1,8 +1,8 @@
-package com.tourbooking.VNPay.vnpay;
+package com.tourbooking.service.payment;
 
 
-import com.tourbooking.VNPay.core.config.payment.VNPAYConfig;
-import com.tourbooking.VNPay.util.VNPayUtil;
+import com.tourbooking.config.payment.VNPAYConfig;
+import com.tourbooking.utils.PaymentUtils;
 import com.tourbooking.model.Booking;
 import com.tourbooking.service.BookingService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,27 +14,31 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class PaymentService {
+public class PaymentVNPayService {
 
     @Autowired
     BookingService bookingService;
+
     private final VNPAYConfig vnPayConfig;
 
-    public PaymentDTO.VNPayResponse createVnPayPayment(HttpServletRequest request, int orderInfo) {
-        Booking booking = bookingService.findById(orderInfo);
-        if(booking==null) return null;
+    public PaymentDTO.PaymentResponse createVnPayPayment(HttpServletRequest request, Booking booking) {
+        if(booking==null) 
+            return PaymentDTO.PaymentResponse.builder()
+                .code("error")
+                .message("Booking not found")
+                .build();
         long amount = (booking.getTotalPrice()-booking.getTotalDiscount()) * 100L;
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
-        vnpParamsMap.put("vnp_OrderInfo", orderInfo+"");
+        vnpParamsMap.put("vnp_OrderInfo", booking.getBookingId()+"");
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
-        vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
+        vnpParamsMap.put("vnp_IpAddr", PaymentUtils.getIpAddress(request));
         //build query url
-        String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
-        String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
-        String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
+        String queryUrl = PaymentUtils.getPaymentURL(vnpParamsMap, true);
+        String hashData = PaymentUtils.getPaymentURL(vnpParamsMap, false);
+        String vnpSecureHash = PaymentUtils.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
         String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
-        return PaymentDTO.VNPayResponse.builder()
+        return PaymentDTO.PaymentResponse.builder()
                 .code("ok")
                 .message("success")
                 .paymentUrl(paymentUrl).build();
