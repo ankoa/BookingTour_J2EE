@@ -169,9 +169,15 @@ public class TourService {
         return tours.map(tour -> {
             FindTourResponse response = findTourMapper.toFindTourResponse(tour);
 
-            // Lấy giá của tour với TourTime có departureTime gần nhất
+            for (TourImage tourImage : tour.getTourImages()) {
+                if(tourImage.getStatus() == 1) {
+                    response.setTourImage(new TourImageResponse(tourImage.getImageId(),tourImage.getImageUrl(),tourImage.getStatus()));
+                    break;
+                }
+            }
+
             TourTime latestTourTime = tour.getTourTimes().stream()
-                    .sorted(Comparator.comparing(TourTime::getDepartureTime).reversed())
+                    .sorted(Comparator.comparing(TourTime::getPriceAdult).reversed())
                     .findFirst()
                     .orElse(null);
 

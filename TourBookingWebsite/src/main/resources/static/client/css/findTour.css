@@ -177,6 +177,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     gap: 1.5rem;
+    overflow: auto;
 }
 
 .filter-main .range {
