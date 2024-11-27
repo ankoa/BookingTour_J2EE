@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TourImageResponse {
 
-    private int imageId;
+    private Integer imageId;
 
     private String imageUrl;
 

@@ -1,6 +1,7 @@
 package com.tourbooking.service;
 
 import com.tourbooking.dto.response.FindTourResponse;
+import com.tourbooking.dto.response.TourImageResponse;
 import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.dto.response.TourResponse;
 import com.tourbooking.mapper.FindTourMapper;
@@ -11,21 +12,22 @@ import com.tourbooking.model.TourTime;
 import com.tourbooking.mapper.TourMapper;
 import com.tourbooking.mapper.TourTimeMapper;
 import com.tourbooking.mapper.TransportMapper;
-import com.tourbooking.model.*;
+import com.tourbooking.repository.TourImageRepository;
 import com.tourbooking.repository.TourRepository;
 import com.tourbooking.repository.TourTimeRepository;
 import com.tourbooking.specification.TourSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TourService {
@@ -50,6 +52,10 @@ public class TourService {
 
     @Autowired
     TourTimeRepository tourTimeRepository;
+    @Autowired
+    private TourImageRepository tourImageRepository;
+    @Autowired
+    private TourImageService tourImageService;
 
     // Lấy tất cả các tour
     public List<Tour> getAllTours() {
@@ -121,16 +127,35 @@ public class TourService {
         if (status != null && tour.getStatus() != status) return null;
         TourResponse tourResponse = tourMapper.toTourResponse(tour);
 
-        List<TourTimeResponse> tourTimeResponses = new ArrayList<>();
-        for (TourTime tourTime : tour.getTourTimes()) {
-            if (status != null && tourTime.getStatus() != status) continue;
+        List<TourImage> tourImages =tourImageRepository.findByTour_TourIdAndStatus(
+                tour.getTourId(),
+                status,
+                Sort.by(Sort.Direction.ASC, "id"));
+        List<TourImageResponse> tourImageResponses = tourImages.stream()
+                .map(tourImage ->new TourImageResponse(
+                        tourImage.getImageId(),
+                        tourImage.getImageUrl(),
+                        tourImage.getStatus()
+                ))
+                .collect(Collectors.toList());
+        tourResponse.setTourImageResponses(tourImageResponses);
 
-            TourTimeResponse tourTimeResponse = tourTimeService.toTourTimeResponse(tourTime, status);
+        List<TourTime> tourTimes=tourTimeRepository.findByTour_TourIdAndStatus(
+                tour.getTourId(),
+                status,
+                Sort.by(Sort.Direction.ASC, "id")
+                );
 
-            tourTimeResponses.add(tourTimeResponse);
-        }
-        tourTimeResponses.sort((t1, t2) -> t1.getDepartureTime().compareTo(t2.getDepartureTime()));
+        List<TourTimeResponse> tourTimeResponses = tourTimes.stream()
+                .map(tourTime -> tourTimeService.toTourTimeResponse(tourTime,status))
+                .collect(Collectors.toList());
+
         tourResponse.setTourTimesResponse(tourTimeResponses);
+
+        tourResponse.getTourImageResponses().forEach(tourImageResponse -> {
+            if(tourImageResponse.getStatus()==1)
+                tourResponse.setTourImageResponse(tourImageResponse);
+        });
         return tourResponse;
     }
 

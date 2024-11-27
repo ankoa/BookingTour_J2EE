@@ -1,15 +1,12 @@
 package com.tourbooking.service;
 
-import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.tourbooking.dto.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.tourbooking.dto.request.BookingRequest;
 import com.tourbooking.dto.response.BookingDetailResponse;
 import com.tourbooking.dto.response.BookingResponse;
+import com.tourbooking.dto.response.ResponseObject;
 import com.tourbooking.mapper.BookingMapper;
 import com.tourbooking.mapper.CustomerMapper;
 import com.tourbooking.model.Account;
@@ -129,6 +127,12 @@ public class BookingService {
             return ResponseObject.<Booking>builder()
                 .code(HttpStatusCode.valueOf(400))
                 .message("tour time status mismatch")
+                .data(null).build();
+
+        if (status != null && tourTime.getTour().getStatus() != status)
+            return ResponseObject.<Booking>builder()
+                .code(HttpStatusCode.valueOf(400))
+                .message("tour status mismatch")
                 .data(null).build();
 
         //check remainPax

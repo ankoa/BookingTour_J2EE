@@ -1,6 +1,7 @@
 package com.tourbooking.repository;
 
 import com.tourbooking.model.TourTime;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +17,11 @@ public interface TourTimeRepository extends JpaRepository<TourTime, Integer> {
     List<TourTime> findByTourId(@Param("tourId") int tourId);
     @Query("SELECT t FROM TourTime t WHERE t.tourTimeId = :tourTimeId")
     Optional<TourTime> findByIdAdmin(@Param("tourTimeId") Integer tourTimeId);
+
+    @Query("SELECT ti FROM TourTime ti " +
+            "WHERE ti.tour.tourId = :tourId " +
+            "AND ti.status = :status " +
+            "ORDER BY ti.tourTimeId ASC")
+    List<TourTime> findByTour_TourIdAndStatus(int tourId, Integer status, Sort sort);
 
 }
