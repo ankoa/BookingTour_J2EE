@@ -1,6 +1,8 @@
-package com.tourbooking.VNPay.vnpay;
+package com.tourbooking.service.payment;
 
-import com.tourbooking.VNPay.core.response.ResponseObject;
+import com.tourbooking.dto.response.ResponseObject;
+import com.tourbooking.service.payment.PaymentDTO;
+import com.tourbooking.service.payment.PaymentVNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,20 +14,19 @@ import java.io.IOException;
 @RestController
 @RequestMapping("${spring.application.api-prefix}/payment")
 @RequiredArgsConstructor
-public class PaymentController {
-    private final PaymentService paymentService;
+public class PaymentVNPayController {
+    private final PaymentVNPayService paymentService;
 
     // chua dung
     @GetMapping("/vn-pay")
-    public ResponseObject<PaymentDTO.VNPayResponse> pay(HttpServletRequest request,
-                                                        @RequestParam String orderInfo) {
-        PaymentDTO.VNPayResponse pay =paymentService.createVnPayPayment(request, Integer.parseInt(orderInfo));
+    public ResponseObject<PaymentDTO.PaymentResponse> pay(HttpServletRequest request,
+                                                             @RequestParam String orderInfo) {
+        PaymentDTO.PaymentResponse pay =paymentService.createVnPayPayment(request,orderInfo);
         if(pay==null) return new ResponseObject<>(HttpStatus.NOT_FOUND, "Fail",null);
         return new ResponseObject<>(HttpStatus.OK, "Success",pay );
     }
 
-    // chua dung
-    @GetMapping("/vn-pay-callback")
+    @GetMapping("/callback/vn-pay")
     public void payCallbackHandler(HttpServletRequest request,
                                    HttpServletResponse response) throws IOException {
         String status = request.getParameter("vnp_ResponseCode");

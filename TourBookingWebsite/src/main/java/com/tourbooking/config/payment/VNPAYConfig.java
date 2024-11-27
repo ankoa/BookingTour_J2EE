@@ -1,6 +1,6 @@
-package com.tourbooking.VNPay.core.config.payment;
+package com.tourbooking.config.payment;
 
-import com.tourbooking.VNPay.util.VNPayUtil;
+import com.tourbooking.utils.PaymentUtils;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +29,8 @@ public class VNPAYConfig {
     private String vnp_Command;
     @Value("${payment.vnPay.orderType}")
     private String orderType;
+    @Value("${payment.vnPay.vnp_BankCode}")
+    private String vnp_BankCode;
 
     public Map<String, String> getVNPayConfig() {
         Map<String, String> vnpParamsMap = new HashMap<>();
@@ -36,7 +38,8 @@ public class VNPAYConfig {
         vnpParamsMap.put("vnp_Command", this.vnp_Command);
         vnpParamsMap.put("vnp_TmnCode", this.vnp_TmnCode);
         vnpParamsMap.put("vnp_CurrCode", "VND");
-        vnpParamsMap.put("vnp_TxnRef",  VNPayUtil.getRandomNumber(8));
+        vnpParamsMap.put("vnp_TxnRef",  PaymentUtils.getRandomNumber(8));
+        vnpParamsMap.put("vnp_BankCode",  this.vnp_BankCode);
 
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");

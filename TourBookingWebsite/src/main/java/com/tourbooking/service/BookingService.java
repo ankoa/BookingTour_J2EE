@@ -1,10 +1,8 @@
 package com.tourbooking.service;
 
-import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,11 +12,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import com.tourbooking.dto.request.BookingRequest;
 import com.tourbooking.dto.response.BookingDetailResponse;
 import com.tourbooking.dto.response.BookingResponse;
+import com.tourbooking.dto.response.ResponseObject;
 import com.tourbooking.mapper.BookingMapper;
 import com.tourbooking.mapper.CustomerMapper;
 import com.tourbooking.model.Account;
@@ -117,16 +117,31 @@ public class BookingService {
         accountRepository.deleteById(Integer.parseInt(accountId));
     }
 
-    public Booking submitForm(BookingRequest bookingRequest, Integer status) {
+    public ResponseObject<Booking> createBooking(BookingRequest bookingRequest,
+                                                 Integer status) {
         // lay tour time da dat
         TourTime tourTime = tourTimeService.findById(bookingRequest.getTourTimeId(), status)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tour time với ID: " + bookingRequest.getTourTimeId()));
 
-        if (status != null && tourTime.getStatus() != status) return null;
+        if (status != null && tourTime.getStatus() != status)
+            return ResponseObject.<Booking>builder()
+                .code(HttpStatusCode.valueOf(400))
+                .message("tour time status mismatch")
+                .data(null).build();
+
+        if (status != null && tourTime.getTour().getStatus() != status)
+            return ResponseObject.<Booking>builder()
+                .code(HttpStatusCode.valueOf(400))
+                .message("tour status mismatch")
+                .data(null).build();
 
         //check remainPax
         if (tourTimeService.calculateRemainPax(tourTime) <
-                (bookingRequest.getAdults().size() + bookingRequest.getChildren().size())) return null;
+                (bookingRequest.getAdults().size() + bookingRequest.getChildren().size()))
+            return ResponseObject.<Booking>builder()
+                .code(HttpStatusCode.valueOf(400))
+                .message("slot out")
+                .data(null).build();
 
         int voucherValue = 0;
         if (bookingRequest.getVoucherCode() != null) {
@@ -148,10 +163,16 @@ public class BookingService {
             Account account = getAccountById(bookingRequest.getAccountId());
             //
             if (status != null && account.getStatus() != status) {
-                return null;
+                return ResponseObject.<Booking>builder()
+                        .code(HttpStatusCode.valueOf(400))
+                        .message("account error")
+                        .data(null).build();
             }
             if (status != null && account.getCustomer().getStatus() != status) {
-                return null;
+                return ResponseObject.<Booking>builder()
+                        .code(HttpStatusCode.valueOf(400))
+                        .message("customer error")
+                        .data(null).build();
             }
             relatedCustomer = account.getCustomer();
         }
@@ -229,7 +250,10 @@ public class BookingService {
             bookingDetailRepository.save(bookingDetail);
         }
 
-        return bookingSaved;
+        return ResponseObject.<Booking>builder()
+                .code(HttpStatusCode.valueOf(200))
+                .message("success")
+                .data(bookingSaved).build();
     }
 
     public List<Booking> getBookingWithPage(int page, int size) {
@@ -316,4 +340,23 @@ public class BookingService {
         return bookingRepository.findRevenueForSpecificDay(specificDate);
     }
 
+    public BookingResponse getBookingResponseById(String Id,Integer status) {
+        BookingResponse bookingResponse = new BookingResponse();
+        Optional<Booking> bookingOptional = bookingRepository.findById(Integer.parseInt(Id));
+        if (bookingOptional.isPresent()) {
+            Booking booking = bookingOptional.get();
+
+            bookingResponse = bookingMapper.toBookingResponse(booking);
+            bookingResponse.setTourTimeResponse(
+                    tourTimeService
+                            .toTourTimeResponse(booking.getTourTime(), status)
+            );
+            List<BookingDetailResponse> bookingDetailResponses = new ArrayList<>();
+            for (BookingDetail bookingDetail : booking.getBookingDetails()) {
+                bookingDetailResponses.add(bookingDetailService.toBookingDetailResponse(bookingDetail));
+            }
+            bookingResponse.setBookingDetailResponses(bookingDetailResponses);
+        }
+        return bookingResponse;
+    }
 }

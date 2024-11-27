@@ -89,9 +89,13 @@ public class TourTimeService {
             tourTime = tourTimeRepository.findBytourTimeIdAndStatus(id, status);
         return tourTime;
     }
- // Thêm tour time mới
+ // TourTimeService.java
     public TourTime addTourTime(TourTime tourTime) {
-        return tourTimeRepository.save(tourTime);
+        try {
+            return tourTimeRepository.save(tourTime);  // Lưu thời gian tour vào cơ sở dữ liệu
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể thêm thời gian tour. Lỗi cơ sở dữ liệu: " + e.getMessage(), e);
+        }
     }
 
     // Cập nhật tour time

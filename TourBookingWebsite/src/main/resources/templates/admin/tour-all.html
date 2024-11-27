@@ -1164,97 +1164,174 @@
   </div>
 </div>
 
-
-
-
-
 <!-- Modal Thêm Tour Time -->
 <div class="modal fade" id="addTourTimeModal" tabindex="-1" aria-labelledby="addTourTimeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg" style="margin-top: 10px">
     <div class="modal-content">
-      <div class="modal-header">
-        <!-- Tiêu đề modal nhỏ lại -->
-        <h5 class="modal-title" id="addTourTimeModalLabel" style="font-size: 1.2rem;">Thêm Tour Time</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <!-- Tiêu đề Modal -->
+      <div class="modal-header bg-primary text-white" style="height: 40px">
+        <h5 class="modal-title fw-bold" id="addTourTimeModalLabel" style="font-size: 1.2rem;">Thêm Tour Time</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <!-- Nội dung Modal -->
       <div class="modal-body">
         <form id="addTourTimeForm" onsubmit="addTourTime(); return false;">
-          
-          <!-- Tên Tour Time -->
-          <div class="mb-2 row">
-            <div class="col-md-12">
-              <label for="timeName" class="form-label">Tên Tour Time</label>
-              <input type="text" class="form-control" id="timeName" required />
+          <!-- Tên và mã Tour Time -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="timeName" class="form-label fw-semibold">Tên Tour Time</label>
+              <input type="text" class="form-control" id="timeName" placeholder="Nhập tên Tour Time" required>
+            </div>
+            <div class="col-md-6">
+              <label for="tourTimeCode" class="form-label fw-semibold">Tour Time Code</label>
+              <input type="text" class="form-control" id="tourTimeCode" placeholder="Nhập mã Tour Time" required>
             </div>
           </div>
 
-          <!-- Tour ID và Tên Tour lên dòng mới -->
-          <div class="mb-2 row">
+          <!-- Tour ID và Tên Tour -->
+          <div class="row g-3 mt-2">
             <div class="col-md-6">
-              <label for="tourId" class="form-label">Tour ID</label>
-              <input type="number" class="form-control" id="tourId" oninput="fetchTourName(this.value)" required />
+              <label for="tourId" class="form-label fw-semibold">Tour ID</label>
+              <input type="number" class="form-control" id="tourIdinTourTime" oninput="fetchTourNameAddEdit(this.value)" placeholder="Nhập ID Tour" required>
             </div>
             <div class="col-md-6">
-              <label for="tourName" class="form-label">Tên Tour</label>
-              <input type="text" class="form-control" id="tourName" readonly />
-            </div>
-          </div>
-          
-          <!-- Thời gian đi và về -->
-          <div class="mb-2 row">
-            <div class="col-md-6">
-              <label for="departureTime" class="form-label">Thời Gian Đi</label>
-              <input type="datetime-local" class="form-control" id="departureTime" required />
-            </div>
-            <div class="col-md-6">
-              <label for="returnTime" class="form-label">Thời Gian Về</label>
-              <input type="datetime-local" class="form-control" id="returnTime" required />
+              <label for="tourName" class="form-label fw-semibold">Tên Tour</label>
+              <input type="text" class="form-control" id="tourNameinTourTime" readonly>
             </div>
           </div>
 
-          <!-- Giá Người Lớn và Giá Trẻ Em -->
-          <div class="mb-2 row">
+          <!-- Ngày, giờ và phút -->
+          <div class="row g-3 mt-2">
             <div class="col-md-6">
-              <label for="priceAdult" class="form-label">Giá Người Lớn</label>
-              <input type="number" class="form-control" id="priceAdult" required />
+              <label for="departureDate" class="form-label fw-semibold">Ngày khởi hành</label>
+              <input type="date" id="departureDateinTourTime" class="form-control" required>
             </div>
-            <div class="col-md-6">
-              <label for="priceChild" class="form-label">Giá Trẻ Em</label>
-              <input type="number" class="form-control" id="priceChild" required />
+            <div class="col-md-3">
+              <label for="departureHour" class="form-label fw-semibold">Giờ khởi hành</label>
+              <select id="departureHourinTourTime" class="form-select" required>
+                <option value="" disabled selected>-- Chọn giờ --</option>
+                <option value="00">00</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+              </select>
             </div>
-          </div>
-
-          <!-- Số Lượng và Trạng Thái cùng một hàng -->
-          <div class="mb-2 row">
-            <div class="col-md-6">
-              <label for="quantity" class="form-label">Số Lượng</label>
-              <input type="number" class="form-control" id="quantity" required />
-            </div>
-            <div class="col-md-6">
-              <label for="status" class="form-label">Trạng Thái</label>
-              <select class="form-select" id="status" required>
-                <option value="1">Kích hoạt</option>
-                <option value="0">Ngưng hoạt động</option>
+            <div class="col-md-3">
+              <label for="departureMinute" class="form-label fw-semibold">Phút khởi hành</label>
+              <select id="departureMinuteinTourTime" class="form-select" required>
+                <option value="" disabled selected>-- Chọn phút --</option>
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
               </select>
             </div>
           </div>
 
-          <!-- Ghi Chú ở một hàng riêng -->
-          <div class="mb-2">
-            <label for="note" class="form-label">Ghi Chú</label>
-            <textarea class="form-control" id="note" rows="2"></textarea> <!-- Mở rộng ô ghi chú -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <label for="arrivalDate" class="form-label fw-semibold">Ngày đến</label>
+              <input type="date" id="arrivalDateinTourTime" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label for="arrivalHour" class="form-label fw-semibold">Giờ đến</label>
+              <select id="arrivalHourinTourTime" class="form-select" required>
+                <option value="" disabled selected>-- Chọn giờ --</option>
+                <option value="00">00</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="arrivalMinute" class="form-label fw-semibold">Phút đến</label>
+              <select id="arrivalMinuteinTourTime" class="form-select" required>
+                <option value="" disabled selected>-- Chọn phút --</option>
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+              </select>
+            </div>
           </div>
 
-          <!-- Căn giữa hai nút -->
-          <div class="d-flex justify-content-center mt-3">
-            <button type="submit" class="btn btn-primary mx-2">Thêm Tour Time</button>
-            <button type="button" class="btn btn-secondary mx-2" id="clearTourTimeForm">Clear</button>
+          <!-- Giá và trạng thái -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <label for="priceAdult" class="form-label fw-semibold">Giá Người Lớn</label>
+              <input type="number" class="form-control" id="priceAdultinTourTime" placeholder="VNĐ" required>
+            </div>
+            <div class="col-md-6">
+              <label for="priceChild" class="form-label fw-semibold">Giá Trẻ Em</label>
+              <input type="number" class="form-control" id="priceChildinTourTime" placeholder="VNĐ" required>
+            </div>
+          </div>
+
+          <!-- Số lượng và ghi chú -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <label for="quantity" class="form-label fw-semibold">Số lượng</label>
+              <input type="number" class="form-control" id="quantityinTourTime" placeholder="Nhập số lượng" required>
+            </div>
+            <div class="col-md-6">
+              <label for="note" class="form-label fw-semibold">Ghi Chú</label>
+              <textarea class="form-control" id="noteinTourTime" rows="2" placeholder="Nhập ghi chú"></textarea>
+            </div>
+          </div>
+
+          <!-- Nút hành động -->
+          <div class="row d-flex justify-content-center mt-4">
+            <button type="submit" class="col-md-3 btn btn-primary">Thêm Tour Time</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+
+
+
 
 
 <!-- Modal Chỉnh sửa Tour Time -->

@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TourResponse {
+public class FindTourResponse {
     private int tourId;
 
     private String tourName;
@@ -27,9 +27,9 @@ public class TourResponse {
 
     private String dayStay;
 
-    private List<TourTimeResponse> tourTimesResponse;
+    private List<TourTimeResponse> tourTimes;
 
-    private List<TourImageResponse> tourImageResponses;
-
-    private TourImageResponse tourImageResponse;
+    private List<TourImageResponse> tourImages;
+    private Integer tourPrice;
+    private CategoryResponse category;
 }

@@ -6,6 +6,7 @@ import com.tourbooking.dto.response.TourResponse;
 import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.security.CustomUserDetails;
 import com.tourbooking.service.BookingService;
+import com.tourbooking.service.CategoryService;
 import com.tourbooking.service.TourService;
 import com.tourbooking.service.TourTimeService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,9 @@ public class HomeController {
 
     @Autowired
     private TourTimeService tourTimeService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @Autowired
     private BookingService bookingService;
@@ -72,8 +77,8 @@ public class HomeController {
 
     @GetMapping("/find-tour")
     public String getFindTour(Model model, @AuthenticationPrincipal CustomUserDetails user) {
-        model.addAttribute("user", user);
-
+        model.addAttribute("minDate", LocalDate.now());
+        model.addAttribute("categories", categoryService.getCategories());
         return "client/find-tour";
     }
 
@@ -87,11 +92,11 @@ public class HomeController {
             return "redirect:/";
 
         //add image default
-        if (tourResponse.getTourImages().isEmpty()) {
+        if (tourResponse.getTourImageResponses().isEmpty()) {
             List<TourImageResponse> listTourImage = new ArrayList<>();
             listTourImage.add(new TourImageResponse(999,"/client/img/54.jpg",1));
-            listTourImage.add(new TourImageResponse(2,"/client/img/55.jpg",2));
-            tourResponse.setTourImages(listTourImage);
+            listTourImage.add(new TourImageResponse(998,"/client/img/55.jpg",0));
+            tourResponse.setTourImageResponses(listTourImage);
         }
 
         model.addAttribute("user", user);
@@ -124,6 +129,11 @@ public class HomeController {
         model.addAttribute("user", user);
         model.addAttribute("bookingResponse", bookingResponse);
         return "client/booking";
+    }
+
+    @GetMapping("/payment-failure")
+    public String paymentFail(){
+        return "client/payment-fail.html";
     }
 
 }
