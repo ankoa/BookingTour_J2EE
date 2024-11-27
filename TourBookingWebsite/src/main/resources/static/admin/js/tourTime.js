@@ -56,7 +56,113 @@ function loadTourTimes() {
             console.error('Lỗi khi tải dữ liệu:', error);
         });
 }
+function fetchTourNameAddEdit(tourId) {
+    if (tourId) {
+      fetch(`/admin/tours/${tourId}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("tourNameinTourTime").value = data.tourName || "Tour không tồn tại";
+        })
+        .catch(error => {
+          console.error('Lỗi khi lấy tên Tour:', error);
+          document.getElementById("tourNameinTourTime").value = "Lỗi khi lấy tên Tour";
+        });
+    } else {
+      document.getElementById("tourNameinTourTime").value = "";
+    }
+  }
 
+  // Hàm xử lý thêm Tour Time
+  function addTourTime() {
+      const timeName = document.getElementById("timeName").value;
+      const tourTimeCode = document.getElementById("tourTimeCode").value;
+	  const tourId = Number(document.getElementById('tourIdinTourTime').value);
+      const departureDate = document.getElementById("departureDateinTourTime").value;
+      const departureHour = document.getElementById("departureHourinTourTime").value;
+      const departureMinute = document.getElementById("departureMinuteinTourTime").value;
+      const arrivalDate = document.getElementById("arrivalDateinTourTime").value;
+      const arrivalHour = document.getElementById("arrivalHourinTourTime").value;
+      const arrivalMinute = document.getElementById("arrivalMinuteinTourTime").value;
+      const priceAdult = document.getElementById("priceAdultinTourTime").value;
+      const priceChild = document.getElementById("priceChildinTourTime").value;
+      const note = document.getElementById("noteinTourTime").value;
+      const quantity = document.getElementById("quantityinTourTime").value;  // Lấy dữ liệu Số lượng
+
+      // Nối chuỗi để tạo thời gian đầy đủ với định dạng YYYY-MM-DD HH:mm:00
+      const departureTime = `${departureDate} ${departureHour}:${departureMinute}:00`;
+      const returnTime = `${arrivalDate} ${arrivalHour}:${arrivalMinute}:00`;
+
+      // Dữ liệu để gửi, chỉ truyền giá trị đã nối của departureTime và arrivalTime
+      const tourTimeData = {
+          timeName,
+          tourTimeCode,
+          tourId,
+          departureTime,  // Chỉ gửi thời gian khởi hành đã nối
+          returnTime,     // Chỉ gửi thời gian đến đã nối
+          priceAdult,
+          priceChild,
+          note,
+          quantity         // Thêm Số lượng vào dữ liệu gửi
+      };
+
+      console.log(tourTimeData);
+
+      // Gửi yêu cầu POST
+      fetch('/admin/tour-times/add', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(tourTimeData)
+      })
+      .then(response => response.json())
+	  .then(data => {
+	      if (data.success === "true") {  // Kiểm tra trường success có giá trị "true"
+	          alert("Thêm Tour Time thành công!");
+	          // Đóng modal sau khi thêm thành công
+	      } else {
+	          alert("Có lỗi khi thêm Tour Time: " + data.message);  // Hiển thị thông điệp lỗi từ server
+	      }
+	  })
+	  .catch(error => {
+	      console.error('Lỗi khi thêm Tour Time:', error);
+	      alert("Có lỗi khi thêm Tour Time.");
+	  });
+
+  }
+/*
+  function addTourTime() {
+  	const tourTimeData = {
+  	  tourTimeCode: "TT1234",
+  	  timeName: "Tour 1",
+  	  departureTime: "2024-11-30 08:00:00",
+  	  returnTime: "2024-12-07 18:00:00",
+  	  quantity: 20,
+  	  priceAdult: 150000,
+  	  priceChild: 120000,
+  	  note: "Thời gian tour đặc biệt, chỉ có vào cuối tuần.",
+  	  status: 1,
+  	  tourId: 8
+  	};
+
+  	fetch('/admin/tour-times/add', {
+  	  method: 'POST',
+  	  headers: {
+  	    'Content-Type': 'application/json',
+  	  },
+  	  body: JSON.stringify(tourTimeData)
+  	})
+  	.then(response => response.json())
+  	.then(data => {
+  	  if (data.message) {
+  	    console.log(data.message); // "Thêm thời gian tour thành công." hoặc thông báo lỗi
+  	  }
+  	})
+  	.catch(error => {
+  	  console.error('Error:', error);
+  	});
+
+    }*/
 function editTourTime(button) {
     const tourTimeId = button.getAttribute('data-id');
     
@@ -298,8 +404,23 @@ function addDiscount() {
           showAlert('info', "Hành động xóa đã bị hủy.");
       }
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   // Mở modal thêm phương tiện
   function openTransportModal(button) {
+	clearFields();
     // Lấy tourTimeId từ button và đặt vào trường ẩn trong form
     const tourTimeId = button.getAttribute('data-id');
     document.getElementById('tourTimeId').value = tourTimeId;
@@ -308,29 +429,37 @@ function addDiscount() {
     const transportModal = new bootstrap.Modal(document.getElementById('transportModal'));
     transportModal.show();
 	loadTransports();
+	fetchAndRenderTransports(tourTimeId);
   }
 
   
 
-  // Xóa phương tiện
   function removeTransport(transportDetailId) {
-    if (confirm('Bạn có chắc chắn muốn xóa phương tiện này?')) {
-      // Gửi yêu cầu xóa qua API
-      fetch(`/path/to/your/api/endpoint/${transportDetailId}`, {
-        method: 'DELETE',
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Phương tiện đã được xóa');
-          // Cập nhật lại bảng nếu cần thiết
-        } else {
-          alert('Lỗi khi xóa phương tiện');
-        }
-      })
-      .catch(error => console.error('Error:', error));
-    }
-  }
+	const tourTimeId = Number(document.getElementById('tourTimeId').value);
+
+     if (confirm('Bạn có chắc chắn muốn xóa phương tiện này?')) {
+         // Gửi yêu cầu xóa qua API
+         fetch(`/admin/transport-details/delete/${transportDetailId}`, {
+             method: 'DELETE',
+         })
+         .then(response => {
+             if (!response.ok) {
+                 throw new Error('Không thể xóa phương tiện');
+             }
+             return response.json();
+         })
+         .then(data => {
+             alert('Phương tiện đã được xóa');
+             // Cập nhật lại bảng nếu cần thiết
+             fetchAndRenderTransports(tourTimeId); // Thực hiện render lại bảng với dữ liệu mới
+         })
+         .catch(error => {
+             console.error('Error:', error);
+             alert('Có lỗi xảy ra khi xóa phương tiện');
+         });
+     }
+	 }
+
   function loadTransports() {
       // Gọi API để lấy danh sách phương tiện
       fetch('/admin/transports/listTransport')
@@ -356,33 +485,28 @@ function addDiscount() {
 	    addTransport();
 	});
 
-	function addTransport() {
-	    try {
-	        // Lấy giá trị từ các input field
-	        const transportId = Number(document.getElementById('transportId').value);
-	        const tourTimeId = Number(document.getElementById('tourTimeId').value);
+	async function addTransport() {
+	    const tourTimeId = Number(document.getElementById('tourTimeId').value);
+	    
+	    // Kiểm tra số lượng phương tiện trước khi thêm mới
+	    const canAddTransport = await checkTransportCount(tourTimeId);
+	    if (!canAddTransport) {
+	        return; // Nếu đã đủ 4 phương tiện thì dừng lại
+	    }
 
+	    try {
+	        const transportId = Number(document.getElementById('transportId').value);
 	        const departureDate = document.getElementById('departureDate').value;
 	        const departureHour = document.getElementById('departureHour').value;
 	        const departureMinute = document.getElementById('departureMinute').value;
-
 	        const arrivalDate = document.getElementById('arrivalDate').value;
 	        const arrivalHour = document.getElementById('arrivalHour').value;
 	        const arrivalMinute = document.getElementById('arrivalMinute').value;
-
 	        const status = document.getElementById('status').value;
 
-	        // Tạo chuỗi thời gian cho departureTime và arrivalTime theo định dạng YYYY-MM-DD HH:mm:ss
 	        const departureTime = `${departureDate} ${departureHour}:${departureMinute}:00`;
 	        const arrivalTime = `${arrivalDate} ${arrivalHour}:${arrivalMinute}:00`;
 
-	        console.log("Transport ID: " + transportId);
-	        console.log("Tour Time ID: " + tourTimeId);
-	        console.log("Arrival Time: " + arrivalTime);
-	        console.log("Departure Time: " + departureTime);
-	        console.log("Status: " + status);
-
-	        // Kiểm tra các trường bắt buộc
 	        if (!transportId || !tourTimeId || !arrivalTime || !departureTime || !status) {
 	            alert('Vui lòng điền đầy đủ thông tin');
 	            return;
@@ -396,58 +520,88 @@ function addDiscount() {
 	            status: status
 	        };
 
-	        console.log("Data to be sent:", data);
+	        const userConfirmed = confirm(`Bạn có chắc chắn muốn thêm thông tin này?\n\n- Transport ID: ${transportId}\n- Tour Time ID: ${tourTimeId}\n- Arrival Time: ${arrivalTime}\n- Departure Time: ${departureTime}\n- Status: ${status}`);
+	        if (!userConfirmed) return;
 
-	        // Hiển thị hộp thoại xác nhận
-	        const userConfirmed = confirm(
-	            `Bạn có chắc chắn muốn thêm thông tin này?\n\n` +
-	            `- Transport ID: ${transportId}\n` +
-	            `- Tour Time ID: ${tourTimeId}\n` +
-	            `- Arrival Time: ${arrivalTime}\n` +
-	            `- Departure Time: ${departureTime}\n` +
-	            `- Status: ${status}`
-	        );
-
-	        if (!userConfirmed) {
-	            console.log('Hành động bị hủy bởi người dùng.');
-	            return; // Dừng nếu người dùng chọn "Hủy"
-	        }
-
-	        // Gửi dữ liệu tới API
-	        fetch('/admin/transport-details/addTransportToTourTime', {
+	        const response = await fetch('/admin/transport-details/addTransportToTourTime', {
 	            method: 'POST',
-	            headers: {
-	                'Content-Type': 'application/json'
-	            },
+	            headers: { 'Content-Type': 'application/json' },
 	            body: JSON.stringify(data)
-	        })
-	            .then(response => {
-	                if (!response.ok) {
-	                    throw new Error('Network response was not ok');
-	                }
-	                return response.text();
-	            })
-	            .then(text => {
-	                console.log('Response Text:', text); // Log the raw response
-	                try {
-	                    const result = JSON.parse(text); // Try to parse it as JSON
-	                    console.log('Transport added successfully:', result);
-	                    alert('Thêm thông tin phương tiện thành công!');
-	                    clearFields(); // Xóa sạch các trường sau khi thêm thành công
-	                } catch (error) {
-	                    console.error('Error parsing JSON:', error);
-	                    alert('Phản hồi không hợp lệ từ máy chủ.');
-	                }
-	            })
-	            .catch(error => {
-	                console.error('Error adding transport:', error);
-	                alert('Có lỗi xảy ra. Vui lòng thử lại.');
-	            });
+	        });
+
+	        if (!response.ok) throw new Error('Network response was not ok');
+	        const result = await response.json();
+	        alert('Thêm thông tin phương tiện thành công!');
+			fetchAndRenderTransports(tourTimeId);
+	        clearFields();
 	    } catch (error) {
-	        console.error("Unexpected error:", error);
-	        alert("Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.");
+	        console.error('Lỗi khi thêm phương tiện:', error);
+	        alert('Có lỗi xảy ra. Vui lòng thử lại.');
 	    }
 	}
+
+	async function fetchAndRenderTransports(tourTimeId) {
+	    const tbody = document.getElementById('selectedTransports');
+	    tbody.innerHTML = ''; // Xóa nội dung cũ trước khi render
+
+	    try {
+	      // Gọi API
+	      const response = await fetch(`/admin/transport-details/by-tour-time/${tourTimeId}`);
+	      
+	      if (!response.ok) {
+	        throw new Error('Không thể tải dữ liệu, lỗi: ' + response.statusText);
+	      }
+
+	      const transports = await response.json();
+
+	      // Kiểm tra nếu không có dữ liệu
+	      if (transports.length === 0) {
+	        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Không có phương tiện nào.</td></tr>';
+	        return;
+	      }
+
+	      // Render dữ liệu ra bảng
+	      transports.forEach(transport => {
+	        const row = document.createElement('tr');
+	        row.innerHTML = `
+	          <td>${transport.transport.transportId}</td>
+	          <td>${transport.transport.transportName || 'N/A'}</td>
+	          <td>${new Date(transport.arrivalTime).toLocaleString()}</td>
+	          <td>${new Date(transport.departureTime).toLocaleString()}</td>
+	          <td>${transport.status === 1 ? 'Hoạt động' : 'Không hoạt động'}</td>
+	          <td>
+	            <button class="btn btn-primary btn-sm" onclick="editTransport(${transport.transportDetailId})">Sửa</button>
+	            <button class="btn btn-danger btn-sm" onclick="removeTransport(${transport.transportDetailId})">Xóa</button>
+	          </td>
+	        `;
+	        tbody.appendChild(row);
+	      });
+	    } catch (error) {
+	      console.error('Lỗi khi tải dữ liệu:', error);
+	      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Lỗi khi tải dữ liệu.</td></tr>';
+	    }
+	  }
+	  
+	  async function checkTransportCount(tourTimeId) {
+	      try {
+	          const response = await fetch(`/admin/transport-details/by-tour-time/${tourTimeId}`);
+	          if (!response.ok) {
+	              throw new Error('Không thể tải dữ liệu, lỗi: ' + response.statusText);
+	          }
+
+	          const transports = await response.json();
+	          if (transports.length >= 4) {
+	              alert('Đã đủ 4 phương tiện, không thể thêm thêm.');
+	              return false;
+	          } else {
+	              return true; // Có thể thêm phương tiện mới
+	          }
+	      } catch (error) {
+	          console.error('Lỗi khi kiểm tra số lượng phương tiện:', error);
+	          alert('Có lỗi xảy ra khi kiểm tra số lượng phương tiện.');
+	          return false;
+	      }
+	  }
 
 	// Hàm xóa sạch các trường nhập liệu
 	function clearFields() {

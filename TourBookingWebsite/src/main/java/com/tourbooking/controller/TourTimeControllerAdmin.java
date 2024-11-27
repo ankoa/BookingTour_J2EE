@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,55 +50,173 @@ public class TourTimeControllerAdmin {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /*@PostMapping("/tour-times/add")
+   /* @PostMapping("/tour-times/add")
+    public ResponseEntity<Map<String, String>> addTourTime(@RequestBody Map<String, Object> tourTimeData) {
+        Map<String, String> response = new HashMap<>();
+        System.out.println("hahahaha");
+        try {
+            // Lấy thông tin từ request
+            String tourTimeCode = (String) tourTimeData.get("tourTimeCode");
+            String timeName = (String) tourTimeData.get("timeName");
+            String departureTimeStr = (String) tourTimeData.get("departureTime");
+            String returnTimeStr = (String) tourTimeData.get("returnTime");
+            int quantity = (int) tourTimeData.get("quantity");
+            int priceAdult = (int) tourTimeData.get("priceAdult");
+            int priceChild = (int) tourTimeData.get("priceChild");
+            String note = (String) tourTimeData.get("note");
+            int status = (int) tourTimeData.get("status");
+            int tourId = (int) tourTimeData.get("tourId");
+
+            // Chuyển đổi thời gian từ chuỗi sang LocalDateTime
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime departureTime = LocalDateTime.parse(departureTimeStr, formatter);
+            LocalDateTime returnTime = LocalDateTime.parse(returnTimeStr, formatter);
+
+            // Tìm Tour tương ứng
+            Optional<Tour> tourOptional = tourService.getTourByIdInt(tourId);
+            if (!tourOptional.isPresent()) {
+                response.put("message", "Tour không tồn tại.");
+                return ResponseEntity.badRequest().body(response);
+            }
+            Tour tour = tourOptional.get();
+
+            // Tạo đối tượng TourTime mới
+            TourTime tourTime = new TourTime();
+            tourTime.setTourTimeCode(tourTimeCode);
+            tourTime.setTimeName(timeName);
+            tourTime.setDepartureTime(departureTime);
+            tourTime.setReturnTime(returnTime);
+            tourTime.setQuantity(quantity);
+            tourTime.setPriceAdult(priceAdult);
+            tourTime.setPriceChild(priceChild);
+            tourTime.setNote(note);
+            tourTime.setStatus(status);
+            tourTime.setTour(tour);  // Liên kết với Tour
+
+            // Lưu TourTime vào cơ sở dữ liệu
+            tourTimeService.addTourTime(tourTime);
+
+            // Trả về phản hồi thành công
+            response.put("message", "Thêm thời gian tour thành công.");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            // Xử lý lỗi
+            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }*/
+    @PostMapping("/tour-times/add")
     public ResponseEntity<Map<String, String>> addTourTime(@RequestBody Map<String, Object> tourTimeData) {
         Map<String, String> response = new HashMap<>();
         try {
+            // In ra toàn bộ dữ liệu nhận từ request
+            System.out.println("tourTimeData: " + tourTimeData);
+
+            // Lấy thông tin từ request và kiểm tra giá trị null
             String tourTimeCode = (String) tourTimeData.get("tourTimeCode");
             String timeName = (String) tourTimeData.get("timeName");
-            Integer tourId = ((Number) tourTimeData.get("tour")).intValue();
-            LocalDateTime departureTime = LocalDateTime.parse((String) tourTimeData.get("departureTime"));
-            LocalDateTime returnTime = LocalDateTime.parse((String) tourTimeData.get("returnTime"));
-            Integer quantity = ((Number) tourTimeData.get("quantity")).intValue();
-            Integer priceAdult = ((Number) tourTimeData.get("priceAdult")).intValue();
-            Integer priceChild = ((Number) tourTimeData.get("priceChild")).intValue();
+            String departureTimeStr = (String) tourTimeData.get("departureTime");
+            String returnTimeStr = (String) tourTimeData.get("returnTime");
+
+            // In ra các giá trị cụ thể
+            System.out.println("Tour Time Code: " + tourTimeCode);
+            System.out.println("Time Name: " + timeName);
+            System.out.println("Departure Time: " + departureTimeStr);
+            System.out.println("Return Time: " + returnTimeStr);
+
+            // Kiểm tra các trường bắt buộc
+            if (tourTimeCode == null || timeName == null || departureTimeStr == null || returnTimeStr == null) {
+                response.put("message", "Các trường mã thời gian, tên thời gian, thời gian khởi hành và thời gian kết thúc không được bỏ trống.");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Chuyển đổi giá trị từ String sang Integer (kiểm tra null)
+            Integer quantity = (tourTimeData.get("quantity") != null) ? Integer.parseInt(tourTimeData.get("quantity").toString()) : null;
+            Integer priceAdult = (tourTimeData.get("priceAdult") != null) ? Integer.parseInt(tourTimeData.get("priceAdult").toString()) : null;
+            Integer priceChild = (tourTimeData.get("priceChild") != null) ? Integer.parseInt(tourTimeData.get("priceChild").toString()) : null;
             String note = (String) tourTimeData.get("note");
-            Integer status = ((Number) tourTimeData.get("status")).intValue();
 
-            if (tourTimeCode == null || timeName == null || tourId == null || departureTime == null ||
-                    returnTime == null || quantity == null || priceAdult == null || priceChild == null || status == null) {
-                response.put("message", "Vui lòng điền đầy đủ thông tin!");
+            // In ra giá trị quantity, priceAdult, priceChild và note
+            System.out.println("Quantity: " + quantity);
+            System.out.println("Price Adult: " + priceAdult);
+            System.out.println("Price Child: " + priceChild);
+            System.out.println("Note: " + note);
+
+            // Chuyển đổi thời gian từ chuỗi sang LocalDateTime
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime departureTime = null;
+            LocalDateTime returnTime = null;
+            try {
+                departureTime = LocalDateTime.parse(departureTimeStr, formatter);
+                returnTime = LocalDateTime.parse(returnTimeStr, formatter);
+            } catch (DateTimeParseException e) {
+                response.put("message", "Lỗi định dạng thời gian. Vui lòng sử dụng định dạng 'yyyy-MM-dd HH:mm:ss'.");
                 return ResponseEntity.badRequest().body(response);
             }
 
-            Optional<Tour> optionalTour = tourService.getTourByIdInt(tourId);
-            if (!optionalTour.isPresent()) {
-                response.put("message", "Tour không tồn tại!");
+            // In ra thời gian sau khi chuyển đổi
+            System.out.println("Converted Departure Time: " + departureTime);
+            System.out.println("Converted Return Time: " + returnTime);
+
+            Integer tourId = (tourTimeData.get("tourId") != null) ? Integer.parseInt(tourTimeData.get("tourId").toString()) : null;
+
+            // Kiểm tra tồn tại của Tour
+            if (tourId == null) {
+                response.put("message", "Tour ID không hợp lệ.");
                 return ResponseEntity.badRequest().body(response);
             }
 
-            Tour tour = optionalTour.get();
-            TourTime newTourTime = new TourTime();
-            newTourTime.setTourTimeCode(tourTimeCode);
-            newTourTime.setTimeName(timeName);
-            newTourTime.setDepartureTime(departureTime);
-            newTourTime.setReturnTime(returnTime);
-            newTourTime.setQuantity(quantity);
-            newTourTime.setPriceAdult(priceAdult);
-            newTourTime.setPriceChild(priceChild);
-            newTourTime.setNote(note);
-            newTourTime.setStatus(status);
-            newTourTime.setTour(tour);
+            Optional<Tour> tourOptional = tourService.getTourByIdInt(1);
+            if (!tourOptional.isPresent()) {
+                response.put("message", "Tour không tồn tại.");
+                return ResponseEntity.badRequest().body(response);
+            }
 
-            tourTimeService.addTourTime(newTourTime);
-            response.put("message", "Thêm tour time thành công!");
+            Tour tour = tourOptional.get();
+
+            // Tạo đối tượng TourTime mới
+            TourTime tourTime = new TourTime();
+            tourTime.setTourTimeCode(tourTimeCode);
+            tourTime.setTimeName(timeName);
+            tourTime.setDepartureTime(departureTime);
+            tourTime.setReturnTime(returnTime);
+            tourTime.setQuantity(quantity);
+            tourTime.setPriceAdult(priceAdult);
+            tourTime.setPriceChild(priceChild);
+            tourTime.setNote(note);
+            tourTime.setStatus(1);  // Trạng thái mặc định là 1
+            tourTime.setTour(tour);  // Liên kết với Tour
+
+            // Lưu TourTime vào cơ sở dữ liệu
+            try {
+                tourTimeService.addTourTime(tourTime);
+            } catch (RuntimeException e) {
+                response.put("message", "Có lỗi xảy ra khi lưu thông tin thời gian tour: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+
+            // Trả về phản hồi thành công
+            response.put("success", "true");  // Đảm bảo rằng success là một trường trong response
+            response.put("message", "Thêm thời gian tour thành công.");
             return ResponseEntity.ok(response);
+
+
         } catch (Exception e) {
-            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
+            // Ghi log chi tiết lỗi
+            e.printStackTrace();  // In ra chi tiết lỗi
+
+            // Trả về phản hồi lỗi chi tiết
+            response.put("success", "false");  // Đảm bảo có trường success và set giá trị false khi có lỗi
+            response.put("message", "Có lỗi xảy ra: " + e.getMessage());  // Thêm thông điệp lỗi chi tiết
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+
         }
     }
-*/
+
+
+
+
     @PutMapping("/tour-times/update")
     public ResponseEntity<Map<String, String>> updateTourTime(@RequestBody Map<String, Object> tourTimeData) {
         Map<String, String> response = new HashMap<>();
