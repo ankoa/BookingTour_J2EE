@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.tourbooking.model.Account;
 import com.tourbooking.repository.AccountRepository;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -84,6 +85,8 @@ public class AccountService {
         customer.setAddress(request.getAddress());
         customer.setSex(request.getSex());
         customer.setBirthday(request.getBirthday());
+        customer.setTime(new Date());
+        customer.setStatus(1);
         try {
             customerRepository.save(customer);
             Account account = new Account();
@@ -92,6 +95,7 @@ public class AccountService {
             account.setPassword(passwordEncoder.encode(request.getPassword()));
             account.setEmail(request.getEmail());
             account.setStatus(1);
+            account.setTime(LocalDateTime.now());
             account.setRole("ROLE_USER");
             accountRepository.save(account);
             return accountMapper.toAccountResponse(account);

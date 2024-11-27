@@ -14,13 +14,19 @@ import java.time.ZoneId;
 import java.util.Date;
 
 public class TourSpecification {
-    public static Specification<Tour> hasPriceBetween(Integer min, Integer max) {
+    public static Specification<Tour> hasPriceBetween(Integer min, Integer max, String sort) {
         return (root, query, criteriaBuilder) -> {
-            if (min == null && max == null) return null;
             Subquery<Integer> subquery = query.subquery(Integer.class);
             Root<TourTime> tourTimeRoot = subquery.from(TourTime.class);
             subquery.select(criteriaBuilder.min(tourTimeRoot.get("priceAdult")))
                     .where(criteriaBuilder.equal(tourTimeRoot.get("tour").get("id"), root.get("id")));
+            if(sort.equalsIgnoreCase("asc") ){
+                query.orderBy(criteriaBuilder.asc(subquery));
+            }
+            if(sort.equalsIgnoreCase("desc")) {
+                query.orderBy(criteriaBuilder.desc(subquery));
+            }
+            if (min == null && max == null) return null;
             if (min != null && max != null) {
                 return criteriaBuilder.between(subquery, min * 1000000, max * 1000000);
             }
@@ -70,5 +76,6 @@ public class TourSpecification {
             return criteriaBuilder.equal(root.get("status"), status);
         };
     }
+
 
 }

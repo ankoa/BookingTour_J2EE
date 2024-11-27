@@ -28,6 +28,6 @@ public class ApiTourController {
                                            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date departureDate,
                                            @RequestParam(required = false) Integer categoryId,
                                            Pageable pageable) {
-        return tourService.findTours(min,max,search,categoryId,departureDate,pageable);
+        return tourService.findTours(min,max,search,categoryId,departureDate,pageable, sort);
     }
 }
