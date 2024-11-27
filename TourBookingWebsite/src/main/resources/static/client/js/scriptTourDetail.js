@@ -4,6 +4,38 @@ document.addEventListener("DOMContentLoaded", function () {
     const tourTimeInfo = document.querySelector("#tour-info-content");
 
 
+    // spaceBetween: 30,
+    const swiper = new Swiper(".mySwiper", {
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        allowTouchMove: false,
+    });
+
+    // Tạo các slide cho mỗi tháng
+    const tourTimesRendered = new Map();
+    tourTimes.forEach((monthData) => {
+        const month = new Date(monthData.departureTime);
+
+        const monthKey = `${month.getFullYear()}-${month.getMonth() + 1}`;
+        if (!tourTimesRendered.has(monthKey)) {
+
+            const monthSlide = document.createElement("div");
+            monthSlide.classList.add("swiper-slide");
+
+            // Thêm tên tháng và các ngày trong tháng
+            monthSlide.innerHTML =
+                `<h2>Tháng ${getMonthFromDate(month) + 1}</h2>` + renderDaysInMonth(month);
+
+            // Thêm slide vào Swiper
+            swiperWrapper.appendChild(monthSlide);
+            tourTimesRendered.set(monthKey, []);
+        }
+        // Kiểm tra nếu tháng có dữ liệu
+    });
+
+
     function getDayFromDate(value) {
         const dateObj = new Date(value);
         return dateObj.getDate();
@@ -175,36 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-        // spaceBetween: 30,
-    const swiper = new Swiper(".mySwiper", {
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
-        allowTouchMove: false,
-    });
 
-    // Tạo các slide cho mỗi tháng
-    const tourTimesRendered = new Map();
-    tourTimes.forEach((monthData) => {
-        const month = new Date(monthData.departureTime);
-
-        const monthKey = `${month.getFullYear()}-${month.getMonth() + 1}`;
-        if (!tourTimesRendered.has(monthKey)) {
-
-            const monthSlide = document.createElement("div");
-            monthSlide.classList.add("swiper-slide");
-
-            // Thêm tên tháng và các ngày trong tháng
-            monthSlide.innerHTML =
-                `<h2>Tháng ${getMonthFromDate(month) + 1}</h2>` + renderDaysInMonth(month);
-
-            // Thêm slide vào Swiper
-            swiperWrapper.appendChild(monthSlide);
-            tourTimesRendered.set(monthKey, []);
-        }
-        // Kiểm tra nếu tháng có dữ liệu
-    });
 
 });
 

@@ -21,6 +21,16 @@ public class PaymentVNPayService {
 
     private final VNPAYConfig vnPayConfig;
 
+    public PaymentDTO.PaymentResponse createVnPayPayment(HttpServletRequest request, String orderId) {
+        Booking booking=bookingService.findById(Integer.parseInt(orderId));
+        if(booking==null)
+            return PaymentDTO.PaymentResponse.builder()
+                    .code("error")
+                    .message("Booking not found")
+                    .build();
+        return createVnPayPayment(request,booking);
+    }
+
     public PaymentDTO.PaymentResponse createVnPayPayment(HttpServletRequest request, Booking booking) {
         if(booking==null) 
             return PaymentDTO.PaymentResponse.builder()
