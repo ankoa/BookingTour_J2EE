@@ -33,4 +33,7 @@ public class TransportDetailService {
     public void deleteTransportDetail(int id) {
         transportDetailRepository.deleteById(id);
     }
+    public List<TransportDetail> getTransportDetailsByTourTimeId(int tourTimeId) {
+        return transportDetailRepository.findByTourTime_TourTimeId(tourTimeId);
+    }
 }

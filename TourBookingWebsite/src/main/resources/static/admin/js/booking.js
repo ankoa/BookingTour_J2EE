@@ -46,7 +46,7 @@ function renderBookings(bookings) {
                 <td>${booking.adultCount}</td>
                 <td>${booking.childCount}</td>
 				<td>
-				    ${booking.status == 2 ? "Đã thanh toán" : (booking.status == 1 ? "Chưa thanh toán" : "Cancel Booking")}
+				    ${booking.status == 2 ? "Đã thanh toán" : (booking.status == 1 ? "Chưa thanh toán" : "Xóa-Cancel Booking")}
 				</td>
                 <td>${new Date(booking.time).toLocaleString()}</td>
                 <td>${booking.totalDiscount ? booking.totalDiscount.toLocaleString() + " VNĐ" : "Không có"}</td>
@@ -110,63 +110,49 @@ function clearFilters() {
     filterBookings();
 }
 function filterBookings() {
-    // Lấy giá trị từ các phần tử trên form
-    const searchInput = document.getElementById('searchInput').value.toLowerCase(); // Lấy giá trị từ input tìm kiếm
-    const statusFilter = document.getElementById('statusFilter').value; // Lấy giá trị từ select trạng thái
-    const priceFilter = document.getElementById('priceFilter').value; // Lấy giá trị từ select khoảng giá
-    const startDate = document.getElementById('startDate').value; // Lấy giá trị từ input ngày bắt đầu
-    const endDate = document.getElementById('endDate').value; // Lấy giá trị từ input ngày kết thúc
-    const tableRows = document.querySelectorAll('#table-content tr'); // Các hàng trong bảng booking
-    
-    // In các giá trị ra console để kiểm tra
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const priceFilter = document.getElementById('priceFilter').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const tableRows = document.querySelectorAll('#table-content tr');
+
     console.log("Search Input:", searchInput);
     console.log("Status Filter:", statusFilter);
     console.log("Price Filter:", priceFilter);
     console.log("Start Date:", startDate);
     console.log("End Date:", endDate);
-    
+
     tableRows.forEach(row => {
-        // Lấy giá trị từ các cột trong mỗi hàng
-        const bookingId = row.cells[0].innerText.toLowerCase(); // Cột Booking ID
-        const customerId = row.cells[1].innerText.toLowerCase(); // Cột Customer ID
-        const tourTimeId = row.cells[2].innerText.toLowerCase(); // Cột Tour Time ID
-        const status = row.cells[6].innerText.toLowerCase().trim(); // Cột Trạng thái
-        const totalPrice = parseFloat(row.cells[3].innerText.replace(',', '')); // Cột tổng giá, loại bỏ dấu phân cách nghìn
-        const bookingDate = new Date(row.cells[7].innerText); // Cột ngày booking
-        
-        // In giá trị của các cột trong mỗi hàng ra console để kiểm tra
-        console.log("Booking ID:", bookingId);
-        console.log("Status:", status);
-        console.log("Total Price:", totalPrice);
-        console.log("Booking Date:", bookingDate);
-        
-        // Kiểm tra điều kiện tìm kiếm trong BookingId, CustomerId và TourTimeId
-        const matchesSearch = 
-            bookingId.includes(searchInput) || 
-            customerId.includes(searchInput) || 
+        const bookingId = row.cells[0].innerText.toLowerCase();
+        const customerId = row.cells[1].innerText.toLowerCase();
+        const tourTimeId = row.cells[2].innerText.toLowerCase();
+        const status = row.cells[6].innerText.toLowerCase().trim();
+		const totalPrice = parseFloat(row.cells[3].innerText.replace(/,/g, '').replace(/\./g, ''));
+        const bookingDate = new Date(row.cells[7].innerText);
+		console.log(priceFilter,totalPrice , bookingId);
+        const matchesSearch =
+            bookingId.includes(searchInput) ||
+            customerId.includes(searchInput) ||
             tourTimeId.includes(searchInput);
 
-        // Kiểm tra trạng thái
-        const matchesStatus = 
-            statusFilter === '' || // Nếu trạng thái là Tất cả
-            (statusFilter === '1' && status === 'đã thanh toán') ||
-            (statusFilter === '0' && status === 'chưa thanh toán');
+        const matchesStatus =
+            statusFilter === '' ||
+            (statusFilter === '2' && status === 'đã thanh toán') ||
+            (statusFilter === '1' && status === 'chưa thanh toán') ||
+            (statusFilter === '0' && status === 'xóa-cancel booking');
 
-        // Kiểm tra khoảng giá
-        const matchesPrice = 
-            priceFilter === '' || // Nếu khoảng giá là Tất cả
+        const matchesPrice =
+            priceFilter === '' ||
             (priceFilter === '100000' && totalPrice < 100000) ||
             (priceFilter === '100000-500000' && totalPrice >= 100000 && totalPrice <= 500000) ||
             (priceFilter === '500000-1000000' && totalPrice > 500000 && totalPrice <= 1000000) ||
             (priceFilter === '1000000-5000000' && totalPrice > 1000000 && totalPrice <= 5000000) ||
             (priceFilter === '5000000+' && totalPrice > 5000000);
-
-        // Kiểm tra ngày booking trong khoảng thời gian
-        const matchesDate = 
-            (startDate === '' || bookingDate >= new Date(startDate)) && 
+        const matchesDate =
+            (startDate === '' || bookingDate >= new Date(startDate)) &&
             (endDate === '' || bookingDate <= new Date(endDate));
 
-        // Nếu các điều kiện đều khớp, hiển thị hàng, nếu không thì ẩn hàng
         if (matchesSearch && matchesStatus && matchesPrice && matchesDate) {
             row.style.display = '';
         } else {
@@ -174,6 +160,7 @@ function filterBookings() {
         }
     });
 }
+
 
 
 

@@ -124,19 +124,14 @@ public class TransportDetailController {
 
 
 
-
-
-
-
-
-
-
-
-
-    // Xóa TransportDetail theo ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTransportDetail(@PathVariable int id) {
-        transportDetailService.deleteTransportDetail(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("TransportDetail with ID " + id + " deleted successfully");
+    @GetMapping("/by-tour-time/{tourTimeId}")
+    public List<TransportDetail> getTransportDetailsByTourTimeId(@PathVariable int tourTimeId) {
+        return transportDetailService.getTransportDetailsByTourTimeId(tourTimeId);
     }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteTransportDetail(@PathVariable int id) {
+        transportDetailService.deleteTransportDetail(id);
+        return ResponseEntity.status(HttpStatus.OK).body("{\"success\": true, \"message\": \"TransportDetail with ID " + id + " deleted successfully\"}");
+    }
+
 }
