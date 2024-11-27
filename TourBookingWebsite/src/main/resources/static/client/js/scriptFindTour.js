@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     height="0"
                                     decoding="async"
                                     data-nimg="1"
-                                    src=${t.tourImages[0] ? t.tourImages[0].imageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGXbTGoxQL8XMvTihnWUFA93sSGkFnQfMjwg&s"}
+                                    src=${t.tourImage ? t.tourImage.imageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGXbTGoxQL8XMvTihnWUFA93sSGkFnQfMjwg&s"}
                                     style="color: transparent"
                             />
                             <div class="card-tag">

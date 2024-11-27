@@ -71,7 +71,17 @@ public class SecurityConfig {
                             response.getWriter().flush();
                         })
                         .permitAll())
-                .logout(logout -> logout.permitAll())
+                .rememberMe(rememberMe -> rememberMe.key("uniqueAndSecret")
+                        .tokenValiditySeconds(86400)
+                        .userDetailsService(userDetailsService())
+                )
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl("/account-login")
+                        .deleteCookies("JSESSIONID")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .permitAll()
+                )
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
