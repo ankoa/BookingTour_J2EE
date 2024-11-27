@@ -1,24 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
+    let formData = {page: 0, size: 6, sort: ""}
+    fetchCardFilter(formData);
 
-    fetchCardFilter(0);
 
-    function fetchCardFilter(page) {
+    function fetchCardFilter(formData) {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
-        const budget = document.querySelector(".budget-item.active")?.getAttribute("data-value").split("-");
-        const formData = {
-            min: budget ? budget[0] : "",
-            max: budget ? budget[1] : "",
-            search: document.getElementById("search").value,
-            departureDate: document.getElementById("departureDate").value,
-            categoryId: document.querySelector(".tag-container-item.active")?.value || "",
-            page: page,
-            size: 6,
-            sort: document.getElementById("order-select").value
-        }
-
+        console.log(formData)
         const params = new URLSearchParams(formData);
         const apiUrl = `/api/tours?${params.toString()}`;
         fetch(apiUrl, {
@@ -122,7 +112,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const prevButton = document.createElement("button");
         prevButton.textContent = "Previous";
         prevButton.disabled = currentPage === 0;
-        prevButton.onclick = () => fetchCardFilter(currentPage - 1);
+        prevButton.onclick = () => {
+            formData = {...formData, page: formData.page - 1}
+            fetchCardFilter(formData);
+        }
         paginationContainer.appendChild(prevButton);
 
         // Page buttons
@@ -130,91 +123,111 @@ document.addEventListener("DOMContentLoaded", function () {
             const pageButton = document.createElement("button");
             pageButton.textContent = i + 1;
             pageButton.classList.toggle("active", i === currentPage);
-            pageButton.onclick = () => fetchCardFilter(i);
+            pageButton.onclick = () => {
+                formData = {...formData, page: i}
+                fetchCardFilter(formData);
+            }
             paginationContainer.appendChild(pageButton);
         }
 
-        // Next button
-        const nextButton = document.createElement("button");
-        nextButton.textContent = "Next";
-        nextButton.disabled = currentPage === totalPages - 1;
-        nextButton.onclick = () => fetchCardFilter(currentPage + 1);
-        paginationContainer.appendChild(nextButton);
+
+    // Next button
+    const nextButton = document.createElement("button");
+    nextButton.textContent = "Next";
+    nextButton.disabled = currentPage === totalPages - 1;
+    nextButton.onclick = () => {
+        formData = {...formData, page: form.page + 1}
+        fetchCardFilter(formData);
+    }
+    paginationContainer.appendChild(nextButton);
     }
 
-    const closeOverlay = () => {
-        document.querySelector(".overlay").style.display = "none"; // Ẩn overlay
-    };
+const closeOverlay = () => {
+    document.querySelector(".overlay").style.display = "none"; // Ẩn overlay
+};
 
-    const openOverlay = () => {
-        document.querySelector(".overlay").style.display = "flex"; // Hiển thị overlay
-    };
+const openOverlay = () => {
+    document.querySelector(".overlay").style.display = "flex"; // Hiển thị overlay
+};
 
-    const openFilterMobile = () => {
-        const filter = document.querySelector(".filter");
-        filter.classList.add("active");
-        openOverlay();
-        document.body.classList.add("no-scroll");
-    };
+const openFilterMobile = () => {
+    const filter = document.querySelector(".filter");
+    filter.classList.add("active");
+    openOverlay();
+    document.body.classList.add("no-scroll");
+};
 
-    const closeFilterMobile = () => {
-        closeOverlay();
-        const filter = document.querySelector(".filter");
-        filter.classList.toggle("active");
-        document.body.classList.remove("no-scroll");
-    };
+const closeFilterMobile = () => {
+    closeOverlay();
+    const filter = document.querySelector(".filter");
+    filter.classList.toggle("active");
+    document.body.classList.remove("no-scroll");
+};
 
-    document
-        .querySelector(".filter-btn-mobile")
-        .addEventListener("click", openFilterMobile);
+document
+    .querySelector(".filter-btn-mobile")
+    .addEventListener("click", openFilterMobile);
 
-    document
-        .querySelector(".overlay")
-        .addEventListener("click", closeFilterMobile);
+document
+    .querySelector(".overlay")
+    .addEventListener("click", closeFilterMobile);
 
-    document
-        .querySelector(".close-btn")
-        .addEventListener("click", closeFilterMobile);
+document
+    .querySelector(".close-btn")
+    .addEventListener("click", closeFilterMobile);
 
-    const budgetItems = document.querySelectorAll(".budget-item");
-    budgetItems.forEach((item) => {
-        item.addEventListener("click", function () {
-            budgetItems.forEach((i) => i.classList.remove("active"));
+const budgetItems = document.querySelectorAll(".budget-item");
+budgetItems.forEach((item) => {
+    item.addEventListener("click", function () {
+        budgetItems.forEach((i) => i.classList.remove("active"));
 
-            this.classList.add("active");
-        });
+        this.classList.add("active");
     });
+});
 
+const categoryTags = document.querySelectorAll(".tour-categories .tag-container-item");
+categoryTags.forEach((item) => {
+    item.addEventListener("click", function () {
+        categoryTags.forEach((i) => i.classList.remove("active"));
+        this.classList.add("active");
+    });
+});
+
+document.getElementById("filter-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const budget = document.querySelector(".budget-item.active")?.getAttribute("data-value").split("-");
+    closeFilterMobile();
+    formData = {
+        ...formData,
+        min: budget ? budget[0] : "",
+        max: budget ? budget[1] : "",
+        search: document.getElementById("search").value,
+        departureDate: document.getElementById("departureDate").value,
+        categoryId: document.querySelector(".tag-container-item.active")?.value || "",
+        size: 6,
+        sort: document.getElementById("order-select").value,
+        page:0
+    }
+    fetchCardFilter(formData);
+})
+
+document.getElementById("order-select").addEventListener("change", (event) => {
+    formData = {...formData, sort: event.target.value, page: 0}
+    fetchCardFilter(formData);
+})
+
+document.getElementById("btnReset").addEventListener("click", (event) => {
     const categoryTags = document.querySelectorAll(".tour-categories .tag-container-item");
     categoryTags.forEach((item) => {
-        item.addEventListener("click", function () {
-            categoryTags.forEach((i) => i.classList.remove("active"));
-            this.classList.add("active");
-        });
-    });
-
-    document.getElementById("filter-form").addEventListener("submit", (event) => {
-        event.preventDefault();
-        fetchCardFilter(0);
+        item.classList.remove("active")
     })
-
-    document.getElementById("order-select").addEventListener("change", () => {
-        console.log("aaa");
-        fetchCardFilter(0);
+    const budgets = document.querySelectorAll(".budget-item");
+    budgetItems.forEach((item) => {
+        item.classList.remove("active")
     })
-
-    document.getElementById("btnReset").addEventListener("click", (event) => {
-        const categoryTags = document.querySelectorAll(".tour-categories .tag-container-item");
-        categoryTags.forEach((item) => {
-            item.classList.remove("active")
-        })
-        const budgets = document.querySelectorAll(".budget-item");
-        budgetItems.forEach((item) => {
-            item.classList.remove("active")
-        })
-        // document.getElementById("departureDate").reset()
-        // document.getElementById("search").reset()
-        //
-        document.getElementById("filter-form").reset();
-    })
+    // document.getElementById("departureDate").reset()
+    // document.getElementById("search").reset()
+    //
+    document.getElementById("filter-form").reset();
+})
 })
