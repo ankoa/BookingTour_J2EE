@@ -92,11 +92,11 @@ public class HomeController {
             return "redirect:/";
 
         //add image default
-        if (tourResponse.getTourImages().isEmpty()) {
+        if (tourResponse.getTourImageResponses().isEmpty()) {
             List<TourImageResponse> listTourImage = new ArrayList<>();
             listTourImage.add(new TourImageResponse(999,"/client/img/54.jpg",1));
-            listTourImage.add(new TourImageResponse(2,"/client/img/55.jpg",2));
-            tourResponse.setTourImages(listTourImage);
+            listTourImage.add(new TourImageResponse(998,"/client/img/55.jpg",0));
+            tourResponse.setTourImageResponses(listTourImage);
         }
 
         model.addAttribute("user", user);
