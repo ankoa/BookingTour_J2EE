@@ -134,8 +134,8 @@ public class TourService {
         return tourResponse;
     }
 
-    public Page<FindTourResponse> findTours(Integer minPrice, Integer maxPrice, String search, Integer categoryId, Date departureDate, Pageable pageable) {
-        Specification<Tour> spec = Specification.where(TourSpecification.hasPriceBetween(minPrice, maxPrice))
+    public Page<FindTourResponse> findTours(Integer minPrice, Integer maxPrice, String search, Integer categoryId, Date departureDate, Pageable pageable, String sort) {
+        Specification<Tour> spec = Specification.where(TourSpecification.hasPriceBetween(minPrice, maxPrice,sort))
                 .and(TourSpecification.hasCategoryId(categoryId))
                 .and(TourSpecification.hasDepartureDate(departureDate))
                 .and(TourSpecification.hasSearchKeyword(search))

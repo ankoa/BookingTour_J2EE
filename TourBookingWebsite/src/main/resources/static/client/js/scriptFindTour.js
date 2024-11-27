@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
             departureDate: document.getElementById("departureDate").value,
             categoryId: document.querySelector(".tag-container-item.active")?.value || "",
             page: page,
-            size: 6
+            size: 6,
+            sort: document.getElementById("order-select").value
         }
 
         const params = new URLSearchParams(formData);
@@ -197,6 +198,11 @@ document.addEventListener("DOMContentLoaded", function () {
         fetchCardFilter(0);
     })
 
+    document.getElementById("order-select").addEventListener("change", () => {
+        console.log("aaa");
+        fetchCardFilter(0);
+    })
+
     document.getElementById("btnReset").addEventListener("click", (event) => {
         const categoryTags = document.querySelectorAll(".tour-categories .tag-container-item");
         categoryTags.forEach((item) => {
@@ -206,7 +212,6 @@ document.addEventListener("DOMContentLoaded", function () {
         budgetItems.forEach((item) => {
             item.classList.remove("active")
         })
-
         // document.getElementById("departureDate").reset()
         // document.getElementById("search").reset()
         //
