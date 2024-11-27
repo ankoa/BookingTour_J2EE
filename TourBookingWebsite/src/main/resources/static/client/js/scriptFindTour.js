@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
     nextButton.textContent = "Next";
     nextButton.disabled = currentPage === totalPages - 1;
     nextButton.onclick = () => {
-        formData = {...formData, page: form.page + 1}
+        formData = {...formData, page: formData.page + 1}
         fetchCardFilter(formData);
     }
     paginationContainer.appendChild(nextButton);
