@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 @RequestMapping("/admin")
+
 @Controller
 public class TourTimeControllerAdmin {
     private static final Logger logger = LoggerFactory.getLogger(TourTimeControllerAdmin.class);
@@ -213,47 +214,90 @@ public class TourTimeControllerAdmin {
 
         }
     }
-
-
-
-
-    @PutMapping("/tour-times/update")
-    public ResponseEntity<Map<String, String>> updateTourTime(@RequestBody Map<String, Object> tourTimeData) {
-        Map<String, String> response = new HashMap<>();
+    @PutMapping("/tour-times/update/{id}")
+    public ResponseEntity<Map<String, Object>> updateTourTime(@PathVariable("id") Integer id, @RequestBody Map<String, Object> tourTimeData) {
+        Map<String, Object> response = new HashMap<>();
         try {
-            Integer tourTimeId = ((Number) tourTimeData.get("tourTimeId")).intValue();
-            String timeName = (String) tourTimeData.get("timeName");
-            Integer status = ((Number) tourTimeData.get("status")).intValue();
+            System.out.println("tourTimeData: " + tourTimeData);
 
-            if (tourTimeId == null || timeName == null || status == null) {
-                response.put("message", "Vui lòng điền đầy đủ thông tin!");
-                return ResponseEntity.badRequest().body(response);
+            // Lấy thông tin từ request và kiểm tra giá trị null
+            String tourTimeCode = (String) tourTimeData.get("tourTimeCode");
+            String timeName = (String) tourTimeData.get("timeName");
+
+            System.out.println("Tour Time Code: " + tourTimeCode);
+            System.out.println("Time Name: " + timeName);
+
+            if (tourTimeCode == null || timeName == null) {
+                response.put("success", false);
+                response.put("message", "Các trường mã thời gian và tên thời gian không được bỏ trống.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
-            TourTime existingTourTime = tourTimeService.getTourTimeById(tourTimeId+"")
-                    .orElseThrow(() -> new IllegalArgumentException("Tour time không tồn tại!"));
+            TourTime tourTime = tourTimeService.getTourTimeByIdINT(id);
+            if (tourTime == null) {
+                response.put("success", false);
+                response.put("message", "Không tìm thấy thời gian tour với ID " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
 
-            existingTourTime.setTimeName(timeName);
-            existingTourTime.setStatus(status);
+            TourTime existingTourTime = tourTime;
 
-            tourTimeService.updateTourTime(existingTourTime);
-            response.put("message", "Cập nhật tour time thành công!");
+            if (tourTimeCode != null) existingTourTime.setTourTimeCode(tourTimeCode);
+            if (timeName != null) existingTourTime.setTimeName(timeName);
+
+            Integer status = (tourTimeData.get("status") != null) ? Integer.parseInt(tourTimeData.get("status").toString()) : null;
+            if (status != null) existingTourTime.setStatus(status);
+
+            Integer quantity = (tourTimeData.get("quantity") != null) ? Integer.parseInt(tourTimeData.get("quantity").toString()) : null;
+            Integer priceAdult = (tourTimeData.get("priceAdult") != null) ? Integer.parseInt(tourTimeData.get("priceAdult").toString()) : null;
+            Integer priceChild = (tourTimeData.get("priceChild") != null) ? Integer.parseInt(tourTimeData.get("priceChild").toString()) : null;
+            String note = (String) tourTimeData.get("note");
+
+            if (quantity != null) existingTourTime.setQuantity(quantity);
+            if (priceAdult != null) existingTourTime.setPriceAdult(priceAdult);
+            if (priceChild != null) existingTourTime.setPriceChild(priceChild);
+            if (note != null) existingTourTime.setNote(note);
+
+            try {
+                tourTimeService.updateTourTime(existingTourTime);
+            } catch (RuntimeException e) {
+                response.put("success", false);
+                response.put("message", "Có lỗi xảy ra khi cập nhật thời gian tour: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+
+            response.put("success", true);
+            response.put("message", "Cập nhật thời gian tour thành công.");
             return ResponseEntity.ok(response);
+
         } catch (Exception e) {
+            e.printStackTrace();
+
+            response.put("success", false);
             response.put("message", "Có lỗi xảy ra: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    @DeleteMapping("/tour-times/delete/{id}")
-    public ResponseEntity<String> deleteTourTime(@PathVariable int id) {
-        boolean isDeleted = tourTimeService.deleteTourTime(id);
-        if (isDeleted) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tour time không tồn tại.");
+
+
+
+
+
+
+
+    @PostMapping("/tour-times/delete")
+    public ResponseEntity<?> deleteTourTime(@RequestParam Integer tourTimeId) {
+        try {
+            // Cập nhật trạng thái về 0
+            tourTimeService.updateStatusToZero(tourTimeId);
+            return ResponseEntity.ok("TourTime has been updated (status set to 0).");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occurred: " + e.getMessage());
         }
     }
+
 
     @GetMapping("/gettourtimesbytourID/{tourId}")
     public ResponseEntity<List<TourTime>> getTourTimesByTourId(@PathVariable int tourId) {
@@ -271,6 +315,7 @@ public class TourTimeControllerAdmin {
             return ResponseEntity.notFound().build(); // Trả về lỗi 404 nếu không tìm thấy
         }
     }
+
 
 
 }

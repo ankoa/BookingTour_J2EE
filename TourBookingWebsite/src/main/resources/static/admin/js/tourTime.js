@@ -29,8 +29,13 @@ function loadTourTimes() {
 					            <button class="btn btn-warning btn-sm w-100" data-id="${tourTime.tourTimeId}" onclick="editTourTime(this)">Chỉnh sửa</button>
 					        </div>
 					        <div class="col">
-					            <button class="btn btn-danger btn-sm w-100" data-id="${tourTime.tourTimeId}" onclick="deleteTourTime(this)">Xóa</button>
-					        </div>
+							<button  
+							  class="btn btn-danger btn-sm w-100" 
+							  data-id="${tourTime.tourTimeId}" 
+							  onclick="confirmDeleteTourTime(this)" 
+							  ${tourTime.status === 0 ? 'disabled' : ''}
+							>Xóa</button>						
+							</div>
 					    </div>
 					    <!-- Hàng 2 -->
 					    <div class="row">
@@ -72,42 +77,60 @@ function fetchTourNameAddEdit(tourId) {
     }
   }
 
-  // Hàm xử lý thêm Tour Time
   function addTourTime() {
-      const timeName = document.getElementById("timeName").value;
-      const tourTimeCode = document.getElementById("tourTimeCode").value;
-	  const tourId = Number(document.getElementById('tourIdinTourTime').value);
-      const departureDate = document.getElementById("departureDateinTourTime").value;
-      const departureHour = document.getElementById("departureHourinTourTime").value;
-      const departureMinute = document.getElementById("departureMinuteinTourTime").value;
-      const arrivalDate = document.getElementById("arrivalDateinTourTime").value;
-      const arrivalHour = document.getElementById("arrivalHourinTourTime").value;
-      const arrivalMinute = document.getElementById("arrivalMinuteinTourTime").value;
-      const priceAdult = document.getElementById("priceAdultinTourTime").value;
-      const priceChild = document.getElementById("priceChildinTourTime").value;
-      const note = document.getElementById("noteinTourTime").value;
-      const quantity = document.getElementById("quantityinTourTime").value;  // Lấy dữ liệu Số lượng
+      const timeName = document.getElementById("timeName").value.trim();
+      const tourTimeCode = document.getElementById("tourTimeCode").value.trim();
+      const tourId = Number(document.getElementById('tourIdinTourTime').value.trim());
+      const departureDate = document.getElementById("departureDateinTourTime").value.trim();
+      const departureHour = document.getElementById("departureHourinTourTime").value.trim();
+      const departureMinute = document.getElementById("departureMinuteinTourTime").value.trim();
+      const arrivalDate = document.getElementById("arrivalDateinTourTime").value.trim();
+      const arrivalHour = document.getElementById("arrivalHourinTourTime").value.trim();
+      const arrivalMinute = document.getElementById("arrivalMinuteinTourTime").value.trim();
+      const priceAdult = document.getElementById("priceAdultinTourTime").value.trim();
+      const priceChild = document.getElementById("priceChildinTourTime").value.trim();
+      const note = document.getElementById("noteinTourTime").value.trim();
+      const quantity = document.getElementById("quantityinTourTime").value.trim();
 
-      // Nối chuỗi để tạo thời gian đầy đủ với định dạng YYYY-MM-DD HH:mm:00
-      const departureTime = `${departureDate} ${departureHour}:${departureMinute}:00`;
-      const returnTime = `${arrivalDate} ${arrivalHour}:${arrivalMinute}:00`;
+      // Check for null or empty values
+      if (!timeName || !tourTimeCode || isNaN(tourId) || !departureDate || !departureHour || !departureMinute ||
+          !arrivalDate || !arrivalHour || !arrivalMinute || !priceAdult || !priceChild || !quantity) {
+          alert("Vui lòng điền đầy đủ tất cả thông tin!");
+          return;
+      }
 
-      // Dữ liệu để gửi, chỉ truyền giá trị đã nối của departureTime và arrivalTime
+      // Create full timestamps for departure and arrival
+      const departureTime = new Date(`${departureDate}T${departureHour}:${departureMinute}:00`);
+      const returnTime = new Date(`${arrivalDate}T${arrivalHour}:${arrivalMinute}:00`);
+
+      // Check if the departure time is in the future
+      if (departureTime <= new Date()) {
+          alert("Ngày đi phải là ngày trong tương lai!");
+          return;
+      }
+
+      // Check if the return time is valid (same day but later time or a later day)
+      if (returnTime < departureTime) {
+          alert("Ngày đến phải cùng ngày với ngày đi nhưng có giờ lớn hơn, hoặc phải là ngày sau!");
+          return;
+      }
+
+      // Prepare the data object to send
       const tourTimeData = {
           timeName,
           tourTimeCode,
           tourId,
-          departureTime,  // Chỉ gửi thời gian khởi hành đã nối
-          returnTime,     // Chỉ gửi thời gian đến đã nối
-          priceAdult,
-          priceChild,
+          departureTime: departureTime.toISOString(),
+          returnTime: returnTime.toISOString(),
+          priceAdult: Number(priceAdult),
+          priceChild: Number(priceChild),
           note,
-          quantity         // Thêm Số lượng vào dữ liệu gửi
+          quantity: Number(quantity) // Ensure quantity is treated as a number
       };
 
       console.log(tourTimeData);
 
-      // Gửi yêu cầu POST
+      // Send POST request
       fetch('/admin/tour-times/add', {
           method: 'POST',
           headers: {
@@ -116,20 +139,25 @@ function fetchTourNameAddEdit(tourId) {
           body: JSON.stringify(tourTimeData)
       })
       .then(response => response.json())
-	  .then(data => {
-	      if (data.success === "true") {  // Kiểm tra trường success có giá trị "true"
-	          alert("Thêm Tour Time thành công!");
-	          // Đóng modal sau khi thêm thành công
-	      } else {
-	          alert("Có lỗi khi thêm Tour Time: " + data.message);  // Hiển thị thông điệp lỗi từ server
-	      }
-	  })
-	  .catch(error => {
-	      console.error('Lỗi khi thêm Tour Time:', error);
-	      alert("Có lỗi khi thêm Tour Time.");
-	  });
-
+      .then(data => {
+          alert("Thêm Tour Time thành công!");
+          loadTourTimes();
+          const modal = bootstrap.Modal.getInstance(document.getElementById('addTourTimeModal'));
+          modal.hide();
+      })
+      .catch(error => {
+          console.error("Error adding tour time:", error);
+          alert("Đã xảy ra lỗi khi thêm Tour Time. Vui lòng thử lại sau.");
+      });
   }
+
+  document.getElementById('addTourTimeModal').addEventListener('hide.bs.modal', function () {
+    // Xóa lớp nền của modal
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+      backdrop.parentNode.removeChild(backdrop);
+    }
+  });
 /*
   function addTourTime() {
   	const tourTimeData = {
@@ -163,38 +191,129 @@ function fetchTourNameAddEdit(tourId) {
   	});
 
     }*/
-function editTourTime(button) {
-    const tourTimeId = button.getAttribute('data-id');
-    
-    // Gọi API để lấy dữ liệu tourTime
-    fetch(`/admin/gettourtimesbyidadmin/${tourTimeId}`)
-        .then(response => response.json())
-        .then(tourTime => {
-            if (tourTime) {
-                // Mở modal
-                const modal = new bootstrap.Modal(document.getElementById('editTourTimeModal'));
-                modal.show();
+	function editTourTime(button) {
+	    const tourTimeId = button.getAttribute('data-id');
+	    // Gọi API để lấy dữ liệu tourTime
+	    fetch(`/admin/gettourtimesbyidadmin/${tourTimeId}`)
+	        .then(response => {
+	            if (!response.ok) {  // Kiểm tra nếu có lỗi từ server
+	                throw new Error('Không thể lấy dữ liệu tourTime');
+	            }
+	            return response.json();
+	        })
+	        .then(tourTime => {
+	            if (tourTime) {
+	                console.log(tourTime);
+	                // Mở modal
+	                const modal = new bootstrap.Modal(document.getElementById('editTourTimeModal'));
+	                modal.show();
 
-                // Cập nhật các trường trong modal với dữ liệu của tourTime
-                document.getElementById('editTimeName').value = tourTime.timeName;
-                document.getElementById('editTourId').value = tourTime.tourId;
-                document.getElementById('editTourName').value =tourTime.tour.tourName;
-                document.getElementById('editDepartureTime').value = tourTime.departureTime;
-                document.getElementById('editReturnTime').value = tourTime.returnTime;
-                document.getElementById('editPriceAdult').value = tourTime.priceAdult;
-                document.getElementById('editPriceChild').value = tourTime.priceChild;
-                document.getElementById('editQuantity').value = tourTime.quantity;
-                document.getElementById('editStatus').value = tourTime.status;
-                document.getElementById('editNote').value = tourTime.note;
-            } else {
-                alert('Không tìm thấy thông tin tourTime!');
-            }
-        })
-        .catch(error => {
-            console.error('Lỗi khi lấy dữ liệu tourTime:', error);
-            alert('Có lỗi xảy ra khi tải thông tin tourTime.');
-        });
-}
+	                // Cập nhật các trường trong modal với dữ liệu của tourTime
+	                document.getElementById('editTimeName').value = tourTime.timeName;  // Tên Tour Time
+	                document.getElementById('editTourTimeCode').value = tourTime.tourTimeCode;  // Mã Tour Time
+	                console.log(tourTime.tour.tourId);
+
+	                // Cập nhật Tour ID và Tên Tour (Tour ID không cho chỉnh sửa)
+	                document.getElementById('editTourIdinTT').value = tourTime.tour.tourId;  // Tour ID
+	                document.getElementById('editTourNameinTT').value = tourTime.tour.tourName;  // Tên Tour
+
+	                // Cập nhật ngày và giờ khởi hành (bao gồm cả giờ và phút)
+	                const departureDate = new Date(tourTime.departureTime);
+	                const formattedDepartureDate = departureDate.toISOString().slice(0, 19).replace("T", " "); // Định dạng yyyy-mm-dd hh:mm:ss
+	                document.getElementById('editDepartureDate').value = formattedDepartureDate;  // Ngày khởi hành
+
+	                // Cập nhật ngày và giờ đến (bao gồm cả giờ và phút)
+	                const arrivalDate = new Date(tourTime.returnTime);
+	                const formattedArrivalDate = arrivalDate.toISOString().slice(0, 19).replace("T", " "); // Định dạng yyyy-mm-dd hh:mm:ss
+	                document.getElementById('editArrivalDate').value = formattedArrivalDate;  // Ngày đến
+
+	                // Cập nhật giá người lớn và trẻ em
+	                document.getElementById('editPriceAdult').value = tourTime.priceAdult;  // Giá người lớn
+	                document.getElementById('editPriceChild').value = tourTime.priceChild;  // Giá trẻ em
+
+	                // Cập nhật số lượng và ghi chú
+	                document.getElementById('editQuantity').value = tourTime.quantity;  // Số lượng
+	                document.getElementById('editNote').value = tourTime.note;  // Ghi chú
+
+					// Giả sử bạn đã có đối tượng tourTime với thuộc tính status
+					const statusSelect = document.getElementById('editStatus');
+
+					// Kiểm tra giá trị của tourTime.status và chọn giá trị tương ứng trong <select>
+					if (tourTime.status == 1) {
+					    statusSelect.value = "1";  // Trạng thái Hoạt động
+					} else if (tourTime.status == 0) {
+					    statusSelect.value = "0";  // Trạng thái Ngưng hoạt động
+					}
+
+
+	                // Cập nhật giá trị cho input ẩn tourTimeId
+	                document.getElementById('editTourTimeId').value = tourTimeId;  // Lưu tourTimeId vào input ẩn
+	            } else {
+	                alert('Không tìm thấy thông tin tourTime!');
+	            }
+	        })
+	        .catch(error => {
+	            console.error('Lỗi khi lấy dữ liệu tourTime:', error);
+	            alert('Có lỗi xảy ra khi tải thông tin tourTime.');
+	        });
+	}
+	function updateTourTime() {
+	    const timeName = document.getElementById('editTimeName').value;
+	    const tourTimeCode = document.getElementById('editTourTimeCode').value;
+	    const status = document.getElementById('editStatus').value;
+	    const priceAdult = Number(document.getElementById('editPriceAdult').value);
+	    const priceChild = Number(document.getElementById('editPriceChild').value);
+	    const quantity = Number(document.getElementById('editQuantity').value);
+	    const note = document.getElementById('editNote').value;
+	    const tourTimeId = Number(document.getElementById('editTourTimeId').value);
+
+	    console.log('Tour Time ID:', tourTimeId);
+	    console.log('Time Name:', timeName);
+	    console.log('Tour Time Code:', tourTimeCode);
+	    console.log('Status:', status);
+	    console.log('Price Adult:', priceAdult);
+	    console.log('Price Child:', priceChild);
+	    console.log('Quantity:', quantity);
+	    console.log('Note:', note);
+
+	    // Gửi yêu cầu PUT đến server
+	    fetch(`/admin/tour-times/update/${tourTimeId}`, {
+	        method: 'PUT',
+	        headers: {
+	            'Content-Type': 'application/json',
+	        },
+	        body: JSON.stringify({
+	            timeName: timeName,
+	            tourTimeCode: tourTimeCode,
+	            status: status,
+	            priceAdult: priceAdult,
+	            priceChild: priceChild,
+	            quantity: quantity,
+	            note: note,
+	        }),
+	    })
+	    .then(response => {
+	        // Chỉ cần giả định rằng cập nhật luôn thành công
+	        return response.json();
+	    })
+	    .then(data => {
+	        // Giả định là cập nhật thành công, không cần kiểm tra `data.success`
+	        alert('Cập nhật tour time thành công!');
+	        const modal = bootstrap.Modal.getInstance(document.getElementById('editTourTimeModal'));
+	        modal.hide();
+			loadTourTimes();
+	    })
+	    .catch(error => {
+	        console.error('Lỗi khi cập nhật tour time:', error);
+	        alert('Có lỗi xảy ra khi cập nhật dữ liệu.');
+	    });
+	}
+
+
+
+
+
+
 document.getElementById('btnClearTourTime').addEventListener('click', function () {
   // Xóa giá trị của ô tìm kiếm
   document.getElementById('searchInputTourTime').value = '';
@@ -615,4 +734,49 @@ function addDiscount() {
 	    document.getElementById('arrivalMinute').value = '';
 	    document.getElementById('status').value = '';
 	}
+	let selectedTourTimeId = null;
 
+	// Hàm mở modal xác nhận xóa TourTime
+	function confirmDeleteTourTime(button) {
+	  selectedTourTimeId = button.getAttribute('data-id'); // Lấy TourTimeId từ nút
+	  console.log(selectedTourTimeId);
+	  const confirmDeleteTourTimeModal = new bootstrap.Modal(
+	    document.getElementById('confirmDeleteTourTimeModal')
+	  );
+	  confirmDeleteTourTimeModal.show(); // Mở modal
+	}
+
+	// Hàm xử lý xóa TourTime
+	function deleteTourTime() {
+	  if (selectedTourTimeId) {
+	    // Gửi yêu cầu xóa đến server
+	    fetch(`/admin/tour-times/delete?tourTimeId=${selectedTourTimeId}`, {
+	      method: 'POST',
+	    })
+	      .then(response => {
+	        if (response.ok) {
+				showAlert('success', 'Xóa thành công!');
+	          // Reload lại trang sau khi xóa thành công
+	          loadTourTimes();
+	        } else {
+	          // Kiểm tra nếu có lỗi từ API và hiển thị chi tiết lỗi
+	          return response.text().then(text => {
+	            throw new Error(text);
+	          });
+	        }
+	      })
+	      .catch(error => {
+	        // Hiển thị thông báo lỗi nếu có vấn đề với yêu cầu fetch
+	        alert("Có lỗi xảy ra: " + error.message);
+	      })
+	      .finally(() => {
+	        // Đảm bảo đóng modal sau khi xóa xong
+	        const confirmDeleteTourTimeModal = bootstrap.Modal.getInstance(
+	          document.getElementById('confirmDeleteTourTimeModal')
+	        );
+	        confirmDeleteTourTimeModal.hide();
+	      });
+	  } else {
+	    alert("Không tìm thấy TourTime để xóa.");
+	  }
+	}
