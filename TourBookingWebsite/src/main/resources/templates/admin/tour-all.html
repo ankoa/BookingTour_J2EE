@@ -68,6 +68,25 @@
       id="alert-container"
       style="position: fixed; top: 20px; right: 20px; z-index: 1000000"
     ></div>
+<!-- Modal xác nhận xóa -->
+<div class="modal fade" id="confirmDeleteTourTimeModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteTourTimeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteTourTimeModalLabel">Xác Nhận Xóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xóa TourTime này không?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteTourTimeButton" onclick="deleteTourTime()">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
     <div
       class="modal fade"
@@ -1329,97 +1348,109 @@
   </div>
 </div>
 
-
-
-
-
-
-<!-- Modal Chỉnh sửa Tour Time -->
+<!-- Modal Chỉnh Sửa Tour Time -->
 <div class="modal fade" id="editTourTimeModal" tabindex="-1" aria-labelledby="editTourTimeModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg" style="margin-top: 10px">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editTourTimeModalLabel">Chỉnh Sửa Tour Time</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <!-- Tiêu đề Modal -->
+      <div class="modal-header bg-primary text-white" style="height: 40px">
+        <h5 class="modal-title fw-bold" id="editTourTimeModalLabel" style="font-size: 1.2rem;">Chỉnh Sửa Tour Time</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      <input type="hidden" id="editTourTimeId" name="tourTimeId">
+      
+      <!-- Nội dung Modal -->
       <div class="modal-body">
-        <form id="editTourTimeForm" onsubmit="editTourTimeSubmit(); return false;">
-          
-          <!-- Tên Tour Time -->
-          <div class="mb-3 row">
+        <form id="editTourTimeForm" onsubmit="editTourTime(); return false;">
+          <!-- Tên và mã Tour Time -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="timeName" class="form-label fw-semibold">Tên Tour Time</label>
+              <input type="text" class="form-control" id="editTimeName" placeholder="Nhập tên Tour Time" required>
+            </div>
+            <div class="col-md-6">
+              <label for="tourTimeCode" class="form-label fw-semibold">Tour Time Code</label>
+              <input type="text" class="form-control" id="editTourTimeCode" placeholder="Nhập mã Tour Time" required>
+            </div>
+          </div>
+
+          <!-- Tour ID và Tên Tour (không cho chỉnh sửa Tour ID) -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <label for="tourId" class="form-label fw-semibold">Tour ID</label>
+              <input type="text" class="form-control" id="editTourIdinTT" readonly placeholder="ID Tour" required>
+            </div>
+            <div class="col-md-6">
+              <label for="tourName" class="form-label fw-semibold">Tên Tour</label>
+              <input type="text" class="form-control" id="editTourNameinTT" readonly>
+            </div>
+          </div>
+
+          <!-- Ngày khởi hành và ngày đến (cùng hàng) -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <label for="departureDate" class="form-label fw-semibold">Ngày khởi hành</label>
+              <input type="text" id="editDepartureDate" class="form-control" required readonly>
+            </div>
+            <div class="col-md-6">
+              <label for="arrivalDate" class="form-label fw-semibold">Ngày đến</label>
+              <input type="text" id="editArrivalDate" class="form-control" readonly required>
+            </div>
+          </div>
+
+          <!-- Giá và trạng thái -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <label for="priceAdult" class="form-label fw-semibold">Giá Người Lớn</label>
+              <input type="number" class="form-control" id="editPriceAdult" placeholder="VNĐ" required>
+            </div>
+            <div class="col-md-6">
+              <label for="priceChild" class="form-label fw-semibold">Giá Trẻ Em</label>
+              <input type="number" class="form-control" id="editPriceChild" placeholder="VNĐ" required>
+            </div>
+          </div>
+
+          <!-- Số lượng, trạng thái và ghi chú -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <label for="quantity" class="form-label fw-semibold">Số lượng</label>
+              <input type="number" class="form-control" id="editQuantity" placeholder="Nhập số lượng" required>
+            </div>
+
+            <!-- Trạng thái -->
+            <div class="col-md-6">
+              <label for="status" class="form-label fw-semibold">Trạng thái</label>
+<select id="editStatus" class="form-control" required>
+    <option value="1">Hoạt động</option>
+    <option value="0">Ngưng hoạt động</option>
+</select>
+
+            </div>
+          </div>
+
+          <!-- Ghi chú -->
+          <div class="row g-3 mt-2">
             <div class="col-md-12">
-              <label for="editTimeName" class="form-label">Tên Tour Time</label>
-              <input type="text" class="form-control" id="editTimeName" required />
+              <label for="note" class="form-label fw-semibold">Ghi Chú</label>
+              <textarea class="form-control" id="editNote" rows="2" placeholder="Nhập ghi chú"></textarea>
             </div>
           </div>
 
-          <!-- Tour ID và Tên Tour lên dòng mới -->
-          <div class="mb-3 row">
-            <div class="col-md-6">
-              <label for="editTourId" class="form-label">Tour ID</label>
-              <input type="number" class="form-control" id="editTourId" oninput="fetchTourName(this.value)" required />
-            </div>
-            <div class="col-md-6">
-              <label for="editTourName" class="form-label">Tên Tour</label>
-              <input type="text" class="form-control" id="editTourName" readonly />
-            </div>
-          </div>
-          
-          <!-- Thời gian đi và về -->
-          <div class="mb-3 row">
-            <div class="col-md-6">
-              <label for="editDepartureTime" class="form-label">Thời Gian Đi</label>
-              <input type="datetime-local" class="form-control" id="editDepartureTime" required />
-            </div>
-            <div class="col-md-6">
-              <label for="editReturnTime" class="form-label">Thời Gian Về</label>
-              <input type="datetime-local" class="form-control" id="editReturnTime" required />
-            </div>
-          </div>
-
-          <!-- Giá Người Lớn và Giá Trẻ Em -->
-          <div class="mb-3 row">
-            <div class="col-md-6">
-              <label for="editPriceAdult" class="form-label">Giá Người Lớn</label>
-              <input type="number" class="form-control" id="editPriceAdult" required />
-            </div>
-            <div class="col-md-6">
-              <label for="editPriceChild" class="form-label">Giá Trẻ Em</label>
-              <input type="number" class="form-control" id="editPriceChild" required />
-            </div>
-          </div>
-
-          <!-- Số Lượng và Trạng Thái cùng một hàng -->
-          <div class="mb-3 row">
-            <div class="col-md-6">
-              <label for="editQuantity" class="form-label">Số Lượng</label>
-              <input type="number" class="form-control" id="editQuantity" required />
-            </div>
-            <div class="col-md-6">
-              <label for="editStatus" class="form-label">Trạng Thái</label>
-              <select class="form-select" id="editStatus" required>
-                <option value="1">Kích hoạt</option>
-                <option value="0">Ngưng hoạt động</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Ghi Chú ở một hàng riêng -->
-          <div class="mb-3">
-            <label for="editNote" class="form-label">Ghi Chú</label>
-            <textarea class="form-control" id="editNote" rows="2"></textarea>
-          </div>
-
-          <!-- Nút Lưu và Đóng -->
-          <div class="d-flex justify-content-center mt-3">
-            <button type="submit" class="btn btn-primary mx-2">Lưu Thay Đổi</button>
-            <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal">Đóng</button>
+          <!-- Nút hành động -->
+          <div class="row d-flex justify-content-center mt-4">
+			<button class="col-md-3 btn btn-primary"  onclick="updateTourTime()">Chỉnh Sửa Tour Time</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+
+
+
+
+
 
 </div>
 

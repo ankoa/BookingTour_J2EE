@@ -464,6 +464,14 @@
 	        showAlert('danger', 'Có lỗi xảy ra. Vui lòng thử lại.'); // Hiển thị thông báo lỗi
 	    });
 	};
+	// Lắng nghe sự kiện khi modal được đóng
+	document.getElementById('addTourModal').addEventListener('hide.bs.modal', function () {
+	  // Xóa lớp nền của modal
+	  const backdrop = document.querySelector('.modal-backdrop');
+	  if (backdrop) {
+	    backdrop.parentNode.removeChild(backdrop);
+	  }
+	});
 
 	document.getElementById('clearbtnTour').addEventListener('click', function () {
 	    clearFormSearch(); // Gọi hàm clearFormSearch

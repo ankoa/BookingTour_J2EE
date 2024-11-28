@@ -343,7 +343,25 @@ public class BookingService {
     public List<Map<String, Object>> getRevenueForDay(String specificDate) {
         return bookingRepository.findRevenueForSpecificDay(specificDate);
     }
+ // Tính số lượng tour được đặt theo số lần đặt nhiều nhất
+    public List<Map<String, Object>> getTopBookedTours(int limit) {
+        return bookingRepository.findTopBookedTours(limit);
+    }
 
+    // Tính số lượng tour được đặt theo năm
+    public List<Map<String, Object>> getTourCountByYear(int year) {
+        return bookingRepository.findTourCountByYear(year);
+    }
+
+    // Tính số lượng tour được đặt theo từng ngày trong tháng
+    public List<Map<String, Object>> getTourCountByDayInMonth(int year, int month) {
+        return bookingRepository.findTourCountByDayInMonth(year, month);
+    }
+
+    // Tính số lượng tour được đặt trong khoảng thời gian cụ thể (nhiều năm)
+    public List<Map<String, Object>> getTourCountInRange(String startDate, String endDate) {
+        return bookingRepository.findTourCountInRange(startDate, endDate);
+    }
     public BookingResponse getBookingResponseById(String Id,Integer status) {
         BookingResponse bookingResponse = new BookingResponse();
         Optional<Booking> bookingOptional = bookingRepository.findById(Integer.parseInt(Id));

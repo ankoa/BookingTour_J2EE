@@ -1,8 +1,12 @@
 package com.tourbooking.repository;
 
 import com.tourbooking.model.TourTime;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,5 +23,9 @@ public interface TourTimeRepository extends JpaRepository<TourTime, Integer> {
     Optional<TourTime> findByIdAdmin(@Param("tourTimeId") Integer tourTimeId);
 
     List<TourTime> findByTour_TourIdAndStatus(int tourId, Integer status, Sort sort);
+    @Modifying
+    @Transactional
+    @Query("UPDATE TourTime tt SET tt.status = 0 WHERE tt.tourTimeId = :tourTimeId")
+    void updateStatusToZero(@Param("tourTimeId") Integer tourTimeId);
 
 }

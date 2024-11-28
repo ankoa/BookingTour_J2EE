@@ -85,4 +85,51 @@ public class ChartControllerAdmin {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+ // Lấy danh sách các tour được đặt nhiều nhất với giới hạn
+    @GetMapping("/chart/topBookedTours/{limit}")
+    public ResponseEntity<List<Map<String, Object>>> getTopBookedTours(@PathVariable int limit) {
+        try {
+            List<Map<String, Object>> topBookedTours = bookingService.getTopBookedTours(limit);
+            return new ResponseEntity<>(topBookedTours, HttpStatus.OK);
+        } catch (Exception e) {
+            // Xử lý lỗi
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Tính số lượng tour được đặt theo năm
+    @GetMapping("/chart/tourCountByYear/{year}")
+    public ResponseEntity<List<Map<String, Object>>> getTourCountByYear(@PathVariable int year) {
+        try {
+            List<Map<String, Object>> tourCount = bookingService.getTourCountByYear(year);
+            return new ResponseEntity<>(tourCount, HttpStatus.OK);
+        } catch (Exception e) {
+            // Xử lý lỗi
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Tính số lượng tour được đặt theo từng ngày trong tháng
+    @GetMapping("/chart/tourCountByDay/{year}/{month}")
+    public ResponseEntity<List<Map<String, Object>>> getTourCountByDayInMonth(@PathVariable int year, @PathVariable int month) {
+        try {
+            List<Map<String, Object>> tourCountByDay = bookingService.getTourCountByDayInMonth(year, month);
+            return new ResponseEntity<>(tourCountByDay, HttpStatus.OK);
+        } catch (Exception e) {
+            // Xử lý lỗi
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Tính số lượng tour được đặt trong khoảng thời gian cụ thể (nhiều năm)
+    @GetMapping("/chart/tourCountInRange")
+    public ResponseEntity<List<Map<String, Object>>> getTourCountInRange(@RequestParam String startDate, @RequestParam String endDate) {
+        try {
+            List<Map<String, Object>> tourCountRange = bookingService.getTourCountInRange(startDate, endDate);
+            return new ResponseEntity<>(tourCountRange, HttpStatus.OK);
+        } catch (Exception e) {
+            // Xử lý lỗi
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

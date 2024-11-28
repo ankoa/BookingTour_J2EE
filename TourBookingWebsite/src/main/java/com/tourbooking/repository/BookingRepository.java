@@ -75,18 +75,40 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     
     
     
+    @Query(value = "SELECT t.tour_name, COUNT(b.booking_id) AS booking_count " +
+            "FROM booking b " +
+            "JOIN tour_time tt ON b.tour_time_id = tt.tour_time_id " +
+            "JOIN tour t ON tt.tour_id = t.tour_id " +
+            "WHERE t.status = 1 " +
+            "GROUP BY t.tour_name " +
+            "ORDER BY COUNT(b.booking_id) DESC " +
+            "LIMIT :limit", nativeQuery = true)
+    List<Map<String, Object>> findTopBookedTours(@Param("limit") int limit);
+
     
+    @Query(value = "SELECT YEAR(b.time) AS year, COUNT(DISTINCT b.tour_time_id) AS tour_count " +
+            "FROM booking b " +
+            "WHERE YEAR(b.time) = :year " +
+            "GROUP BY YEAR(b.time) " +
+            "ORDER BY YEAR(b.time) DESC", nativeQuery = true)
+List<Map<String, Object>> findTourCountByYear(@Param("year") int year);
+
     
+    @Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m-%d') AS day, COUNT(DISTINCT b.tour_time_id) AS tour_count " +
+            "FROM booking b " +
+            "WHERE YEAR(b.time) = :year AND MONTH(b.time) = :month " +
+            "GROUP BY DATE_FORMAT(b.time, '%Y-%m-%d') " +
+            "ORDER BY DATE_FORMAT(b.time, '%Y-%m-%d')", nativeQuery = true)
+List<Map<String, Object>> findTourCountByDayInMonth(@Param("year") int year, @Param("month") int month);
+
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    @Query(value = "SELECT YEAR(b.time) AS year, MONTH(b.time) AS month, COUNT(DISTINCT b.tour_time_id) AS tour_count " +
+            "FROM booking b " +
+            "WHERE b.time BETWEEN :startDate AND :endDate " +
+            "GROUP BY YEAR(b.time), MONTH(b.time) " +
+            "ORDER BY YEAR(b.time) DESC, MONTH(b.time) DESC", nativeQuery = true)
+List<Map<String, Object>> findTourCountInRange(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
     
     
     /*@Query(value = "SELECT DATE_FORMAT(b.time, '%Y-%m') AS month, SUM(d.price) AS revenue " +
