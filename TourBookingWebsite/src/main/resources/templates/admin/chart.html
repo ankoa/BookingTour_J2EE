@@ -64,10 +64,10 @@
                     <label for="filterType" class="form-label">Loại thống kê:</label>
                     <select id="filterType" class="form-select" onchange="updateFilters()">
                         <option value="">Chọn loại thống kê</option>
-                        <option value="day">ngày hôm nay</option>
-                        <option value="month">31 ngày của tháng</option>
-                        <option value="year">12 tháng của năm</option>
-                        <option value="4year">4 năm gần nhất</option> 
+                        <option value="day">Hôm nay</option>
+                        <option value="month">Ngày trong tháng</option>
+                        <option value="year">Tháng trong năm</option>
+                        <option value="4year">Bốn năm gần nhất</option> 
                         <option value="range">Từ ngày đến ngày</option>
                     </select>
                 </div>
@@ -91,8 +91,11 @@
             </div>
         </div>
         <div id="tour" class="tab-content d-none">
-            <p>Thông tin về các tour sẽ hiển thị tại đây.</p>
-        </div>
+			 <h3 class="text-center">Thống kê Tour</h3>
+			    <div id="chartContainer">
+			        <canvas id="barChart" style="height: 500px; max-height: 600px; width: 100%;"></canvas>
+			    </div>        
+			    </div>
     </div>
 
     <script th:inline="javascript">
@@ -560,5 +563,107 @@ function updateFilters() {
         // Initialize page with default filter
         updateFilters();
     </script>
+    <script>
+    // Function to show the 'tour' tab and load the chart data
+    function showTourTab() {
+        document.getElementById('revenue').classList.add('d-none');
+        document.getElementById('tour').classList.remove('d-none');
+        loadTourData();
+    }
+
+    // Function to load data and display the bar chart for tours
+    async function loadTourData() {
+        try {
+            // Call the API endpoint to get tour data
+            const response = await fetch('/api/tours'); // Replace with the correct API endpoint for tours
+            if (!response.ok) {
+                throw new Error('Failed to fetch tour data');
+            }
+            const tourData = await response.json();
+            
+            // Prepare data for the bar chart
+            const labels = tourData.map(tour => tour.name); // Replace 'name' with your field name for the tour name
+            const values = tourData.map(tour => tour.revenue); // Replace 'revenue' with your field name for revenue
+
+            // Render the bar chart using Chart.js
+            const ctx = document.getElementById('barChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Doanh thu từng tour',
+                        data: values,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error loading tour data:', error);
+        }
+    }
+
+    // Call this function when the "Tour" tab is clicked
+    document.querySelector('.nav-link').addEventListener('click', showTourTab);
+ // Hàm để gọi API và vẽ biểu đồ
+    function fetchTopBookedTours(limit) {
+        fetch(`/admin/chart/topBookedTours/${limit}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error fetching data');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Đảm bảo dữ liệu phù hợp với Chart.js format
+                const labels = data.map(tour => tour.name);
+                const values = data.map(tour => tour.bookingCount);
+
+                // Vẽ biểu đồ cột
+                const ctx = document.getElementById('barChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Số lượt đặt tour',
+                            data: values,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Gọi hàm để lấy dữ liệu và vẽ biểu đồ với limit = 5
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchTopBookedTours(5);  // Thay đổi giá trị limit theo nhu cầu
+    });
+
+</script>
 </body>
 </html>

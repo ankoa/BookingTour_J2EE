@@ -99,12 +99,17 @@ public class TourTimeService {
     }
 
     // Cập nhật tour time
-    public TourTime updateTourTime(TourTime tourTime) {
-        if (!tourTimeRepository.existsById(tourTime.getTourTimeId())) {
-            throw new IllegalArgumentException("Tour time không tồn tại!");
+    public boolean updateTourTime(TourTime existingTourTime) {
+        try {
+            // Thực hiện cập nhật thông tin vào cơ sở dữ liệu
+            tourTimeRepository.save(existingTourTime); // Hoặc sử dụng phương thức phù hợp với bạn
+            return true;
+        } catch (Exception e) {
+            // Xử lý lỗi, log, v.v.
+            return false;
         }
-        return tourTimeRepository.save(tourTime);
     }
+
 
     // Xóa tour time
     public boolean deleteTourTime(int tourTimeId) {
@@ -135,5 +140,7 @@ public class TourTimeService {
         return tourTimeRepository.findByIdAdmin(Integer.parseInt(id));
     }
 
-
+    public void updateStatusToZero(Integer tourTimeId) {
+        tourTimeRepository.updateStatusToZero(tourTimeId);
+    }
 }
