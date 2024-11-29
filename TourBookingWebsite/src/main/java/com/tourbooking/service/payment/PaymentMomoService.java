@@ -3,7 +3,6 @@ package com.tourbooking.service.payment;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tourbooking.config.ConfigCloudinary;
 import com.tourbooking.model.Booking;
 import com.tourbooking.config.payment.MomoConfig;
 import com.tourbooking.repository.BookingRepository;
@@ -22,6 +21,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Date;
 import java.util.TreeMap;
 
 
@@ -34,8 +34,6 @@ public class PaymentMomoService {
     @Autowired
     BookingService bookingService;
     
-    @Autowired
-    private ConfigCloudinary configCloudinary;
     @Autowired
     private BookingRepository bookingRepository;
 
@@ -81,6 +79,52 @@ public class PaymentMomoService {
         return createMomoPayment(booking);
     }
 
+    public PaymentDTO.PaymentResponse createMomoPaymentWithAmount(String amountString, String orderId, String returnUrl){
+            // Tính tổng số tiền
+            long amount = Integer.parseInt(amountString);
+
+            // Tạo payload request body
+            Map<String, String> requestBody = momoConfig.getMomoConfig();
+
+            // if the value is greater than 1.000.000  then decrease
+            while (amount>1000000) {
+                amount=amount/10;
+            }
+            requestBody.put("amount", amount+"");
+            requestBody.put("redirectUrl", returnUrl);
+            requestBody.put("orderInfo", "Payment for order " + orderId);
+            requestBody.put("requestId", orderId+ PaymentUtils.getRandomNumber(4));
+            requestBody.put("orderId",PaymentUtils.getRandomNumber(4)+"_Amount_"+orderId);
+
+            //sắp xếp theo aphab
+            Map<String, String> sortedTreeRequestBody = new TreeMap<>(requestBody);
+
+            // Tạo chữ ký (signature)
+            String rawSignature = PaymentUtils.buildRawSignature(sortedTreeRequestBody);
+            String signature = PaymentUtils.hmacSHA256(momoConfig.getSecretkey(), rawSignature);
+
+            Map<String, String> finalParams = new HashMap<>(sortedTreeRequestBody);
+            finalParams.put("signature", signature);
+            finalParams.put("lang", "vi");
+
+            String paymentUrl;
+            try {
+                paymentUrl = sendPaymentRequestToMomo(finalParams);
+            } catch (Exception e) {
+                return PaymentDTO.PaymentResponse.builder()
+                        .code("error")
+                        .message("Error during payment request: " + e.getMessage())
+                        .build();
+            }
+
+            // Trả về URL thanh toán
+            return PaymentDTO.PaymentResponse.builder()
+                    .code("ok")
+                    .message("success")
+                    .paymentUrl(paymentUrl)
+                    .build();
+        }
+
     public PaymentDTO.PaymentResponse createMomoPayment(Booking booking){
         if (booking == null) {
             return PaymentDTO.PaymentResponse.builder()
@@ -101,7 +145,7 @@ public class PaymentMomoService {
         }
         requestBody.put("amount", amount+"");
         requestBody.put("orderInfo", "Payment for order " + booking.getBookingId());
-        requestBody.put("requestId", String.valueOf(System.currentTimeMillis()));
+        requestBody.put("requestId", booking.getBookingId()+PaymentUtils.getRandomNumber(4));
         requestBody.put("orderId", booking.getBookingId()+"");
         //sắp xếp theo aphab
         Map<String, String> sortedTreeRequestBody = new TreeMap<>(requestBody);

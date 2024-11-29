@@ -26,6 +26,16 @@ public class PaymentMomoController {
         return new ResponseObject<>(HttpStatus.OK, "Success",pay );
     }
 
+    @GetMapping("/amount")
+    public ResponseObject<PaymentDTO.PaymentResponse> pay( @RequestParam String amount,
+                                                           @RequestParam String orderId,
+                                                           @RequestParam String returnUrl) {
+        if(amount==null||orderId==null||returnUrl==null) return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Fail",null);
+        PaymentDTO.PaymentResponse pay =paymentMomoService.createMomoPaymentWithAmount(amount,orderId,returnUrl);
+        if(pay==null) return new ResponseObject<>(HttpStatus.NOT_FOUND, "Fail",null);
+        return new ResponseObject<>(HttpStatus.OK, "Success",pay );
+    }
+
     @GetMapping("/callback")
     public void payMomoCallbackHandler(HttpServletRequest request,
                                    HttpServletResponse response) throws IOException {
