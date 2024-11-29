@@ -12,27 +12,26 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("${spring.application.api-prefix}/payment")
+@RequestMapping("${spring.application.api-prefix}/payment/vn-pay")
 @RequiredArgsConstructor
 public class PaymentVNPayController {
-    private final PaymentVNPayService paymentService;
+    private final PaymentVNPayService paymentVNPayService;
 
-    // chua dung
-    @GetMapping("/vn-pay")
+    @GetMapping
     public ResponseObject<PaymentDTO.PaymentResponse> pay(HttpServletRequest request,
-                                                             @RequestParam String orderInfo) {
-        PaymentDTO.PaymentResponse pay =paymentService.createVnPayPayment(request,orderInfo);
+                                                             @RequestParam String bookingId) {
+        PaymentDTO.PaymentResponse pay =paymentVNPayService.createVnPayPayment(request,bookingId);
         if(pay==null) return new ResponseObject<>(HttpStatus.NOT_FOUND, "Fail",null);
         return new ResponseObject<>(HttpStatus.OK, "Success",pay );
     }
 
-    @GetMapping("/callback/vn-pay")
+    @GetMapping("/callback")
     public void payCallbackHandler(HttpServletRequest request,
                                    HttpServletResponse response) throws IOException {
         String status = request.getParameter("vnp_ResponseCode");
         String bookingId = request.getParameter("vnp_OrderInfo");
         if ("00".equals(status)) {
-            if ( paymentService.OrderSuccess(bookingId))
+            if ( paymentVNPayService.OrderSuccess(bookingId))
                 response.sendRedirect("/booking/"+bookingId);
         } else {
             // Chuyển hướng đến trang thất bại

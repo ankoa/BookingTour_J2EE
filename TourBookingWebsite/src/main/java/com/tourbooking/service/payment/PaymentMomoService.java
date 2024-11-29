@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tourbooking.config.ConfigCloudinary;
 import com.tourbooking.model.Booking;
 import com.tourbooking.config.payment.MomoConfig;
+import com.tourbooking.repository.BookingRepository;
 import com.tourbooking.service.BookingService;
 import com.tourbooking.utils.PaymentUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 
@@ -34,6 +36,8 @@ public class PaymentMomoService {
     
     @Autowired
     private ConfigCloudinary configCloudinary;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     private String sendPaymentRequestToMomo(Map<String, String> requestBody) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -67,6 +71,14 @@ public class PaymentMomoService {
         } else {
             throw new IOException("Failed to connect to MoMo. HTTP code: " + statusCode);
         }
+    }
+    public PaymentDTO.PaymentResponse createMomoPayment(String bookingId){
+        Booking booking = null;
+        Optional<Booking> bookingOptional=bookingRepository.findById(Integer.parseInt(bookingId));
+        if(bookingOptional.isPresent()){
+            booking=bookingOptional.get();
+        }
+        return createMomoPayment(booking);
     }
 
     public PaymentDTO.PaymentResponse createMomoPayment(Booking booking){
