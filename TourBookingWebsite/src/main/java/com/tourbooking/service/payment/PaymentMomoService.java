@@ -93,7 +93,7 @@ public class PaymentMomoService {
         long amount = booking.getTotalPrice() - booking.getTotalDiscount();
 
         // Tạo payload request body
-        Map<String, String> requestBody = momoConfig.getMomoConfig(booking.getBookingId());
+        Map<String, String> requestBody = momoConfig.getMomoConfig();
 
         // if the value is greater than 1.000.000  then decrease 
         while (amount>1000000) {
@@ -102,7 +102,7 @@ public class PaymentMomoService {
         requestBody.put("amount", amount+"");
         requestBody.put("orderInfo", "Payment for order " + booking.getBookingId());
         requestBody.put("requestId", String.valueOf(System.currentTimeMillis()));
-
+        requestBody.put("orderId", booking.getBookingId()+"");
         //sắp xếp theo aphab
         Map<String, String> sortedTreeRequestBody = new TreeMap<>(requestBody);
 
