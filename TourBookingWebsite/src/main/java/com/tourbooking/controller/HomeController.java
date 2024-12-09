@@ -98,6 +98,7 @@ public class HomeController {
             listTourImage.add(new TourImageResponse(998,"/client/img/55.jpg",0));
             tourResponse.setTourImageResponses(listTourImage);
         }
+        tourResponse.setTourImageResponse(new TourImageResponse(997,"/client/img/54.jpg",1));
 
         model.addAttribute("user", user);
         model.addAttribute("tourResponse", tourResponse);

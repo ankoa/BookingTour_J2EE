@@ -8,7 +8,8 @@
     <div th:replace="client/navbar :: navbar"></div>
 
     <script th:inline="javascript">
-       const tourTimes = /*[[${tourResponse.tourTimesResponse}]]*/ {};
+       const tourTimes = /*[[${tourResponse.tourTimeResponses}]]*/ {};
+    console.log(tourTimes)
 
     </script>
 
@@ -31,7 +32,7 @@
                     <div id="tour-schedule" class="tour-schedule">
                         <div class="swiper mySwiper">
                             <div class="swiper-wrapper  ">
-                                <div th:if="${tourResponse.tourTimesResponse.size() == 0}">
+                                <div th:if="${tourResponse.tourTimeResponses.size() == 0}">
                                     Chưa Có Lịch Khởi Hành
                                 </div>
                             </div>

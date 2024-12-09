@@ -131,6 +131,7 @@ public class TourService {
                 tour.getTourId(),
                 status,
                 Sort.by(Sort.Direction.ASC, "imageId"));
+
         List<TourImageResponse> tourImageResponses = tourImages.stream()
                 .map(tourImage ->new TourImageResponse(
                         tourImage.getImageId(),
@@ -150,7 +151,7 @@ public class TourService {
                 .map(tourTime -> tourTimeService.toTourTimeResponse(tourTime,status))
                 .collect(Collectors.toList());
 
-        tourResponse.setTourTimesResponse(tourTimeResponses);
+        tourResponse.setTourTimeResponses(tourTimeResponses);
 
         tourResponse.getTourImageResponses().forEach(tourImageResponse -> {
             if(tourImageResponse.getStatus()==1)
