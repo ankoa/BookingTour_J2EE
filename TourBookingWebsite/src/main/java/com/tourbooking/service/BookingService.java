@@ -406,4 +406,9 @@ public class BookingService {
         return bookingResponses;
 //
     }
+
+    public int getNumberOfPages(Account account,int size) {
+        return (bookingRepository.getTotalNumberOfUserBookings(account.getCustomer())/size)+1;
+    }
+
 }

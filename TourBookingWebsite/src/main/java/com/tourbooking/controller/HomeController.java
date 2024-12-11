@@ -146,7 +146,9 @@ public class HomeController {
                             @AuthenticationPrincipal CustomUserDetails user) {
         if (user == null) return "redirect:/account-login";
         List<BookingResponse> bookingResponses = bookingService.getBookingResponses(user.getAccount(), null, 0, 5);
+        int getNumberOfPages= bookingService.getNumberOfPages(user.getAccount(),5);
         model.addAttribute("user", user);
+        model.addAttribute("totalPage", getNumberOfPages);
         model.addAttribute("bookingResponses", bookingResponses);
 
         return "client/account-info";

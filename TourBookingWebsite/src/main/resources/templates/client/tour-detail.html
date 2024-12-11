@@ -23,6 +23,8 @@
                             <img id="mainImage" class="img-avatar" th:src="${tourResponse.getTourImageResponse().getImageUrl()}" alt="">
                         </div>
                         <div class="col col-12 col-md-2 d-flex flex-md-wrap flex-nowrap img-tours scrollbar h-100">
+                            <img  th:src="${tourResponse.getTourImageResponse().getImageUrl()}"
+                                 class="img-tour mt-2 object-fit-contain mb-1 active" alt="">
                             <img th:each="item : ${tourResponse.getTourImageResponses()}" th:src="@{${item.getImageUrl()}}"
                                  class="img-tour mt-2 object-fit-contain mb-1" alt="">
                         </div>

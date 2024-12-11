@@ -1,6 +1,7 @@
 package com.tourbooking.repository;
 
 import com.tourbooking.model.Booking;
+import com.tourbooking.model.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.tourbooking.model.TourTime;
@@ -16,6 +17,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
+
+    @Query("SELECT COUNT(a) FROM Booking a Where a.customer = :customer")
+    int getTotalNumberOfUserBookings(@Param( "customer") Customer customer);
 
     // Lấy tất cả các TourTime liên quan đến Booking
     @Query("SELECT b.tourTime FROM Booking b")

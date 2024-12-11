@@ -32,6 +32,5 @@ public class TourTimeResponse {
     Integer discountValue;
     Boolean isDiscount;
     Integer remainPax;
-    List<String> listImage;
     List<TransportResponse> transportResponses;
 }

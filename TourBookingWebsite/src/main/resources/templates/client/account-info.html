@@ -12,7 +12,7 @@
     </script>
     <main id="main">
         <div class="rounded p-4 p-sm-5 my-4 mx-3" style="box-shadow: 0 0 10px 0 hsla(0, 0%, 9%, .12);">
-            <div class="row">
+            <form class="row" id="updateForm">
                 <div class="col-sm-12 col-md-6">
                     <div class="form-floating mb-3">
                         <input disabled type="text" class="form-control" id="username" placeholder="Tên đăng nhập"
@@ -96,10 +96,10 @@
                     </div>
                     <button type="submit" class="btn btn-primary py-3 w-25 justify-content-end ">Cập nhật</button>
                 </div>
-            </div>
+            </form>
         </div>
         <h3 class="justify-content-center">Chương trình tour đã đặt</h3>
-        <table class="table table-hover">
+        <table class="table table-hover mb-3">
             <thead>
             <tr>
                 <th>Mã đặt tour</th>
@@ -111,7 +111,7 @@
                 <th>..</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="booking-table-body">
             <tr th:each="bookingResponse : ${bookingResponses}">
                 <td th:text="${bookingResponse.bookingId}"></td>
                 <td th:text="${bookingResponse.tourTimeResponse.tourTimeCode}"></td>
@@ -124,7 +124,17 @@
             </tr>
             </tbody>
         </table>
+
+        <div class="navigation-booking d-flex">
+            <button th:each="i : ${#numbers.sequence(1, totalPage)}"
+                    class="fetch-button px-2 py-1 mx-1"
+                    th:text="${i}"
+                    th:data-page="${i}-1" >
+            </button>
+        </div>
+
     </main>
+    <script src="/client/js/scriptAccountInfo.js"></script>
 
     <div th:replace="client/footer::footer"></div>
 
