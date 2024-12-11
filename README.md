@@ -13,4 +13,5 @@
 | 0987654321   | 9704000000000018 | NGUYEN VAN A   | 03/07      | OTP       |
 
 Momo : /api/v1/payment/momo?amount={}&returnUrl={}&orderId={}
+
 VNPay : /api/v1/payment/vn-pay?amount={}&returnUrl={}&orderId={}
