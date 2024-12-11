@@ -66,7 +66,6 @@ public class TourTimeService {
 
         ArrayList<TransportResponse> transportResponseList = new ArrayList<>();
         for (TransportDetail transportDetail : tourTime.getTransportDetails()) {
-            if (status != null && transportDetail.getStatus() != status) continue;
             TransportResponse transportResponse = transportService.toTransportResponse(transportDetail, status);
             transportResponseList.add(transportResponse);
         }

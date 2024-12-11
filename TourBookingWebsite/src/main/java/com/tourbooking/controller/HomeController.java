@@ -35,7 +35,7 @@ public class HomeController {
     @Autowired
     private BookingService bookingService;
 
-    @GetMapping({"/",""})
+    @GetMapping({"/", ""})
     public String index() {
         return "client/index"; // Trả về tên template mà không cần phần mở rộng
     }
@@ -44,10 +44,12 @@ public class HomeController {
     public String getDemoSampleClient(Model model) {
         return "client/sample";
     }
+
     @GetMapping("/admin")
     public String getHomepage(Model model) {
         return "admin/homepage";
     }
+
     @GetMapping("/home")
     public String getHome(Model model) {
         return "index";
@@ -86,19 +88,20 @@ public class HomeController {
     public String getTour(@PathVariable("id") String id,
                           Model model,
                           @AuthenticationPrincipal CustomUserDetails user) {
-        TourResponse tourResponse =  tourService.getTourResponse(id,1);
+        TourResponse tourResponse = tourService.getTourResponse(id, 1);
 
-        if(tourResponse==null)
+        if (tourResponse == null)
             return "redirect:/";
 
         //add image default
         if (tourResponse.getTourImageResponses().isEmpty()) {
             List<TourImageResponse> listTourImage = new ArrayList<>();
-            listTourImage.add(new TourImageResponse(999,"/client/img/54.jpg",1));
-            listTourImage.add(new TourImageResponse(998,"/client/img/55.jpg",0));
+            listTourImage.add(new TourImageResponse(999, "/client/img/54.jpg", 1));
+            listTourImage.add(new TourImageResponse(998, "/client/img/55.jpg", 0));
             tourResponse.setTourImageResponses(listTourImage);
         }
-        tourResponse.setTourImageResponse(new TourImageResponse(997,"/client/img/54.jpg",1));
+        if (tourResponse.getTourImageResponse() == null)
+            tourResponse.setTourImageResponse(new TourImageResponse(997, "/client/img/54.jpg", 1));
 
         model.addAttribute("user", user);
         model.addAttribute("tourResponse", tourResponse);
@@ -107,25 +110,26 @@ public class HomeController {
 
     @GetMapping("/order-booking")
     public String getOrderBooking(Model model,
-            @RequestParam(required = true) String tourTimeId,
-            @AuthenticationPrincipal CustomUserDetails user) {
-        TourTimeResponse tourTimeResponse = tourTimeService.getTourTimeResponseById(tourTimeId,1);
+                                  @RequestParam(required = true) String tourTimeId,
+                                  @AuthenticationPrincipal CustomUserDetails user) {
+        TourTimeResponse tourTimeResponse = tourTimeService.getTourTimeResponseById(tourTimeId, 1);
 
-        if(tourTimeResponse==null)
+        if (tourTimeResponse == null)
             return "redirect:/";
 
         model.addAttribute("user", user);
         model.addAttribute("tourTimeResponse", tourTimeResponse);
         return "client/order-booking";
     }
+
     @GetMapping("booking/{id}")
     public String getPaymentBooking(Model model,
                                     @PathVariable("id") String id,
-                                  @AuthenticationPrincipal CustomUserDetails user) {
-        BookingResponse bookingResponse = bookingService.getBookingResponseById(id,1);
+                                    @AuthenticationPrincipal CustomUserDetails user) {
+        BookingResponse bookingResponse = bookingService.getBookingResponseById(id, 1);
 
-       if(bookingResponse==null)
-           return "redirect:/";
+        if (bookingResponse == null)
+            return "redirect:/";
 
         model.addAttribute("user", user);
         model.addAttribute("bookingResponse", bookingResponse);
@@ -133,18 +137,18 @@ public class HomeController {
     }
 
     @GetMapping("/payment-failure")
-    public String paymentFail(){
+    public String paymentFail() {
         return "client/payment-fail.html";
     }
 
     @GetMapping("/account-info")
-    public  String getMyInfo(Model model,
+    public String getMyInfo(Model model,
                             @AuthenticationPrincipal CustomUserDetails user) {
         if (user == null) return "redirect:/account-login";
         List<BookingResponse> bookingResponses = bookingService.getBookingResponses(user.getAccount(), null, 0, 5);
         model.addAttribute("user", user);
         model.addAttribute("bookingResponses", bookingResponses);
-    
+
         return "client/account-info";
-}
+    }
 }

@@ -16,5 +16,5 @@ public interface TourImageRepository extends JpaRepository<TourImage, Integer> {
     @Query("SELECT ti FROM TourImage ti WHERE ti.tour.tourId = :tourId")
     List<TourImage> findByTourId(@Param("tourId") int tourId);
 
-    List<TourImage> findByTour_TourIdAndStatus(int tourId, Integer status, Sort sort);
+    List<TourImage> findByTour_TourId(int tourId, Sort sort);
 }
