@@ -4,7 +4,7 @@ import com.tourbooking.dto.response.BookingResponse;
 import com.tourbooking.security.CustomUserDetails;
 import com.tourbooking.service.BookingService;
 import com.tourbooking.service.payment.PaymentBookingService;
-import com.tourbooking.service.payment.PaymentDTO;
+import com.tourbooking.dto.response.PaymentDTO;
 import com.tourbooking.dto.request.BookingRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;

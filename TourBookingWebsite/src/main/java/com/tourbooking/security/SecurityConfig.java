@@ -1,7 +1,13 @@
 package com.tourbooking.security;
 
+import com.tourbooking.model.Account;
+import com.tourbooking.model.Customer;
+import com.tourbooking.service.AccountService;
+import com.tourbooking.service.CustomerService;
+import com.tourbooking.service.OAuthService;
 import com.tourbooking.service.UserDetailsServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,12 +23,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+    @Autowired
+    private OAuthService oAuthService;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private CustomerService customerService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -38,6 +55,36 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/**").permitAll()
+                )
+                .oauth2Login(oauth2Login -> oauth2Login.loginPage("/account-login")   .failureUrl("/login?error")
+                        .userInfoEndpoint(userInfoEndpoint ->
+                                userInfoEndpoint
+                                        .userService(oAuthService)
+                        )
+                        .successHandler(
+                                (request, response,
+                                 authentication) -> {
+                                    var oidcUser = (DefaultOidcUser) authentication.getPrincipal();
+
+                                    if (accountService.getAccountByEmail(oidcUser.getEmail()) == null) {
+                                        Customer customer = new Customer();
+                                        customer.setCustomerName(oidcUser.getFullName());
+                                        customer.setTime(new Date());
+                                        customer.setStatus(1);
+                                        customerService.addCustomer(customer);
+                                        Account account = new Account();
+                                        account.setAccountName(oidcUser.getName());
+                                        account.setEmail(oidcUser.getEmail());
+                                        account.setPassword(new BCryptPasswordEncoder().encode(oidcUser.getName()));
+                                        account.setRole("ROLE_USER");
+                                        account.setCustomer(customer);
+                                        account.setTime(LocalDateTime.now());
+                                        account.setStatus(1);
+                                        accountService.addAccount(account);
+                                    };
+                                    response.sendRedirect("/");
+                                }
+                        )
                 )
                 .formLogin(form -> form
                         .loginPage("/account-login")

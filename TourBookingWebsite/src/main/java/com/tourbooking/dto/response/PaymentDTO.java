@@ -1,4 +1,4 @@
-package com.tourbooking.service.payment;
+package com.tourbooking.dto.response;
 
 import lombok.Builder;
 

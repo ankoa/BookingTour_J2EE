@@ -1,9 +1,6 @@
-package com.tourbooking.controller;
+package com.tourbooking.controller.client;
 
 import com.tourbooking.dto.response.BookingResponse;
-import com.tourbooking.dto.response.TourImageResponse;
-import com.tourbooking.dto.response.TourResponse;
-import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.security.CustomUserDetails;
 import com.tourbooking.service.BookingService;
 import com.tourbooking.service.CategoryService;
@@ -17,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -84,57 +80,9 @@ public class HomeController {
         return "client/find-tour";
     }
 
-    @GetMapping("/tour/{id}")
-    public String getTour(@PathVariable("id") String id,
-                          Model model,
-                          @AuthenticationPrincipal CustomUserDetails user) {
-        TourResponse tourResponse = tourService.getTourResponse(id, 1);
 
-        if (tourResponse == null)
-            return "redirect:/";
 
-        //add image default
-        if (tourResponse.getTourImageResponses().isEmpty()) {
-            List<TourImageResponse> listTourImage = new ArrayList<>();
-            listTourImage.add(new TourImageResponse(999, "/client/img/54.jpg", 1));
-            listTourImage.add(new TourImageResponse(998, "/client/img/55.jpg", 0));
-            tourResponse.setTourImageResponses(listTourImage);
-        }
-        if (tourResponse.getTourImageResponse() == null)
-            tourResponse.setTourImageResponse(new TourImageResponse(997, "/client/img/54.jpg", 1));
 
-        model.addAttribute("user", user);
-        model.addAttribute("tourResponse", tourResponse);
-        return "client/tour-detail";
-    }
-
-    @GetMapping("/order-booking")
-    public String getOrderBooking(Model model,
-                                  @RequestParam(required = true) String tourTimeId,
-                                  @AuthenticationPrincipal CustomUserDetails user) {
-        TourTimeResponse tourTimeResponse = tourTimeService.getTourTimeResponseById(tourTimeId, 1);
-
-        if (tourTimeResponse == null)
-            return "redirect:/";
-
-        model.addAttribute("user", user);
-        model.addAttribute("tourTimeResponse", tourTimeResponse);
-        return "client/order-booking";
-    }
-
-    @GetMapping("booking/{id}")
-    public String getPaymentBooking(Model model,
-                                    @PathVariable("id") String id,
-                                    @AuthenticationPrincipal CustomUserDetails user) {
-        BookingResponse bookingResponse = bookingService.getBookingResponseById(id, 1);
-
-        if (bookingResponse == null)
-            return "redirect:/";
-
-        model.addAttribute("user", user);
-        model.addAttribute("bookingResponse", bookingResponse);
-        return "client/booking";
-    }
 
     @GetMapping("/payment-failure")
     public String paymentFail() {

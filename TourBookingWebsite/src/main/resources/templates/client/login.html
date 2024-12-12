@@ -33,14 +33,14 @@
                     <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Đăng nhập</button>
 
                     <!-- Đăng nhập bằng Google -->
-                    <div class="d-flex justify-content-center my-3">
+                    <div class="d-flex justify-content-center">
                         <p class="text-muted">Hoặc</p>
                     </div>
-                    <button type="submit" class="btn btn-google">
-                        <img src="https://www.gstatic.com/images/branding/product/1x/gsa_android_512dp.png" alt="Google Logo" style="width:20px; margin-right:10px;">
-                        Đăng nhập bằng Google
-                    </button>
-
+                    <a href="/oauth2/authorization/google" class="btn btn-danger py-3 w-100 mb-2"
+                       role="button">
+                        <i class="fab fa-google"></i> Gmail
+                    </a>
+                    <a href="/forgot-password" class="d-block text-center w-100">Quên mật khẩu?</a>
                     <p class="text-center mb-0">Bạn chưa có tài khoản? <a href="/register">Đăng ký</a></p>
 
                 </form>

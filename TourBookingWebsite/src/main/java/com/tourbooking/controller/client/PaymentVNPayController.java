@@ -1,6 +1,8 @@
-package com.tourbooking.service.payment;
+package com.tourbooking.controller.client;
 
 import com.tourbooking.dto.response.ResponseObject;
+import com.tourbooking.dto.response.PaymentDTO;
+import com.tourbooking.service.payment.PaymentVNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,7 @@ public class PaymentVNPayController {
 
     @GetMapping
     public ResponseObject<PaymentDTO.PaymentResponse> pay(HttpServletRequest request,
-                                                             @RequestParam String bookingId) {
+                                                          @RequestParam String bookingId) {
         PaymentDTO.PaymentResponse pay =paymentVNPayService.createVnPayPayment(request,bookingId);
         if(pay==null) return new ResponseObject<>(HttpStatus.NOT_FOUND, "Fail",null);
         return new ResponseObject<>(HttpStatus.OK, "Success",pay );
