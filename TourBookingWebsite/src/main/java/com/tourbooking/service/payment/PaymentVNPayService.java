@@ -64,7 +64,7 @@ public class PaymentVNPayService {
         long amount = (booking.getTotalPrice()-booking.getTotalDiscount()) * 100L;
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
         vnpParamsMap.put("vnp_TxnRef", booking.getBookingId()+PaymentUtils.getRandomNumber(4));
-        vnpParamsMap.put("vnp_OrderInfo", "Thanh toán đơn hàng "+booking.getBookingId());
+        vnpParamsMap.put("vnp_OrderInfo", ""+booking.getBookingId());
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         vnpParamsMap.put("vnp_IpAddr", PaymentUtils.getIpAddress(request));
         //build query url
