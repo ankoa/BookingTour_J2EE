@@ -1,14 +1,15 @@
 package com.tourbooking.controller.client;
 
 import com.tourbooking.dto.response.BookingResponse;
+import com.tourbooking.model.Account;
 import com.tourbooking.security.CustomUserDetails;
-import com.tourbooking.service.BookingService;
-import com.tourbooking.service.CategoryService;
-import com.tourbooking.service.TourService;
-import com.tourbooking.service.TourTimeService;
+import com.tourbooking.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,8 @@ public class HomeController {
 
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping({"/", ""})
     public String index() {
@@ -81,9 +84,6 @@ public class HomeController {
     }
 
 
-
-
-
     @GetMapping("/payment-failure")
     public String paymentFail() {
         return "client/payment-fail.html";
@@ -92,13 +92,39 @@ public class HomeController {
     @GetMapping("/account-info")
     public String getMyInfo(Model model,
                             @AuthenticationPrincipal CustomUserDetails user) {
-        if (user == null) return "redirect:/account-login";
-        List<BookingResponse> bookingResponses = bookingService.getBookingResponses(user.getAccount(), null, 0, 5);
-        int getNumberOfPages= bookingService.getNumberOfPages(user.getAccount(),5);
-        model.addAttribute("user", user);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+            return "redirect:/account-login";
+        }
+        Object principal = authentication.getPrincipal();
+        Account account = null;
+        if (principal instanceof CustomUserDetails) {
+            account = ((CustomUserDetails) principal).getAccount();
+        } else if (principal instanceof DefaultOidcUser) {
+            String email = ((DefaultOidcUser) principal).getEmail();
+            account = accountService.getAccountByEmail(email);
+        }
+
+        if (account == null) {
+            return "redirect:/account-login";
+        }
+        List<BookingResponse> bookingResponses = bookingService.getBookingResponses(account, null, 0, 5);
+        int getNumberOfPages = bookingService.getNumberOfPages(account, 5);
+        model.addAttribute("user", account);
         model.addAttribute("totalPage", getNumberOfPages);
         model.addAttribute("bookingResponses", bookingResponses);
 
         return "client/account-info";
+    }
+
+    @GetMapping("/forgot-password")
+    public String getForgotPassword(Model model) {
+        return "client/forgot-password";
+    }
+
+    @GetMapping("/reset-password")
+    public String getResetPassword(@RequestParam("token") String token, Model model) {
+        model.addAttribute("token", token);
+        return "client/reset-password";
     }
 }

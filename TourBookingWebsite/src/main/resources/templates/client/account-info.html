@@ -16,7 +16,7 @@
                 <div class="col-sm-12 col-md-6">
                     <div class="form-floating mb-3">
                         <input disabled type="text" class="form-control" id="username" placeholder="Tên đăng nhập"
-                               pattern=".{1,255}" th:value="${user.account.accountName}">
+                               pattern=".{1,255}" th:value="${user.accountName}">
                         <label for="username">Tên đăng nhập <span class="text-danger">*</span></label>
                         <div class="invalid-feedback">Vui lòng nhập tên đăng nhập.</div>
                     </div>
@@ -24,7 +24,7 @@
                 <div class="col-sm-12 col-md-6">
                     <div class="form-floating mb-3">
                         <input disabled type="email" class="form-control" id="email" placeholder="Email" pattern=".{1,255}"
-                               th:value="${user.account.email}">
+                               th:value="${user.email}">
                         <label for="email">Email <span class="text-danger">*</span></label>
                         <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
                     </div>
@@ -51,7 +51,7 @@
                 <div class="col-sm-12 col-md-6">
                     <div class="form-floating mb-3">
                         <input  type="text" class="form-control" id="full-name" placeholder="Họ tên" pattern=".{1,15}"
-                               th:value="${user.account.customer.customerName}">
+                               th:value="${user.customer.customerName}">
                         <label for="full-name">Họ tên <span class="text-danger">*</span></label>
                         <div class="invalid-feedback">Vui lòng nhập họ tên.</div>
                     </div>
@@ -60,7 +60,7 @@
                 <div class="col-sm-12 col-md-6">
                     <div class="form-floating mb-3">
                         <input  type="text" class="form-control" id="phone" placeholder="Số điện thoại"
-                               pattern="0[0-9]{9}" th:value="${user.account.customer.phoneNumber}">
+                               pattern="0[0-9]{9}" th:value="${user.customer.phoneNumber}">
                         <label for="phone">Số điện thoại <span class="text-danger">*</span></label>
                         <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ.</div>
                     </div>
@@ -69,7 +69,7 @@
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <input  type="text" class="form-control" id="address" placeholder="Địa chỉ" pattern=".{0,255}"
-                               th:value="${user.account.customer.address}">
+                               th:value="${user.customer.address}">
                         <label for="address">Địa chỉ</label>
                         <div class="invalid-feedback">Địa chỉ không quá 255 ký tự!</div>
                     </div>
@@ -78,7 +78,7 @@
                 <div class="col-sm-12">
                     <div class="form-floating mb-4">
                         <input type="date" class="form-control" id="birthday" placeholder="Ngày sinh" required=""
-                               max="2024-11-27" th:value="${#dates.format(user.account.customer.birthday, 'yyyy-MM-dd')}">
+                               max="2024-11-27" th:value="${#dates.format(user.customer.birthday, 'yyyy-MM-dd')}">
                         <label for="birthday">Ngày sinh <span class="text-danger">*</span></label>
                         <div class="invalid-feedback">Vui lòng nhập ngày sinh.</div>
                     </div>
@@ -89,8 +89,8 @@
                         <label for="sex" class="col-sm-2 control-label w-100">Giới tính</label>
                         <select class="form-select" name="sex" id="sex" required="">
                             <option value="">Chọn giới tính</option>
-                            <option value="1" th:selected="${user.account.customer.sex == 1}">Nam</option>
-                            <option value="0" th:selected="${user.account.customer.sex == 0}">Nữ</option>
+                            <option value="1" th:selected="${user.customer.sex == 1}">Nam</option>
+                            <option value="0" th:selected="${user.customer.sex == 0}">Nữ</option>
                         </select>
                         <div class="invalid-feedback">Vui lòng chọn giới tính.</div>
                     </div>

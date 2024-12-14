@@ -190,4 +190,30 @@ public class AccountService {
     public boolean doesCustomerIDExist(Integer customerID) {
         return accountRepository.checkCustomerIDExists(customerID);
     }
+
+
+    public String generateResetToken(String email) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            throw new IllegalArgumentException("No account found with email: " + email);
+        }
+
+        String token = UUID.randomUUID().toString();
+        account.setResetToken(token);
+        account.setTokenExpiration(LocalDateTime.now().plusHours(1));
+        accountRepository.save(account);
+
+        return token;
+    }
+
+    public void resetPassword(String token, String newPassword) {
+        Account account = accountRepository.findByResetToken(token);
+        if (account == null || account.getTokenExpiration().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Invalid or expired token");
+        }
+        account.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+        account.setResetToken(null);
+        account.setTokenExpiration(null);
+        accountRepository.save(account);
+    }
 }
