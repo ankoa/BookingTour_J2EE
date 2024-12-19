@@ -30,6 +30,7 @@ public class FindTourResponse {
     private List<TourTimeResponse> tourTimes;
 
     private List<TourImageResponse> tourImages;
+    private TourImageResponse tourImage;
     private Integer tourPrice;
     private CategoryResponse category;
 }

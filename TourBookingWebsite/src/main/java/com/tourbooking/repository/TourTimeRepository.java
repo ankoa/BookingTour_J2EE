@@ -22,10 +22,6 @@ public interface TourTimeRepository extends JpaRepository<TourTime, Integer> {
     @Query("SELECT t FROM TourTime t WHERE t.tourTimeId = :tourTimeId")
     Optional<TourTime> findByIdAdmin(@Param("tourTimeId") Integer tourTimeId);
 
-    @Query("SELECT ti FROM TourTime ti " +
-            "WHERE ti.tour.tourId = :tourId " +
-            "AND ti.status = :status " +
-            "ORDER BY ti.tourTimeId ASC")
     List<TourTime> findByTour_TourIdAndStatus(int tourId, Integer status, Sort sort);
     @Modifying
     @Transactional

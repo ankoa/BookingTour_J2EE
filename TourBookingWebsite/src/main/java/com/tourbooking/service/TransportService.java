@@ -19,7 +19,6 @@ public class TransportService {
     private TransportRepository transportRepository;
 
     public TransportResponse toTransportResponse(TransportDetail transportDetail,Integer status){
-        if(status!=null && transportDetail.getStatus()!=status) return null;
         TransportResponse transportResponse = transportMapper.toTransportResponse(transportDetail);
         transportResponse.setIsOutbound(transportDetail.getStatus() == 1);
         return transportResponse;

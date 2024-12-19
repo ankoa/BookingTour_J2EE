@@ -3,9 +3,10 @@ package com.tourbooking.service.payment;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tourbooking.config.ConfigCloudinary;
+import com.tourbooking.dto.response.PaymentDTO;
 import com.tourbooking.model.Booking;
 import com.tourbooking.config.payment.MomoConfig;
+import com.tourbooking.repository.BookingRepository;
 import com.tourbooking.service.BookingService;
 import com.tourbooking.utils.PaymentUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 
@@ -33,7 +35,7 @@ public class PaymentMomoService {
     BookingService bookingService;
     
     @Autowired
-    private ConfigCloudinary configCloudinary;
+    private BookingRepository bookingRepository;
 
     private String sendPaymentRequestToMomo(Map<String, String> requestBody) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -68,6 +70,60 @@ public class PaymentMomoService {
             throw new IOException("Failed to connect to MoMo. HTTP code: " + statusCode);
         }
     }
+    public PaymentDTO.PaymentResponse createMomoPayment(String bookingId){
+        Booking booking = null;
+        Optional<Booking> bookingOptional=bookingRepository.findById(Integer.parseInt(bookingId));
+        if(bookingOptional.isPresent()){
+            booking=bookingOptional.get();
+        }
+        return createMomoPayment(booking);
+    }
+
+    public PaymentDTO.PaymentResponse createMomoPaymentWithAmount(String amountString, String orderId, String returnUrl){
+            // Tính tổng số tiền
+            long amount = Integer.parseInt(amountString);
+
+            // Tạo payload request body
+            Map<String, String> requestBody = momoConfig.getMomoConfig();
+
+            // if the value is greater than 1.000.000  then decrease
+            while (amount>1000000) {
+                amount=amount/10;
+            }
+            requestBody.put("amount", amount+"");
+            requestBody.put("redirectUrl", returnUrl);
+            requestBody.put("orderInfo", "Payment for order " + orderId);
+            requestBody.put("requestId", orderId+ PaymentUtils.getRandomNumber(4));
+            requestBody.put("orderId",PaymentUtils.getRandomNumber(4)+"_Amount_"+orderId);
+
+            //sắp xếp theo aphab
+            Map<String, String> sortedTreeRequestBody = new TreeMap<>(requestBody);
+
+            // Tạo chữ ký (signature)
+            String rawSignature = PaymentUtils.buildRawSignature(sortedTreeRequestBody);
+            String signature = PaymentUtils.hmacSHA256(momoConfig.getSecretkey(), rawSignature);
+
+            Map<String, String> finalParams = new HashMap<>(sortedTreeRequestBody);
+            finalParams.put("signature", signature);
+            finalParams.put("lang", "vi");
+
+            String paymentUrl;
+            try {
+                paymentUrl = sendPaymentRequestToMomo(finalParams);
+            } catch (Exception e) {
+                return PaymentDTO.PaymentResponse.builder()
+                        .code("error")
+                        .message("Error during payment request: " + e.getMessage())
+                        .build();
+            }
+
+            // Trả về URL thanh toán
+            return PaymentDTO.PaymentResponse.builder()
+                    .code("ok")
+                    .message("success")
+                    .paymentUrl(paymentUrl)
+                    .build();
+        }
 
     public PaymentDTO.PaymentResponse createMomoPayment(Booking booking){
         if (booking == null) {
@@ -81,11 +137,16 @@ public class PaymentMomoService {
         long amount = booking.getTotalPrice() - booking.getTotalDiscount();
 
         // Tạo payload request body
-        Map<String, String> requestBody = momoConfig.getMomoConfig(booking.getBookingId());
-        requestBody.put("amount", String.valueOf(amount));
-        requestBody.put("orderInfo", "Payment for order " + booking.getBookingId());
-        requestBody.put("requestId", String.valueOf(System.currentTimeMillis()));
+        Map<String, String> requestBody = momoConfig.getMomoConfig();
 
+        // if the value is greater than 1.000.000  then decrease 
+        while (amount>1000000) {
+            amount=amount/10;
+        }
+        requestBody.put("amount", amount+"");
+        requestBody.put("orderInfo", "Payment for order " + booking.getBookingId());
+        requestBody.put("requestId", booking.getBookingId()+PaymentUtils.getRandomNumber(4));
+        requestBody.put("orderId", booking.getBookingId()+"");
         //sắp xếp theo aphab
         Map<String, String> sortedTreeRequestBody = new TreeMap<>(requestBody);
 

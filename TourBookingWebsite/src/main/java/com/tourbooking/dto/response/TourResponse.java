@@ -27,7 +27,7 @@ public class TourResponse {
 
     private String dayStay;
 
-    private List<TourTimeResponse> tourTimesResponse;
+    private List<TourTimeResponse> tourTimeResponses;
 
     private List<TourImageResponse> tourImageResponses;
 

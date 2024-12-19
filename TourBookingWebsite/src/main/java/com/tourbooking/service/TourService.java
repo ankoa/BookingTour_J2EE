@@ -2,16 +2,15 @@ package com.tourbooking.service;
 
 import com.tourbooking.dto.response.FindTourResponse;
 import com.tourbooking.dto.response.TourImageResponse;
-import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.dto.response.TourResponse;
+import com.tourbooking.dto.response.TourTimeResponse;
 import com.tourbooking.mapper.FindTourMapper;
+import com.tourbooking.mapper.TourImageMapper;
+import com.tourbooking.mapper.TourMapper;
+import com.tourbooking.mapper.TransportMapper;
 import com.tourbooking.model.Tour;
 import com.tourbooking.model.TourImage;
 import com.tourbooking.model.TourTime;
-
-import com.tourbooking.mapper.TourMapper;
-import com.tourbooking.mapper.TourTimeMapper;
-import com.tourbooking.mapper.TransportMapper;
 import com.tourbooking.repository.TourImageRepository;
 import com.tourbooking.repository.TourRepository;
 import com.tourbooking.repository.TourTimeRepository;
@@ -39,21 +38,17 @@ public class TourService {
     private TourTimeService tourTimeService;
 
     @Autowired
-    TourTimeMapper tourTimeMapper;
-
-    @Autowired
     TourMapper tourMapper;
 
     @Autowired
     FindTourMapper findTourMapper;
 
     @Autowired
-    TransportMapper transportMapper;
+    TourImageMapper tourImageMapper;
 
     @Autowired
     TourTimeRepository tourTimeRepository;
-    @Autowired
-    private TourImageRepository tourImageRepository;
+
     @Autowired
     private TourImageService tourImageService;
 
@@ -127,33 +122,33 @@ public class TourService {
         if (status != null && tour.getStatus() != status) return null;
         TourResponse tourResponse = tourMapper.toTourResponse(tour);
 
-        List<TourImage> tourImages =tourImageRepository.findByTour_TourIdAndStatus(
+        List<TourImageResponse> tourImageResponses = new ArrayList<>();
+        List<TourImage> tourImages = tourImageService.findByTour_TourId(
                 tour.getTourId(),
-                status,
-                Sort.by(Sort.Direction.ASC, "id"));
-        List<TourImageResponse> tourImageResponses = tourImages.stream()
-                .map(tourImage ->new TourImageResponse(
-                        tourImage.getImageId(),
-                        tourImage.getImageUrl(),
-                        tourImage.getStatus()
-                ))
-                .collect(Collectors.toList());
+                Sort.by(Sort.Direction.ASC, "imageId"));
+        for (TourImage tourImage : tourImages) {
+            if (tourImage.getStatus() == 0)
+                tourImageResponses.add(tourImageService.toTourImageResponse(tourImage));
+            else if (tourImage.getStatus() == 1)
+                tourResponse.setTourImageResponse(tourImageService.toTourImageResponse(tourImage));
+        }
+
         tourResponse.setTourImageResponses(tourImageResponses);
 
-        List<TourTime> tourTimes=tourTimeRepository.findByTour_TourIdAndStatus(
+        List<TourTime> tourTimes = tourTimeRepository.findByTour_TourIdAndStatus(
                 tour.getTourId(),
                 status,
-                Sort.by(Sort.Direction.ASC, "id")
-                );
+                Sort.by(Sort.Direction.ASC, "tourTimeId")
+        );
 
         List<TourTimeResponse> tourTimeResponses = tourTimes.stream()
-                .map(tourTime -> tourTimeService.toTourTimeResponse(tourTime,status))
+                .map(tourTime -> tourTimeService.toTourTimeResponse(tourTime, status))
                 .collect(Collectors.toList());
 
-        tourResponse.setTourTimesResponse(tourTimeResponses);
+        tourResponse.setTourTimeResponses(tourTimeResponses);
 
         tourResponse.getTourImageResponses().forEach(tourImageResponse -> {
-            if(tourImageResponse.getStatus()==1)
+            if (tourImageResponse.getStatus() == 1)
                 tourResponse.setTourImageResponse(tourImageResponse);
         });
         return tourResponse;
@@ -169,9 +164,15 @@ public class TourService {
         return tours.map(tour -> {
             FindTourResponse response = findTourMapper.toFindTourResponse(tour);
 
-            // Lấy giá của tour với TourTime có departureTime gần nhất
+            for (TourImage tourImage : tour.getTourImages()) {
+                if(tourImage.getStatus() == 1) {
+                    response.setTourImage(new TourImageResponse(tourImage.getImageId(),tourImage.getImageUrl(),tourImage.getStatus()));
+                    break;
+                }
+            }
+
             TourTime latestTourTime = tour.getTourTimes().stream()
-                    .sorted(Comparator.comparing(TourTime::getDepartureTime).reversed())
+                    .sorted(Comparator.comparing(TourTime::getPriceAdult).reversed())
                     .findFirst()
                     .orElse(null);
 

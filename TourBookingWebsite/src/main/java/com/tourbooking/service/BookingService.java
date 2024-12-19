@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.tourbooking.dto.response.TourTimeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -66,6 +67,9 @@ public class BookingService {
 
     @Autowired
     BookingDetailService bookingDetailService;
+
+    @Autowired
+    private CustomerService customerService;
 
     public BookingService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
@@ -377,4 +381,34 @@ public class BookingService {
         }
         return bookingResponse;
     }
+
+    public List<BookingResponse>  getBookingResponses(
+                    Account account,
+                    Integer status,
+                    int page,
+                    int size){
+        if(customerService.getCustomerById(account.getCustomer().getCustomerId())==null) return null;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "time"));
+        Page<Booking> listBooking;
+        if(status==null)
+            listBooking = bookingRepository.findByCustomer_CustomerId(account.getCustomer().getCustomerId(),pageable);
+
+            else
+            listBooking = bookingRepository.findByCustomer_CustomerIdAndStatus(account.getCustomer().getCustomerId(),status,pageable);
+
+        List<BookingResponse> bookingResponses = new ArrayList<>();
+        for(Booking booking : listBooking.getContent()){
+            BookingResponse bookingResponse= bookingMapper.toBookingResponse(booking);
+            TourTimeResponse tourTimeResponse=tourTimeService.toTourTimeResponse(booking.getTourTime(), 1);
+            bookingResponse.setTourTimeResponse(tourTimeResponse);
+            bookingResponses.add(bookingResponse);
+        }
+        return bookingResponses;
+//
+    }
+
+    public int getNumberOfPages(Account account,int size) {
+        return (bookingRepository.getTotalNumberOfUserBookings(account.getCustomer())/size)+1;
+    }
+
 }

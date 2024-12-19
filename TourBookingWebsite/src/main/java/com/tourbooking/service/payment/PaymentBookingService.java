@@ -1,6 +1,7 @@
 package com.tourbooking.service.payment;
 
 import com.tourbooking.dto.request.BookingRequest;
+import com.tourbooking.dto.response.PaymentDTO;
 import com.tourbooking.dto.response.ResponseObject;
 import com.tourbooking.model.*;
 import com.tourbooking.service.BookingService;

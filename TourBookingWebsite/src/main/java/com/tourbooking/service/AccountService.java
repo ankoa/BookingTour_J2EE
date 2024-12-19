@@ -1,6 +1,7 @@
 package com.tourbooking.service;
 
 import com.tourbooking.dto.request.CreateAccountRequest;
+import com.tourbooking.dto.request.UpdateAccountRequest;
 import com.tourbooking.dto.response.CreateNewAccountResponse;
 import com.tourbooking.mapper.AccountMapper;
 import com.tourbooking.model.Customer;
@@ -105,6 +106,26 @@ public class AccountService {
         }
     }
 
+    public CreateNewAccountResponse UpdateAccount(UpdateAccountRequest request,Account account) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        Customer customer =account.getCustomer();
+        customer.setCustomerName(request.getFullName());
+        customer.setPhoneNumber(request.getPhoneNumber());
+        customer.setAddress(request.getAddress());
+        customer.setSex(request.getSex());
+        customer.setBirthday(request.getBirthday());
+        try {
+            customerRepository.save(customer);
+            account.setCustomer(customer);
+            account.setPassword(passwordEncoder.encode(request.getPassword()));
+            accountRepository.save(account);
+            return accountMapper.toAccountResponse(account);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public boolean addAccount(Account account) {
         try {
@@ -168,5 +189,31 @@ public class AccountService {
     // Kiểm tra sự tồn tại của customerID
     public boolean doesCustomerIDExist(Integer customerID) {
         return accountRepository.checkCustomerIDExists(customerID);
+    }
+
+
+    public String generateResetToken(String email) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            throw new IllegalArgumentException("No account found with email: " + email);
+        }
+
+        String token = UUID.randomUUID().toString();
+        account.setResetToken(token);
+        account.setTokenExpiration(LocalDateTime.now().plusHours(1));
+        accountRepository.save(account);
+
+        return token;
+    }
+
+    public void resetPassword(String token, String newPassword) {
+        Account account = accountRepository.findByResetToken(token);
+        if (account == null || account.getTokenExpiration().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Invalid or expired token");
+        }
+        account.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+        account.setResetToken(null);
+        account.setTokenExpiration(null);
+        accountRepository.save(account);
     }
 }

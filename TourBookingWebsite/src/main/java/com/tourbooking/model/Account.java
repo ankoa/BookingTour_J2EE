@@ -39,6 +39,8 @@ public class Account {
     @Column(name = "role")
     private String role;
 
+    private String resetToken;
+    private LocalDateTime tokenExpiration;
     @Column(name = "status")
     private int status;
 

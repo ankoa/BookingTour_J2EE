@@ -1,14 +1,22 @@
 package com.tourbooking.security;
 
+import com.tourbooking.model.Account;
+import com.tourbooking.model.Customer;
+import com.tourbooking.service.AccountService;
+import com.tourbooking.service.CustomerService;
+import com.tourbooking.service.OAuthService;
 import com.tourbooking.service.UserDetailsServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -17,12 +25,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+    @Autowired
+    private OAuthService oAuthService;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private CustomerService customerService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -38,6 +57,49 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/**").permitAll()
+                )
+                .oauth2Login(oauth2Login -> oauth2Login.loginPage("/account-login").failureUrl("/login?error")
+                        .userInfoEndpoint(userInfoEndpoint ->
+                                userInfoEndpoint
+                                        .userService(oAuthService)
+                        )
+                        .successHandler(
+                                (request, response,
+                                 authentication) -> {
+                                    DefaultOidcUser oidcUser = (DefaultOidcUser) authentication.getPrincipal();
+                                    String email = oidcUser.getEmail();
+                                    Account account = accountService.getAccountByEmail(email);
+
+                                    if (account == null) {
+                                        // Tạo mới Customer và Account
+                                        Customer customer = new Customer();
+                                        customer.setCustomerName(oidcUser.getFullName());
+                                        customer.setTime(new Date());
+                                        customer.setStatus(1);
+                                        customerService.addCustomer(customer);
+
+                                        account = new Account();
+                                        account.setAccountName(oidcUser.getName());
+                                        account.setEmail(email);
+                                        account.setPassword(new BCryptPasswordEncoder().encode(oidcUser.getName()));
+                                        account.setRole("ROLE_USER");
+                                        account.setCustomer(customer);
+                                        account.setTime(LocalDateTime.now());
+                                        account.setStatus(1);
+                                        accountService.addAccount(account);
+
+                                        System.out.println("Created new account for user: " + email);
+                                    } else {
+                                        System.out.println("User already exists: " + email);
+                                    }
+                                    CustomUserDetails userDetails = new CustomUserDetails(account);
+                                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                            userDetails, null, userDetails.getAuthorities()
+                                    );
+
+                                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                                    response.sendRedirect("/");
+                                })
                 )
                 .formLogin(form -> form
                         .loginPage("/account-login")
@@ -64,14 +126,24 @@ public class SecurityConfig {
                                 errorMessage = "Tài khoản không tồn tại.";
                             } else if (exception instanceof LockedException) {
                                 errorMessage = "Tài khoản đã bị khóa.";
-                            }else{
+                            } else {
                                 errorMessage = "Đăng nhập thất bại";
                             }
                             response.getWriter().write("{\"status\": \"error\", \"message\": \"" + errorMessage + " \"}");
                             response.getWriter().flush();
                         })
                         .permitAll())
-                .logout(logout -> logout.permitAll())
+                .rememberMe(rememberMe -> rememberMe.key("uniqueAndSecret")
+                        .tokenValiditySeconds(86400)
+                        .userDetailsService(userDetailsService())
+                )
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl("/account-login")
+                        .deleteCookies("JSESSIONID")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .permitAll()
+                )
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }

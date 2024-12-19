@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="d-flex justify-content-between gap-2">
                             <p>${transport.departureLocation}</p>
-                            <h5>${transport.transportName}</h5>
+                            <p>${transport.transportName}</p>
                             <p>${transport.destinationLocation}</p>
                         </div>` : `
                     `).join('')}

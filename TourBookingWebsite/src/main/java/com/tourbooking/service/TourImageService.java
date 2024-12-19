@@ -1,8 +1,11 @@
 package com.tourbooking.service;
 
+import com.tourbooking.dto.response.TourImageResponse;
+import com.tourbooking.mapper.TourImageMapper;
 import com.tourbooking.model.TourImage;
 import com.tourbooking.repository.TourImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,11 +19,13 @@ public class TourImageService {
 
     private final TourImageRepository tourImageRepository;
     private final CloudinaryService cloudinaryService;
+    private final TourImageMapper tourImageMapper;
 
     @Autowired
-    public TourImageService(TourImageRepository tourImageRepository, CloudinaryService cloudinaryService) {
+    public TourImageService(TourImageRepository tourImageRepository, CloudinaryService cloudinaryService, TourImageMapper tourImageMapper) {
         this.tourImageRepository = tourImageRepository;
         this.cloudinaryService = cloudinaryService;
+        this.tourImageMapper = tourImageMapper;
     }
 
     /**
@@ -97,5 +102,12 @@ public class TourImageService {
         return activeImages.stream().anyMatch(image -> image.getImageId() == imageId);
     }
 
+    public List<TourImage> findByTour_TourId(int tourId, Sort sort) {
+        return tourImageRepository.findByTour_TourId(tourId ,sort);
+    }
+
+    public TourImageResponse toTourImageResponse(TourImage tourImage){
+        return tourImageMapper.toTourImageResponse(tourImage);
+    }
 
 }

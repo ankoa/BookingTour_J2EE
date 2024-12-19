@@ -38,7 +38,6 @@ public class VNPAYConfig {
         vnpParamsMap.put("vnp_Command", this.vnp_Command);
         vnpParamsMap.put("vnp_TmnCode", this.vnp_TmnCode);
         vnpParamsMap.put("vnp_CurrCode", "VND");
-        vnpParamsMap.put("vnp_TxnRef",  PaymentUtils.getRandomNumber(8));
         vnpParamsMap.put("vnp_BankCode",  this.vnp_BankCode);
 
         vnpParamsMap.put("vnp_OrderType", this.orderType);
